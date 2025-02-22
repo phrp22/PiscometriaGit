@@ -1,34 +1,39 @@
 import streamlit as st
-from auth import authenticate_user, register_user
-from database import check_user_exists
-from utils import hash_password
+import bcrypt
 import profissional
-import paciente
+from database import get_user_credentials, insert_user, check_user_exists, check_password
+
+
+def hash_password(password):
+    """ Gera um hash seguro para a senha """
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
+
+def check_password(stored_password, provided_password):
+    """ Verifica se a senha digitada corresponde ao hash armazenado """
+    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def main():
     st.title("Bem-vindo ao App")
 
-    # Se o usuário já está autenticado, direciona para o dashboard
+    # Verifica se o usuário já está autenticado
     if "authenticated" in st.session_state and st.session_state.authenticated:
-        navigate_to_dashboard()
+        if st.session_state.user_type == "Profissional":
+            import profissional
+            profissional.profissional_dashboard()
+        else:
+            import paciente
+            paciente.paciente_page()
         return
 
-    # Remover qualquer barra lateral automática
-    st.set_page_config(layout="centered")
-
+    # Escolha entre Login e Registro
     choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
-    
+
     if choice == "Login":
         login()
     elif choice == "Registro":
         register()
-
-def navigate_to_dashboard():
-    """Redireciona para a página correspondente ao tipo de usuário"""
-    if st.session_state.user_type == "Profissional":
-        profissional.profissional_page()
-    else:
-        paciente.paciente_page()
 
 def login():
     st.subheader("Tela de Login")
@@ -36,31 +41,51 @@ def login():
     password = st.text_input("Senha", type="password")
 
     if st.button("Entrar"):
-        authenticated, user_type = authenticate_user(username, password)
-        if authenticated:
-            st.session_state.authenticated = True
-            st.session_state.username = username
-            st.session_state.user_type = user_type
-            st.rerun()
+        if username and password:
+            try:
+                user_data = get_user_credentials(username)
+                if user_data:
+                    stored_password = user_data["password"]
+                    user_type = user_data["user_type"]
+
+                    if check_password(stored_password, password):
+                        st.session_state.authenticated = True
+                        st.session_state.username = username
+                        st.session_state.user_type = user_type
+                        st.rerun()
+                    else:
+                        st.error("Senha incorreta.")
+                else:
+                    st.error("Usuário não encontrado.")
+            except Exception as e:
+                st.error(f"Erro ao buscar usuário: {str(e)}")
         else:
-            st.error("Usuário ou senha inválidos.")
+            st.error("Por favor, preencha os campos de usuário e senha.")
 
 def register():
     st.subheader("Tela de Registro")
-    new_username = st.text_input("Nome de usuário")
-    new_password = st.text_input("Senha", type="password")
+    new_username = st.text_input("Escolha um nome de usuário")
+    new_password = st.text_input("Escolha uma senha", type="password")
     confirm_password = st.text_input("Confirme sua senha", type="password")
     user_type = st.radio("Você é um:", ["Profissional", "Paciente"])
 
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
-            if check_user_exists(new_username):
-                st.error("Nome de usuário já está em uso.")
-                return
-            register_user(new_username, new_password, user_type)
-            st.success("Registro bem-sucedido! Agora você pode fazer login.")
+            hashed_password = hash_password(new_password)
+            try:
+                if check_user_exists(new_username):
+                    st.error("Nome de usuário já está em uso. Escolha outro.")
+                    return
+
+                response = insert_user(new_username, hashed_password, user_type)
+                if response:
+                    st.success("Registro concluído com sucesso! Agora você pode fazer login.")
+                else:
+                    st.error("Erro ao registrar. Tente novamente.")
+            except Exception as e:
+                st.error(f"Erro ao registrar usuário: {str(e)}")
         else:
-            st.error("Preencha todos os campos corretamente.")
+            st.error("Por favor, preencha todos os campos corretamente.")
 
 if __name__ == "__main__":
     main()
