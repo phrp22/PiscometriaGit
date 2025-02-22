@@ -4,7 +4,7 @@ from database import listar_escalas_pendentes, salvar_respostas_escala, get_prof
 from escalas import obter_perguntas_escala
 
 def paciente_page():
-    st.title("Área do Paciente")
+    st.header("Área do Paciente")
     st.write(f"Bem-vindo, {st.session_state.username}!")
 
     # Obtém as escalas pendentes (ainda não respondidas)

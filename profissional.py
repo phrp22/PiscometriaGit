@@ -35,7 +35,7 @@ def ver_respostas_interface():
         st.markdown("---")  # Linha divisória entre escalas
 
 def profissional_dashboard():
-    st.title("Área do Profissional")
+    st.header("Área do Profissional")
     st.write(f"Bem-vindo, {st.session_state.username}!")
 
 def enviar_escala_interface():
