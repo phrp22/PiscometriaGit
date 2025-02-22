@@ -17,11 +17,11 @@ def listar_pacientes(profissional_username):
     
     profissional_id = profissional_data.data[0]["id"]  # Converte username para UUID
 
-    # Buscar os pacientes vinculados ao profissional (agora sem 'data_cadastro')
+    # Buscar os pacientes vinculados ao profissional (sem 'data_cadastro')
     response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_id).execute()
     
     return response.data if response.data else []
-    
+
 def check_password(stored_password, provided_password):
     """Verifica se a senha digitada corresponde ao hash armazenado."""
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
