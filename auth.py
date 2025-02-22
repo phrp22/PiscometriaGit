@@ -1,23 +1,32 @@
-import bcrypt
-from database import get_user_password, insert_user
+from supabase import create_client
+import streamlit as st
 
-def hash_password(password):
-    """ Gera um hash seguro para a senha. """
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
+# Configuração do Supabase
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def check_password(stored_password, provided_password):
-    """ Verifica se a senha digitada corresponde ao hash armazenado. """
-    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
+def register_user(email, password, user_type):
+    """ Registra um novo usuário no Supabase Authentication """
+    response = supabase.auth.sign_up({
+        "email": email,
+        "password": password
+    })
 
-def authenticate_user(username, password):
-    stored_password, user_type = get_user_password(username)  # Agora pegamos user_type também
-    if stored_password and check_password(stored_password, password):
-        return True, user_type  # Retorna True e o tipo de usuário
-    return False, None
+    if "user" in response:
+        # Adicionamos o usuário na tabela `users` com o user_type definido
+        supabase.table("users").insert({
+            "id": response["user"]["id"],  # O Supabase gera um UUID automaticamente
+            "email": email,
+            "user_type": user_type
+        }).execute()
+    
+    return response
 
-def register_user(username, password, user_type):
-    """ Registra um novo usuário no sistema. """
-    hashed_password = hash_password(password)
-    return insert_user(username, hashed_password, user_type)  # Passando user_type
+def authenticate_user(email, password):
+    """ Faz login no Supabase Authentication """
+    response = supabase.auth.sign_in_with_password({
+        "email": email,
+        "password": password
+    })
+    return response
