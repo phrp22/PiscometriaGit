@@ -2,13 +2,19 @@ import streamlit as st
 from auth import authenticate_user, register_user
 from database import check_user_exists
 from utils import hash_password
+import profissional
+import paciente
 
 def main():
     st.title("Bem-vindo ao App")
 
+    # Se o usuário já está autenticado, direciona para o dashboard
     if "authenticated" in st.session_state and st.session_state.authenticated:
         navigate_to_dashboard()
         return
+
+    # Remover qualquer barra lateral automática
+    st.set_page_config(layout="centered")
 
     choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
     
@@ -20,11 +26,9 @@ def main():
 def navigate_to_dashboard():
     """Redireciona para a página correspondente ao tipo de usuário"""
     if st.session_state.user_type == "Profissional":
-        from pages.profissional import profissional_page
-        profissional_page()
+        profissional.profissional_page()
     else:
-        from pages.paciente import paciente_page
-        paciente_page()
+        paciente.paciente_page()
 
 def login():
     st.subheader("Tela de Login")
