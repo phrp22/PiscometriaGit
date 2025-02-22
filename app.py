@@ -2,6 +2,8 @@ import streamlit as st
 import bcrypt
 from database import check_user_exists, insert_user, supabase_client  # Importando supabase_client corretamente
 
+st.set_page_config(initial_sidebar_state="collapsed")  # Oculta a sidebar
+
 def hash_password(password):
     """ Gera um hash seguro para a senha """
     salt = bcrypt.gensalt()
@@ -39,7 +41,7 @@ def login():
                     
                     if check_password(stored_password, password):
                         st.success(f"Bem-vindo, {username}!")
-                        
+
                         if user_type == "Profissional":
                             st.switch_page("pages/profissional.py")  # Caminho correto
                         else:
