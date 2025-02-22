@@ -50,10 +50,7 @@ def get_profissional_da_escala(paciente_username, escala):
         st.error(f"Erro: Nenhum profissional encontrado para a escala '{escala}' enviada ao paciente '{paciente_username}'.")
         return None  # Retorna None se não encontrar um profissional associado
     
-    profissional = response.data[0]["profissional"]
-    st.write(f"Profissional encontrado: {profissional}")  # ✅ Log para depuração
-    return profissional
-
+    return response.data[0]["profissional"]  # ✅ Agora retorna o profissional sem a mensagem extra
 
 
 def listar_escalas_paciente(paciente_username):
