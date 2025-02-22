@@ -1,9 +1,15 @@
 import supabase
 import streamlit as st
+import bcrypt
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
+
+
+def check_password(stored_password, provided_password):
+    """Verifica se a senha digitada corresponde ao hash armazenado."""
+    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
     """Autentica um paciente antes de cadastrá-lo ao profissional."""
