@@ -14,6 +14,15 @@ def enviar_escala(profissional, paciente, escala):
     }).execute()
     return response
 
+def get_profissional_uuid(profissional_username):
+    """Obtém o UUID do profissional baseado no nome de usuário."""
+    response = supabase_client.table("users").select("id").eq("username", profissional_username).execute()
+    
+    if response.data:
+        return response.data[0]["id"]  # Retorna o UUID do profissional
+    
+    return None  # Retorna None se o usuário não for encontrado
+
 def get_user_uuid(username):
     """Obtém o UUID do usuário com base no nome de usuário."""
     response = supabase_client.table("users").select("id").eq("username", username).execute()
@@ -56,8 +65,17 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
+
+    # Obtém o UUID do profissional
+    profissional_uuid = get_profissional_uuid(profissional_username)
+    
+    if not profissional_uuid:
+        st.error("Erro: Profissional não encontrado no banco de dados.")
+        return []
+
     try:
-        response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_username).execute()
+        # Filtra os pacientes pelo UUID do profissional
+        response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_uuid).execute()
 
         if not response.data:
             return []  # Retorna uma lista vazia se não houver pacientes
