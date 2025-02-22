@@ -40,11 +40,11 @@ def login():
                     if check_password(stored_password, password):
                         st.success(f"Bem-vindo, {username}!")
                         
-                        # Direcionamento com base no tipo de usuário
                         if user_type == "Profissional":
-                            st.switch_page("profissional.py")  # Ajuste o caminho correto
+                            st.switch_page("pages/profissional.py")  # Caminho correto
                         else:
-                            st.switch_page("paciente.py")  # Ajuste o caminho correto
+                            st.switch_page("pages/paciente.py")  # Caminho correto
+
                     else:
                         st.error("Senha incorreta.")
                 else:
