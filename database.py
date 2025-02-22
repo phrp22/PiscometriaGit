@@ -7,12 +7,13 @@ supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def listar_respostas_pacientes(profissional_username):
     """Retorna todas as respostas das escalas enviadas pelo profissional."""
-
-    response = supabase_client.table("respostas_escalas").select("paciente", "escala", "respostas", "criado_em").eq("profissional", profissional_username).execute()
+    response = supabase_client.table("respostas_escalas").select(
+        "paciente", "escala", "respostas", "criado_em"
+    ).eq("profissional", profissional_username).execute()
 
     if not response.data:
         return []  # Se não houver respostas, retorna uma lista vazia
-    
+
     return response.data  # Retorna as respostas disponíveis
 
 def listar_escalas_pendentes(paciente_username):

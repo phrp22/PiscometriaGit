@@ -1,6 +1,7 @@
 import streamlit as st
-from database import cadastrar_paciente, listar_pacientes, enviar_escala, listar_respostas_pacientes  # ✅ Agora importando listar_respostas_pacientes
+from database import cadastrar_paciente, listar_pacientes, enviar_escala, listar_respostas_pacientes  # ✅ Agora importando corretamente
 from escalas import listar_escalas  # ✅ Importamos a lista de escalas
+
 
 def ver_respostas_interface():
     """Interface para o profissional visualizar as respostas dos pacientes."""
