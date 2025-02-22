@@ -1,5 +1,6 @@
 import supabase
 import streamlit as st
+from auth import check_password  # ✅ Corrige o erro de NameError
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
@@ -23,7 +24,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
     # Autentica o paciente
     user_data = get_user_credentials(paciente_username)
     
-    if user_data and check_password(user_data["password"], paciente_password):
+    if user_data and "password" in user_data and check_password(user_data["password"], paciente_password):
         # Verifica se o paciente já está vinculado
         existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
         
