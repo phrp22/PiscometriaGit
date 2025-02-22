@@ -5,14 +5,49 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def cadastrar_paciente(profissional_username, paciente_nome):
-    """Registra um paciente vinculado a um profissional."""
-    response = supabase_client.table("pacientes").insert({
-        "profissional": profissional_username,
-        "paciente": paciente_nome,
-        "data_cadastro": "now()"
-    }).execute()
-    return response
+import bcrypt
+
+def check_password(stored_password, provided_password):
+    """Verifica se a senha digitada corresponde ao hash armazenado."""
+    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
+
+def get_user_uuid(username):
+    """Obtém o UUID do usuário com base no nome de usuário."""
+    response = supabase_client.table("users").select("id").eq("username", username).execute()
+    if response.data:
+        return response.data[0]["id"]
+    return None
+
+def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
+    """Autentica um paciente antes de cadastrá-lo ao profissional e insere na tabela pacientes."""
+    
+    # Obtém o UUID do profissional
+    profissional_uuid = get_user_uuid(profissional_username)
+    if not profissional_uuid:
+        return {"success": False, "message": "Erro: Profissional não encontrado no banco de dados."}
+
+    # Autentica o paciente
+    user_data = get_user_credentials(paciente_username)
+    
+    if user_data and check_password(user_data["password"], paciente_password):
+        # Verifica se o paciente já está vinculado
+        existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
+        
+        if existing.data:
+            return {"success": False, "message": "Paciente já está vinculado a um profissional."}
+
+        # Insere o paciente na tabela 'pacientes' usando o UUID do profissional
+        response = supabase_client.table("pacientes").insert({
+            "profissional": profissional_uuid,  # Agora usamos o UUID corretamente
+            "paciente": paciente_username
+        }).execute()
+
+        if response.data:
+            return {"success": True, "message": "Paciente autenticado e vinculado ao profissional."}
+        else:
+            return {"success": False, "message": "Erro ao cadastrar paciente no banco de dados."}
+    
+    return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
