@@ -53,20 +53,30 @@ def register():
     new_username = st.text_input("Escolha um nome de usuário")
     new_password = st.text_input("Escolha uma senha", type="password")
     confirm_password = st.text_input("Confirme sua senha", type="password")
-    
+
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
             hashed_password = hash_password(new_password)
             
-            response = supabase_client.table("users").insert({
-                "username": new_username,
-                "password": hashed_password
-            }).execute()
-            
-            if response.get("status_code") == 201:
-                st.success("Registro concluído com sucesso! Agora você pode fazer login.")
-            else:
-                st.error("Erro ao registrar. Tente um nome de usuário diferente.")
+            # Verificar se o usuário já existe
+            existing_user = supabase_client.table("users").select("username").eq("username", new_username).execute()
+
+            if existing_user.data:
+                st.error("Nome de usuário já está em uso. Escolha outro.")
+                return
+
+            try:
+                response = supabase_client.table("users").insert({
+                    "username": new_username,
+                    "password": hashed_password
+                }).execute()
+
+                if response.data:
+                    st.success("Registro concluído com sucesso! Agora você pode fazer login.")
+                else:
+                    st.error("Erro ao registrar. Tente novamente.")
+            except Exception as e:
+                st.error(f"Erro ao registrar: {str(e)}")
         else:
             st.error("Por favor, preencha todos os campos corretamente.")
 
