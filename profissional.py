@@ -1,29 +1,34 @@
 import streamlit as st
-from database import insert_paciente
+from database import cadastrar_paciente
 
-def profissional_page():
+import streamlit as st
+from database import cadastrar_paciente
+
+def profissional_dashboard():
     st.title("Área do Profissional")
 
-    # Verifica se o usuário está autenticado antes de exibir o conteúdo
-    if "user" not in st.session_state or not st.session_state.user:
-        st.error("Você precisa estar autenticado para acessar esta página.")
+    # Verifica se o usuário está autenticado e é um profissional
+    if "authenticated" not in st.session_state or not st.session_state.authenticated:
+        st.error("Você precisa estar logado para acessar esta página.")
+        return
+    if st.session_state.user_type != "Profissional":
+        st.error("Acesso restrito a profissionais.")
         return
 
-    st.write(f"Bem-vindo, {st.session_state.user['email']}!")  # Exibe o e-mail do usuário
+    st.subheader("Cadastrar Novo Paciente")
+    
+    paciente_username = st.text_input("Nome de Usuário do Paciente")
+    paciente_password = st.text_input("Senha do Paciente", type="password")
 
-    st.subheader("Cadastrar Paciente")
-    paciente_nome = st.text_input("Nome do Paciente")
-
-    if st.button("Adicionar Paciente"):
-        if paciente_nome:
-            try:
-                response = insert_paciente(st.session_state.user["id"], paciente_nome)  # Agora usa o UUID do profissional
-                st.success(f"Paciente {paciente_nome} cadastrado com sucesso!")
-            except Exception as e:
-                st.error(f"Erro ao cadastrar paciente: {str(e)}")
+    if st.button("Cadastrar Paciente"):
+        if paciente_username and paciente_password:
+            response = cadastrar_paciente(st.session_state.username, paciente_username, paciente_password)
+            if response["success"]:
+                st.success(response["message"])
+            else:
+                st.error(response["message"])
         else:
-            st.error("O nome do paciente não pode estar vazio.")
+            st.error("Preencha todos os campos!")
 
-    if st.button("Sair"):
-        st.session_state.user = None  # Reseta a sessão do usuário
-        st.rerun()
+if __name__ == "__main__":
+    profissional_dashboard()
