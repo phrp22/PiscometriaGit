@@ -8,7 +8,7 @@ def main():
 
     # Verifica se o usuário está autenticado
     if "authenticated" in st.session_state and st.session_state.authenticated:
-        st.sidebar.button("Sair", on_click=logout)  # Botão de logout só aparece se estiver logado
+        st.sidebar.button("Sair", on_click=logout)  # Agora sem st.rerun()
 
         if st.session_state.user_type == "Profissional":
             import profissional
