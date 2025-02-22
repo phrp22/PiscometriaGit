@@ -21,4 +21,3 @@ def register_user(username, password, user_type):
     """ Registra um novo usuário no sistema. """
     hashed_password = hash_password(password)
     return insert_user(username, hashed_password, user_type)  # Passando user_type
-

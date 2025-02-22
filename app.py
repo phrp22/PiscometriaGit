@@ -13,7 +13,7 @@ def check_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def main():
-    st.title("Academia Diagnóstica")
+    st.title("Bem-vindo ao App")
 
     # Verifica se o usuário já está autenticado
     if "authenticated" in st.session_state and st.session_state.authenticated:
@@ -50,7 +50,7 @@ def login():
                         st.session_state.authenticated = True
                         st.session_state.username = username
                         st.session_state.user_type = user_type
-                        st.rerun()  # Recarrega a página para redirecionar
+                        st.rerun()
                     else:
                         st.error("Senha incorreta.")
                 else:
@@ -76,8 +76,7 @@ def register():
                     return
 
                 response = insert_user(new_username, hashed_password, user_type)
-                
-                if response and not response.get("error"):  # Garante que não houve erro na inserção
+                if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")
                 else:
                     st.error("Erro ao registrar. Tente novamente.")
@@ -86,3 +85,5 @@ def register():
         else:
             st.error("Por favor, preencha todos os campos corretamente.")
 
+if __name__ == "__main__":
+    main()
