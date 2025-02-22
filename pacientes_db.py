@@ -2,6 +2,7 @@ import supabase
 import streamlit as st
 from database import get_user_uuid, get_user_credentials, check_password
 
+
 # Conexão com o Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]

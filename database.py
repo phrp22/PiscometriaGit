@@ -1,6 +1,8 @@
 import supabase
 import streamlit as st
 import bcrypt
+from paciente_db import cadastrar_paciente
+
 
 # Conexão com o Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
