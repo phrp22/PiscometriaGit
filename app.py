@@ -6,8 +6,10 @@ from auth import authenticate_user, register_user  # Importando funções do aut
 def main():
     st.title("Bem-vindo ao App")
 
-    # Verifica se o usuário já está autenticado
+    # Verifica se o usuário está autenticado
     if "authenticated" in st.session_state and st.session_state.authenticated:
+        st.sidebar.button("Sair", on_click=logout)  # Botão de logout só aparece se estiver logado
+
         if st.session_state.user_type == "Profissional":
             import profissional
             profissional.profissional_dashboard()
@@ -68,6 +70,13 @@ def register():
                 st.error(f"Erro ao registrar usuário: {str(e)}")
         else:
             st.error("Por favor, preencha todos os campos corretamente.")
+
+def logout():
+    """Desloga o usuário e recarrega a página"""
+    st.session_state.authenticated = False
+    st.session_state.username = None
+    st.session_state.user_type = None
+    st.rerun()
 
 if __name__ == "__main__":
     main()
