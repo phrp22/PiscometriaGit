@@ -1,6 +1,7 @@
 import streamlit as st
 import bcrypt
 from database import check_user_exists, insert_user, supabase_client
+from auth import authenticate_user  # Certifique-se de importar a função correta
 
 def hash_password(password):
     """ Gera um hash seguro para a senha """
@@ -44,24 +45,21 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
-                stored_password, user_type = get_user_credentials(username)  # Agora pegamos a senha e o tipo de usuário
+                authenticated, user_type = authenticate_user(username, password)  # Agora usamos a função correta
 
-                if stored_password:
-                    if check_password(stored_password, password):
-                        st.success(f"Bem-vindo, {username}!")
+                if authenticated:
+                    st.success(f"Bem-vindo, {username}!")
 
-                        # Usando st.session_state para armazenar o user_type
-                        st.session_state["user_type"] = user_type
+                    # Armazena o tipo de usuário na sessão para direcionamento
+                    st.session_state["user_type"] = user_type
 
-                        # Redirecionamento sem sidebar
-                        if user_type == "Profissional":
-                            st.session_state["page"] = "profissional"
-                        else:
-                            st.session_state["page"] = "paciente"
+                    # Redirecionamento baseado no tipo de usuário
+                    if user_type == "Profissional":
+                        st.session_state["page"] = "profissional"
                     else:
-                        st.error("Senha incorreta.")
+                        st.session_state["page"] = "paciente"
                 else:
-                    st.error("Usuário não encontrado.")
+                    st.error("Usuário ou senha incorretos.")
             except Exception as e:
                 st.error(f"Erro ao buscar usuário: {str(e)}")
         else:

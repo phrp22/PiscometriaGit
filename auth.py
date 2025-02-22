@@ -12,11 +12,10 @@ def check_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def authenticate_user(username, password):
-    """ Autentica um usuário verificando a senha no banco de dados. """
-    stored_password = get_user_password(username)
+    stored_password, user_type = get_user_password(username)  # Agora pegamos user_type também
     if stored_password and check_password(stored_password, password):
-        return True
-    return False
+        return True, user_type  # Retorna True e o tipo de usuário
+    return False, None
 
 def register_user(username, password, user_type):
     """ Registra um novo usuário no sistema. """
