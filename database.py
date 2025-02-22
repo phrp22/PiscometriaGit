@@ -7,6 +7,39 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
+def get_escalas_pendentes(paciente_username):
+    """Obtém todas as escalas psicométricas pendentes de um paciente."""
+    
+    response = supabase_client.table("respostas_psicometricas").select("id, profissional, escala").eq("paciente", paciente_username).eq("status", "pendente").execute()
+    
+    return response.data if response.data else []
+
+def responder_escala_psicometrica(escala_id, resposta):
+    """Salva a resposta da escala psicométrica e marca como concluída."""
+    
+    response = supabase_client.table("respostas_psicometricas").update({
+        "resposta": resposta,
+        "status": "concluido"
+    }).eq("id", escala_id).execute()
+    
+    if response.data:
+        return {"success": True, "message": "Resposta salva com sucesso!"}
+    return {"success": False, "message": "Erro ao salvar resposta."}
+
+def enviar_escala_psicometrica(profissional_username, paciente_username, escala):
+    """Envia uma escala psicométrica para o paciente responder."""
+    
+    response = supabase_client.table("respostas_psicometricas").insert({
+        "profissional": profissional_username,
+        "paciente": paciente_username,
+        "escala": escala,
+        "status": "pendente"  # Indica que o paciente ainda não respondeu
+    }).execute()
+    
+    if response.data:
+        return {"success": True, "message": "Escala enviada com sucesso."}
+    return {"success": False, "message": "Erro ao enviar escala."}
+
 def check_password(stored_password, provided_password):
     """Verifica se a senha digitada corresponde ao hash armazenado."""
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
@@ -48,7 +81,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
             return {"success": False, "message": "Erro ao cadastrar paciente no banco de dados."}
     
     return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
-    
+
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
     response = supabase_client.table("pacientes").select("paciente, data_cadastro").eq("profissional", profissional_username).execute()
