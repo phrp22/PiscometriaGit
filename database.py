@@ -55,3 +55,13 @@ def get_user_credentials(username):
         }
     return None  # Retorna None se o usuário não existir
 
+def insert_user(username, hashed_password, user_type):
+    """ Insere um novo usuário no banco de dados """
+    response = supabase_client.table("users").insert({
+        "username": username,
+        "password": hashed_password,
+        "user_type": user_type  # Certifique-se de que o campo está correto
+    }).execute()
+
+    return response  # Retorna os dados inseridos ou um erro
+
