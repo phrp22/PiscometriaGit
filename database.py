@@ -60,8 +60,16 @@ def insert_user(username, hashed_password, user_type):
     response = supabase_client.table("users").insert({
         "username": username,
         "password": hashed_password,
-        "user_type": user_type  # Certifique-se de que o campo está correto
+        "user_type": user_type
     }).execute()
+    
+    if response.error:
+        return False  # Retorna False se houver erro
+    return True  # Retorna True se o usuário for inserido com sucesso
 
-    return response  # Retorna os dados inseridos ou um erro
+def check_user_exists(username):
+    """ Verifica se um usuário já está cadastrado no banco de dados """
+    response = supabase_client.table("users").select("username").eq("username", username).execute()
+    return bool(response.data)  # Retorna True se o usuário existir, False caso contrário
+
 
