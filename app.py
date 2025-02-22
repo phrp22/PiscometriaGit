@@ -4,27 +4,26 @@ from database import get_user_credentials, insert_user, check_user_exists
 from auth import authenticate_user, register_user  # Importando funções do auth.py
 
 def main():
-    st.title("Bem-vindo ao App")
+    st.title("Academia Diagnóstica")
 
-    # Verifica se o usuário está autenticado
-    if "authenticated" in st.session_state and st.session_state.authenticated:
-        st.sidebar.button("Sair", on_click=logout)  # Agora sem st.rerun()
+    # Verifica se o usuário já está autenticado
+    if not st.session_state.get("authenticated", False):  # ✅ Corrigido para evitar erro de atributo
+        choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
 
-        if st.session_state.user_type == "Profissional":
-            import profissional
-            profissional.profissional_dashboard()
-        else:
-            import paciente
-            paciente.paciente_page()
+        if choice == "Login":
+            login()
+        elif choice == "Registro":
+            register()
         return
 
-    # Escolha entre Login e Registro
-    choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
+    # Botão de logout na barra lateral
+    st.sidebar.button("Sair", on_click=logout)  # ✅ Mantemos sem st.rerun()
 
-    if choice == "Login":
-        login()
-    elif choice == "Registro":
-        register()
+    if st.session_state.user_type == "Profissional":
+        profissional.profissional_dashboard()  # ✅ Removemos importação desnecessária
+    else:
+        import paciente
+        paciente.paciente_page()
 
 def login():
     st.subheader("Tela de Login")
@@ -72,11 +71,10 @@ def register():
             st.error("Por favor, preencha todos os campos corretamente.")
 
 def logout():
-    """Desloga o usuário e recarrega a página"""
+    """Desloga o usuário"""
     st.session_state.authenticated = False
     st.session_state.username = None
-    st.session_state.user_type = None
-    st.rerun()
+    st.session_state.user_type = None  # ✅ Removemos st.rerun()
 
 if __name__ == "__main__":
     main()
