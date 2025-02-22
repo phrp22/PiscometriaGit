@@ -1,5 +1,5 @@
 import streamlit as st
-from database import listar_escalas_pendentes, salvar_respostas_escala
+from database import listar_escalas_pendentes, salvar_respostas_escala, get_profissional_da_escala
 from escalas import obter_perguntas_escala
 
 def paciente_page():
