@@ -23,7 +23,6 @@ def main():
 
     # Menu para PROFISSIONAIS
     if st.session_state.user_type == "Profissional":
-        profissional_dashboard()
         opcao = st.sidebar.selectbox("Menu", ["Cadastrar Paciente", "Enviar Escalas", "Ver Respostas"])  # ✅ Nova opção
 
         if opcao == "Cadastrar Paciente":
