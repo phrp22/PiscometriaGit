@@ -3,8 +3,8 @@ import bcrypt
 import supabase
 
 # Conectar ao Supabase
-SUPABASE_URL = "https://seu-supabase-url.supabase.co"
-SUPABASE_KEY = "sua-chave-secreta"
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def hash_password(password):
