@@ -1,7 +1,6 @@
 import streamlit as st
 import bcrypt
-from auth import authenticate_user
-from database import check_user_exists, insert_user, supabase_client
+from database import get_user_credentials, insert_user, check_user_exists
 
 def hash_password(password):
     """ Gera um hash seguro para a senha """
@@ -16,18 +15,19 @@ def check_password(stored_password, provided_password):
 def main():
     st.title("Bem-vindo ao App")
 
-    # Verifica se o usuário já está logado e redireciona
-    if "user_type" in st.session_state:
-        if st.session_state["user_type"] == "Profissional":
-            profissional_page()
-            return
-        elif st.session_state["user_type"] == "Paciente":
-            paciente_page()
-            return
+    # Verifica se o usuário já está autenticado
+    if "authenticated" in st.session_state and st.session_state.authenticated:
+        if st.session_state.user_type == "Profissional":
+            import profissional
+            profissional.profissional_page()
+        else:
+            import paciente
+            paciente.paciente_page()
+        return
 
-    # Se não estiver logado, exibe a tela de login/registro
+    # Escolha entre Login e Registro
     choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
-    
+
     if choice == "Login":
         login()
     elif choice == "Registro":
@@ -41,18 +41,20 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
-                authenticated, user_type = authenticate_user(username, password)
+                user_data = get_user_credentials(username)
+                if user_data:
+                    stored_password = user_data["password"]
+                    user_type = user_data["user_type"]
 
-                if authenticated:
-                    st.success(f"Bem-vindo, {username}!")
-
-                    # Armazena o tipo de usuário na sessão para redirecionamento
-                    st.session_state["user_type"] = user_type
-
-                    # Atualiza a página sem sidebar
-                    st.rerun()
+                    if check_password(stored_password, password):
+                        st.session_state.authenticated = True
+                        st.session_state.username = username
+                        st.session_state.user_type = user_type
+                        st.rerun()
+                    else:
+                        st.error("Senha incorreta.")
                 else:
-                    st.error("Usuário ou senha incorretos.")
+                    st.error("Usuário não encontrado.")
             except Exception as e:
                 st.error(f"Erro ao buscar usuário: {str(e)}")
         else:
@@ -68,14 +70,12 @@ def register():
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
             hashed_password = hash_password(new_password)
-
             try:
                 if check_user_exists(new_username):
                     st.error("Nome de usuário já está em uso. Escolha outro.")
                     return
 
                 response = insert_user(new_username, hashed_password, user_type)
-
                 if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")
                 else:
@@ -84,16 +84,6 @@ def register():
                 st.error(f"Erro ao registrar usuário: {str(e)}")
         else:
             st.error("Por favor, preencha todos os campos corretamente.")
-
-def profissional_page():
-    """ Página específica para profissionais """
-    st.title("Área do Profissional")
-    st.write("Bem-vindo à área exclusiva para profissionais!")
-
-def paciente_page():
-    """ Página específica para pacientes """
-    st.title("Área do Paciente")
-    st.write("Bem-vindo à área exclusiva para pacientes!")
 
 if __name__ == "__main__":
     main()
