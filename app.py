@@ -18,9 +18,12 @@ def main():
 
     # Botão de logout na barra lateral
     st.sidebar.button("Sair", on_click=logout)
+    if "profissional_encontrado_msg" in st.session_state:
+        del st.session_state["profissional_encontrado_msg"]
 
     # Menu para PROFISSIONAIS
     if st.session_state.user_type == "Profissional":
+        profissional_dashboard()
         opcao = st.sidebar.selectbox("Menu", ["Cadastrar Paciente", "Enviar Escalas", "Ver Respostas"])  # ✅ Nova opção
 
         if opcao == "Cadastrar Paciente":

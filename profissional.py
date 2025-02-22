@@ -36,14 +36,7 @@ def ver_respostas_interface():
 
 def profissional_dashboard():
     st.title("Área do Profissional")
-
-    # Verifica se o usuário está autenticado e é um profissional
-    if "authenticated" not in st.session_state or not st.session_state.authenticated:
-        st.error("Você precisa estar logado para acessar esta página.")
-        return
-    if st.session_state.user_type != "Profissional":
-        st.error("Acesso restrito a profissionais.")
-        return
+    st.write(f"Bem-vindo, {st.session_state.username}!")
 
 def enviar_escala_interface():
     st.subheader("Enviar Escala Psicométrica")
