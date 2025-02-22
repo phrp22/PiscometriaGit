@@ -51,6 +51,7 @@ def register():
     new_username = st.text_input("Escolha um nome de usuário")
     new_password = st.text_input("Escolha uma senha", type="password")
     confirm_password = st.text_input("Confirme sua senha", type="password")
+    user_type = st.radio("Você é um:", ["Profissional", "Paciente"])  # Novo campo
     
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
@@ -63,7 +64,7 @@ def register():
                     return
                 
                 # Se não existir, inserir no banco de dados usando database.py
-                response = insert_user(new_username, hashed_password)
+                response = insert_user(new_username, hashed_password, user_type)
                 
                 if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")
