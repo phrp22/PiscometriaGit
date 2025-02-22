@@ -20,10 +20,12 @@ def main():
     st.sidebar.button("Sair", on_click=logout)  # ✅ Mantemos sem st.rerun()
 
     if st.session_state.user_type == "Profissional":
-        profissional.profissional_dashboard()  # ✅ Removemos importação desnecessária
-    else:
-        import paciente
-        paciente.paciente_page()
+    opcao = st.sidebar.radio("Menu", ["Dashboard", "Enviar Escala Psicométrica"])
+
+    if opcao == "Dashboard":
+        profissional.profissional_dashboard()
+    elif opcao == "Enviar Escala Psicométrica":
+        profissional.enviar_escala_interface()
 
 def login():
     st.subheader("Tela de Login")
