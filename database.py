@@ -1,11 +1,44 @@
 import supabase
 import streamlit as st
+import bcrypt
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-import bcrypt
+
+def listar_escalas(paciente_username):
+    """Lista as escalas enviadas para um paciente."""
+    response = supabase_client.table("escalas").select("escala", "status").eq("paciente", paciente_username).execute()
+    return response.data if response.data else []
+
+def atualizar_status_escala(paciente_username, escala):
+    """Atualiza o status da escala para 'concluído'."""
+    response = supabase_client.table("escalas").update({"status": "concluído"}).eq("paciente", paciente_username).eq("escala", escala).execute()
+    return response
+
+def listar_pacientes(profissional_username):
+    """Lista os pacientes vinculados a um profissional."""
+    response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_username).execute()
+    return response.data if response.data else []
+
+def enviar_escala(profissional_username, paciente_username, escala):
+    """Registra o envio de uma escala psicométrica para um paciente."""
+    profissional_uuid = get_user_uuid(profissional_username)
+
+    if not profissional_uuid:
+        return {"success": False, "message": "Erro: Profissional não encontrado."}
+
+    response = supabase_client.table("escalas").insert({
+        "profissional": profissional_uuid,
+        "paciente": paciente_username,
+        "escala": escala,
+        "status": "pendente"
+    }).execute()
+
+    if response.data:
+        return {"success": True, "message": "Escala enviada com sucesso!"}
+    return {"success": False, "message": "Erro ao enviar escala."}
 
 def check_password(stored_password, provided_password):
     """Verifica se a senha digitada corresponde ao hash armazenado."""
