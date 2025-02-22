@@ -22,10 +22,14 @@ def paciente_page():
 
     for escala in escalas:
         st.write(f"Escala enviada por: {escala['profissional']}")
-        resposta = st.slider("Sua resposta:", min_value=1, max_value=5)  # Resposta tipo Likert (1 a 5)
-        
+        st.write(f"**Escala: {escala['escala']}**")
+
+        respostas = {}
+        for pergunta in escala["perguntas"]:
+            respostas[pergunta] = st.slider(pergunta, min_value=1, max_value=5, step=1)
+
         if st.button(f"Responder Escala {escala['id']}"):
-            response = responder_escala_psicometrica(escala['id'], resposta)
+            response = responder_escala_psicometrica(escala['id'], respostas)
             if response["success"]:
                 st.success("Escala respondida com sucesso!")
                 st.rerun()

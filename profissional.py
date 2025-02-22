@@ -1,6 +1,9 @@
 import streamlit as st
 from database import cadastrar_paciente, enviar_escala_psicometrica
 
+import streamlit as st
+from database import enviar_escala_psicometrica
+
 def profissional_dashboard():
     st.title("Área do Profissional")
 
@@ -13,9 +16,11 @@ def profissional_dashboard():
         return
 
     st.subheader("Enviar Escala Psicométrica")
-    
+
     paciente_username = st.text_input("Nome de Usuário do Paciente")
-    escala = st.text_area("Digite a escala psicométrica")
+
+    # Lista de escalas pré-definidas
+    escala = st.selectbox("Escolha a escala psicométrica:", ["Depressão", "Ansiedade", "Estresse"])
 
     if st.button("Enviar Escala"):
         if paciente_username and escala:

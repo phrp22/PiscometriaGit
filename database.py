@@ -14,26 +14,37 @@ def get_escalas_pendentes(paciente_username):
     
     return response.data if response.data else []
 
-def responder_escala_psicometrica(escala_id, resposta):
-    """Salva a resposta da escala psicométrica e marca como concluída."""
+def responder_escala_psicometrica(escala_id, respostas):
+    """Salva todas as respostas da escala psicométrica e marca como concluída."""
     
     response = supabase_client.table("respostas_psicometricas").update({
-        "resposta": resposta,
+        "respostas": respostas,  # Agora salvamos um dicionário com as respostas
         "status": "concluido"
     }).eq("id", escala_id).execute()
     
     if response.data:
-        return {"success": True, "message": "Resposta salva com sucesso!"}
-    return {"success": False, "message": "Erro ao salvar resposta."}
+        return {"success": True, "message": "Respostas salvas com sucesso!"}
+    return {"success": False, "message": "Erro ao salvar respostas."}
 
 def enviar_escala_psicometrica(profissional_username, paciente_username, escala):
     """Envia uma escala psicométrica para o paciente responder."""
     
+    # Lista de escalas disponíveis e suas perguntas
+    escalas_disponiveis = {
+        "Depressão": ["Sinto-me triste frequentemente", "Perdi o interesse em atividades"],
+        "Ansiedade": ["Fico nervoso facilmente", "Tenho dificuldades para relaxar"],
+        "Estresse": ["Sinto-me sobrecarregado", "Tenho dificuldade em lidar com problemas"]
+    }
+    
+    if escala not in escalas_disponiveis:
+        return {"success": False, "message": "Escala não disponível."}
+
     response = supabase_client.table("respostas_psicometricas").insert({
         "profissional": profissional_username,
         "paciente": paciente_username,
         "escala": escala,
-        "status": "pendente"  # Indica que o paciente ainda não respondeu
+        "perguntas": escalas_disponiveis[escala],  # Salva as perguntas associadas à escala
+        "status": "pendente"
     }).execute()
     
     if response.data:
