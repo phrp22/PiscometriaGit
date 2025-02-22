@@ -1,18 +1,7 @@
 import streamlit as st
-import bcrypt
 import profissional
-from database import get_user_credentials, insert_user, check_user_exists, check_password
+from database import get_user_credentials, insert_user, check_user_exists
 from auth import authenticate_user, register_user  # Importando funções do auth.py
-
-def hash_password(password):
-    """ Gera um hash seguro para a senha """
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
-
-def check_password(stored_password, provided_password):
-    """ Verifica se a senha digitada corresponde ao hash armazenado """
-    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def main():
     st.title("Bem-vindo ao App")
