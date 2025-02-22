@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 from database import listar_escalas_pendentes, salvar_respostas_escala, get_profissional_da_escala
 from escalas import obter_perguntas_escala
 
@@ -43,7 +44,8 @@ def paciente_page():
             sucesso = salvar_respostas_escala(st.session_state.username, escala_selecionada, respostas)
             if sucesso:
                 st.success("Respostas enviadas com sucesso!")
-                st.rerun()  # ✅ Atualiza a interface para remover a escala respondida
+                time.sleep(3)  # ✅ Aguarda 2 segundos antes de recarregar
+                st.rerun()  # ✅ Agora a interface só atualiza depois de mostrar a mensagem
             else:
                 st.error("Erro ao enviar respostas. Tente novamente.")
         else:
