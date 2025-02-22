@@ -13,7 +13,7 @@ def check_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def main():
-    st.title("Bem-vindo ao App")
+    st.title("Academia Diagnóstica")
 
     # Verifica se o usuário já está autenticado
     if "authenticated" in st.session_state and st.session_state.authenticated:
