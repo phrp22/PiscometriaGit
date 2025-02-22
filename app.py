@@ -49,23 +49,25 @@ def login():
             else:
                 st.error("Usuário ou senha inválidos.")
 
-def register():
-    st.subheader("Tela de Registro")
-    email = st.text_input("Digite seu email")
-    password = st.text_input("Digite sua senha", type="password", help="A senha deve ter pelo menos 6 caracteres.")
-    confirm_password = st.text_input("Confirme sua senha", type="password")
-    user_type = st.radio("Você é um:", ["Profissional", "Paciente"])
+def register_user(username, password, user_type):
+    """ Registra um novo usuário no Supabase Authentication e na tabela `users` """
+    response = supabase.auth.sign_up({
+        "email": username,  # O Supabase precisa de um email para autenticação
+        "password": password
+    })
 
-    if st.button("Registrar"):
-        if email and password and password == confirm_password:
-            response = criar_usuario(email, password)
+    if "user" in response:
+        user_id = response["user"]["id"]  # UUID gerado pelo Supabase
 
-            if response and "user" in response:
-                st.success("Registro concluído com sucesso! Agora faça login.")
-            else:
-                st.error("Erro ao registrar usuário. Tente novamente.")
-        else:
-            st.error("As senhas não coincidem ou algum campo está vazio.")
+        # Agora inserimos os dados do usuário na tabela `users`
+        supabase.table("users").insert({
+            "id": user_id,
+            "username": username,  # Corrigido: Agora usamos `username`
+            "password": password,  # Supabase já armazena a senha na autenticação, então pode não ser necessário
+            "user_type": user_type
+        }).execute()
+    
+    return response
 
 if __name__ == "__main__":
     main()
