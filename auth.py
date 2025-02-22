@@ -1,5 +1,6 @@
 import bcrypt
-from database import get_user_password, insert_user
+from database import insert_user, get_user_credentials  # Nome correto da função no banco de dados
+
 
 def hash_password(password):
     """ Gera um hash seguro para a senha. """
@@ -12,9 +13,12 @@ def check_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def authenticate_user(username, password):
-    stored_password, user_type = get_user_password(username)  # Agora pegamos user_type também
-    if stored_password and check_password(stored_password, password):
-        return True, user_type  # Retorna True e o tipo de usuário
+    user_data = get_user_credentials(username)  # Obtendo credenciais completas
+    if user_data:
+        stored_password = user_data["password"]
+        user_type = user_data["user_type"]
+        if check_password(stored_password, password):
+            return True, user_type  # Retorna True e o tipo de usuário
     return False, None
 
 def register_user(username, password, user_type):

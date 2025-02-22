@@ -2,7 +2,7 @@ import streamlit as st
 import bcrypt
 import profissional
 from database import get_user_credentials, insert_user, check_user_exists, check_password
-
+from auth import authenticate_user, register_user  # Importando funções do auth.py
 
 def hash_password(password):
     """ Gera um hash seguro para a senha """
