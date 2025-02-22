@@ -19,9 +19,10 @@ def insert_user(username, hashed_password, user_type):
     }).execute()
     return response # Retorna os dados inseridos, se bem-sucedido
 
-def get_user_password(username):
-    """ Obtém a senha hash do usuário a partir do banco de dados """
-    response = supabase_client.table("users").select("password").eq("username", username).execute()
+def get_user_credentials(username):
+    """ Obtém a senha hash e o tipo de usuário a partir do banco de dados """
+    response = supabase_client.table("users").select("password", "user_type").eq("username", username).execute()
     if response.data:
-        return response.data[0]["password"]
-    return None  # Retorna None se o usuário não existir
+        return response.data[0]["password"], response.data[0]["user_type"]
+    return None, None  # Retorna None se o usuário não existir
+
