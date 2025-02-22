@@ -5,6 +5,15 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
+def enviar_escala(profissional, paciente, escala):
+    """Registra o envio de uma escala psicométrica para um paciente"""
+    response = supabase_client.table("escalas_enviadas").insert({
+        "profissional": profissional,
+        "paciente": paciente,
+        "escala": escala
+    }).execute()
+    return response
+
 def get_user_uuid(username):
     """Obtém o UUID do usuário com base no nome de usuário."""
     response = supabase_client.table("users").select("id").eq("username", username).execute()
