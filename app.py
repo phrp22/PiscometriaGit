@@ -1,22 +1,20 @@
 import streamlit as st
 from database import criar_usuario, login_usuario, get_user_by_id
+import profissional
+import paciente
 
 def main():
     st.title("Bem-vindo ao App")
 
-    # Verifica se o usuário já está autenticado
     if "user" in st.session_state and st.session_state.user:
         st.success(f"Usuário autenticado: {st.session_state.user['email']}")
 
         if st.session_state.user["user_type"] == "Profissional":
-            import profissional
-            profissional.profissional_page()
+            profissional.profissional_page()  # Chama diretamente
         else:
-            import paciente
             paciente.paciente_page()
         return
 
-    # Escolha entre Login e Registro
     choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
 
     if choice == "Login":
