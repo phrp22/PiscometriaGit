@@ -1,97 +1,18 @@
 import supabase
 import streamlit as st
-import bcrypt
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-
-def get_escalas_pendentes(paciente_username):
-    """Obtém todas as escalas psicométricas pendentes de um paciente."""
-    
-    response = supabase_client.table("respostas_psicometricas").select("id, profissional, escala").eq("paciente", paciente_username).eq("status", "pendente").execute()
-    
-    return response.data if response.data else []
-
-def responder_escala_psicometrica(escala_id, respostas):
-    """Salva todas as respostas da escala psicométrica e marca como concluída."""
-    
-    response = supabase_client.table("respostas_psicometricas").update({
-        "respostas": respostas,  # Agora salvamos um dicionário com as respostas
-        "status": "concluido"
-    }).eq("id", escala_id).execute()
-    
-    if response.data:
-        return {"success": True, "message": "Respostas salvas com sucesso!"}
-    return {"success": False, "message": "Erro ao salvar respostas."}
-
-def enviar_escala_psicometrica(profissional_username, paciente_username, escala):
-    """Envia uma escala psicométrica para o paciente responder."""
-    
-    # Lista de escalas disponíveis e suas perguntas
-    escalas_disponiveis = {
-        "Depressão": ["Sinto-me triste frequentemente", "Perdi o interesse em atividades"],
-        "Ansiedade": ["Fico nervoso facilmente", "Tenho dificuldades para relaxar"],
-        "Estresse": ["Sinto-me sobrecarregado", "Tenho dificuldade em lidar com problemas"]
-    }
-    
-    if escala not in escalas_disponiveis:
-        return {"success": False, "message": "Escala não disponível."}
-
-    response = supabase_client.table("respostas_psicometricas").insert({
+def cadastrar_paciente(profissional_username, paciente_nome):
+    """Registra um paciente vinculado a um profissional."""
+    response = supabase_client.table("pacientes").insert({
         "profissional": profissional_username,
-        "paciente": paciente_username,
-        "escala": escala,
-        "perguntas": escalas_disponiveis[escala],  # Salva as perguntas associadas à escala
-        "status": "pendente"
+        "paciente": paciente_nome,
+        "data_cadastro": "now()"
     }).execute()
-    
-    if response.data:
-        return {"success": True, "message": "Escala enviada com sucesso."}
-    return {"success": False, "message": "Erro ao enviar escala."}
-
-def check_password(stored_password, provided_password):
-    """Verifica se a senha digitada corresponde ao hash armazenado."""
-    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
-
-def get_user_uuid(username):
-    """Obtém o UUID do usuário com base no nome de usuário."""
-    response = supabase_client.table("users").select("id").eq("username", username).execute()
-    if response.data:
-        return response.data[0]["id"]
-    return None
-
-def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
-    """Autentica um paciente antes de cadastrá-lo ao profissional e insere na tabela pacientes."""
-    
-    # Obtém o UUID do profissional
-    profissional_uuid = get_user_uuid(profissional_username)
-    if not profissional_uuid:
-        return {"success": False, "message": "Erro: Profissional não encontrado no banco de dados."}
-
-    # Autentica o paciente
-    user_data = get_user_credentials(paciente_username)
-    
-    if user_data and check_password(user_data["password"], paciente_password):
-        # Verifica se o paciente já está vinculado
-        existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
-        
-        if existing.data:
-            return {"success": False, "message": "Paciente já está vinculado a um profissional."}
-
-        # Insere o paciente na tabela 'pacientes' usando o UUID do profissional
-        response = supabase_client.table("pacientes").insert({
-            "profissional": profissional_uuid,  # Agora usamos o UUID corretamente
-            "paciente": paciente_username
-        }).execute()
-
-        if response.data:
-            return {"success": True, "message": "Paciente autenticado e vinculado ao profissional."}
-        else:
-            return {"success": False, "message": "Erro ao cadastrar paciente no banco de dados."}
-    
-    return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
+    return response
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
