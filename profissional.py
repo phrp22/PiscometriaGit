@@ -1,7 +1,7 @@
 import streamlit as st
 from database import cadastrar_paciente
 
-def profissional_page():  # Renomeamos para manter a consistência com app.py
+def profissional_dashboard():
     st.title("Área do Profissional")
 
     # Verifica se o usuário está autenticado e é um profissional
@@ -28,4 +28,6 @@ def profissional_page():  # Renomeamos para manter a consistência com app.py
             st.error("Preencha todos os campos!")
 
 if __name__ == "__main__":
-    profissional_page()  # Agora está correto!
+    profissional_dashboard()
+
+    
