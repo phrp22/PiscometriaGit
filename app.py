@@ -1,8 +1,3 @@
-import streamlit as st
-from database import criar_usuario, login_usuario, get_user_by_id
-import profissional
-import paciente
-
 def main():
     st.title("Bem-vindo ao App")
 
@@ -49,25 +44,23 @@ def login():
             else:
                 st.error("Usuário ou senha inválidos.")
 
-def register_user(username, password, user_type):
-    """ Registra um novo usuário no Supabase Authentication e na tabela `users` """
-    response = supabase.auth.sign_up({
-        "email": username,  # O Supabase precisa de um email para autenticação
-        "password": password
-    })
+def register():
+    st.subheader("Tela de Registro")
+    username = st.text_input("Digite seu email")  # Aqui usamos `username` porque Supabase exige e-mail
+    password = st.text_input("Digite sua senha", type="password", help="A senha deve ter pelo menos 6 caracteres.")
+    confirm_password = st.text_input("Confirme sua senha", type="password")
+    user_type = st.radio("Você é um:", ["Profissional", "Paciente"])
 
-    if "user" in response:
-        user_id = response["user"]["id"]  # UUID gerado pelo Supabase
+    if st.button("Registrar"):
+        if username and password and password == confirm_password:
+            response = register_user(username, password, user_type)  # Agora chamamos do `database.py`
 
-        # Agora inserimos os dados do usuário na tabela `users`
-        supabase.table("users").insert({
-            "id": user_id,
-            "username": username,  # Corrigido: Agora usamos `username`
-            "password": password,  # Supabase já armazena a senha na autenticação, então pode não ser necessário
-            "user_type": user_type
-        }).execute()
-    
-    return response
+            if response and "user" in response:
+                st.success("Registro concluído com sucesso! Agora faça login.")
+            else:
+                st.error("Erro ao registrar usuário. Tente novamente.")
+        else:
+            st.error("As senhas não coincidem ou algum campo está vazio.")
 
 if __name__ == "__main__":
     main()
