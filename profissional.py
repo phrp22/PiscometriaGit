@@ -1,5 +1,5 @@
 import streamlit as st
-from database import cadastrar_paciente, listar_pacientes, enviar_escala  # ✅ Corrigimos os imports
+from database import cadastrar_paciente, listar_pacientes, enviar_escala, listar_respostas_pacientes  # ✅ Agora importando listar_respostas_pacientes
 from escalas import listar_escalas  # ✅ Importamos a lista de escalas
 
 def ver_respostas_interface():
@@ -30,7 +30,6 @@ def ver_respostas_interface():
             st.write(f"**{pergunta}**: {resposta}")
 
         st.markdown("---")  # Linha divisória entre escalas
-
 
 def profissional_dashboard():
     st.title("Área do Profissional")
