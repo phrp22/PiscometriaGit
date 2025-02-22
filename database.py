@@ -23,9 +23,20 @@ def get_user_credentials(username):
         return response.data[0]
     return None
 
-def insert_paciente(profissional, paciente):
+def get_user_id(username):
+    response = supabase_client.table("users").select("id").eq("username", username).execute()
+    if response.data:
+        return response.data[0]["id"]
+    return None
+
+def insert_paciente(profissional_username, paciente):
+    profissional_id = get_user_id(profissional_username)  # Pega o ID UUID do profissional
+
+    if not profissional_id:
+        raise ValueError("Erro: Profissional não encontrado!")
+
     response = supabase_client.table("pacientes").insert({
-        "profissional": profissional,
+        "profissional": profissional_id,  # Agora usa o UUID correto
         "paciente": paciente
-    }).execute()  # Removemos "data_cadastro" para ver se Supabase preenche automaticamente
+    }).execute()
     return response
