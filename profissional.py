@@ -2,6 +2,36 @@ import streamlit as st
 from database import cadastrar_paciente, listar_pacientes, enviar_escala  # ✅ Corrigimos os imports
 from escalas import listar_escalas  # ✅ Importamos a lista de escalas
 
+def ver_respostas_interface():
+    """Interface para o profissional visualizar as respostas dos pacientes."""
+    st.subheader("Respostas das Escalas")
+
+    # Obtém as respostas dos pacientes atendidos pelo profissional logado
+    respostas = listar_respostas_pacientes(st.session_state.username)
+
+    if not respostas:
+        st.info("Nenhum paciente respondeu escalas ainda.")
+        return
+
+    # Selecionar um paciente para visualizar as respostas
+    pacientes_disponiveis = list(set([resposta["paciente"] for resposta in respostas]))
+    paciente_selecionado = st.selectbox("Escolha um paciente:", pacientes_disponiveis)
+
+    # Filtrar respostas apenas do paciente selecionado
+    respostas_paciente = [r for r in respostas if r["paciente"] == paciente_selecionado]
+
+    for resposta in respostas_paciente:
+        st.markdown(f"### Escala: {resposta['escala']}")
+        st.write(f"Data de resposta: {resposta['criado_em']}")
+        respostas_json = resposta["respostas"]
+
+        # Exibir as respostas formatadas
+        for pergunta, resposta in respostas_json.items():
+            st.write(f"**{pergunta}**: {resposta}")
+
+        st.markdown("---")  # Linha divisória entre escalas
+
+
 def profissional_dashboard():
     st.title("Área do Profissional")
 
@@ -53,6 +83,3 @@ def cadastrar_paciente_interface():
 
 if __name__ == "__main__":
     profissional_dashboard()
-
-
-    

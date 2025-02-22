@@ -7,7 +7,7 @@ def main():
     st.title("Academia Diagnóstica")
 
     # Verifica se o usuário já está autenticado
-    if not st.session_state.get("authenticated", False):  # ✅ Evita erro de atributo
+    if not st.session_state.get("authenticated", False):
         choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
 
         if choice == "Login":
@@ -17,24 +17,26 @@ def main():
         return
 
     # Botão de logout na barra lateral
-    st.sidebar.button("Sair", on_click=logout)  # ✅ Mantemos sem st.rerun()
+    st.sidebar.button("Sair", on_click=logout)
 
-    # Verifica se o usuário é um profissional e exibe o menu correspondente
+    # Menu para PROFISSIONAIS
     if st.session_state.user_type == "Profissional":
-        opcao = st.sidebar.selectbox("Menu", ["Cadastrar Paciente", "Enviar Escalas"])  # ✅ Corrigimos os nomes
+        opcao = st.sidebar.selectbox("Menu", ["Cadastrar Paciente", "Enviar Escalas", "Ver Respostas"])  # ✅ Nova opção
 
         if opcao == "Cadastrar Paciente":
             profissional.cadastrar_paciente_interface()
         elif opcao == "Enviar Escalas":
             profissional.enviar_escala_interface()
+        elif opcao == "Ver Respostas":
+            profissional.ver_respostas_interface()  # ✅ Agora o profissional pode ver as respostas
 
-    # Verifica se o usuário é um paciente e exibe o menu correspondente
+    # Menu para PACIENTES
     elif st.session_state.user_type == "Paciente":
         import paciente
-        opcao = st.sidebar.selectbox("Menu", ["Responder Escalas"])  # ✅ Agora os pacientes têm um menu
+        opcao = st.sidebar.selectbox("Menu", ["Responder Escalas"])  # ✅ Paciente só vê as escalas pendentes
 
         if opcao == "Responder Escalas":
-            paciente.paciente_page()  # ✅ Agora o paciente pode visualizar e responder escalas
+            paciente.paciente_page()  # ✅ O paciente agora pode responder escalas normalmente
 
 def login():
     st.subheader("Tela de Login")
