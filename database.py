@@ -43,3 +43,15 @@ def cadastrar_paciente(profissional, paciente_username, paciente_password):
         return {"success": False, "message": "Erro ao cadastrar paciente na base de dados."}
 
     return {"success": True, "message": "Paciente cadastrado com sucesso!"}
+
+def get_user_credentials(username):
+    """ Obtém as credenciais do usuário (senha e tipo de usuário) a partir do banco de dados """
+    response = supabase_client.table("users").select("password", "user_type").eq("username", username).execute()
+    
+    if response.data:
+        return {
+            "password": response.data[0]["password"],
+            "user_type": response.data[0]["user_type"]
+        }
+    return None  # Retorna None se o usuário não existir
+
