@@ -20,7 +20,7 @@ def main():
     if "authenticated" in st.session_state and st.session_state.authenticated:
         if st.session_state.user_type == "Profissional":
             import profissional
-            profissional.profissional_page()
+            profissional.profissional_dashboard()
         else:
             import paciente
             paciente.paciente_page()

@@ -1,7 +1,7 @@
 import streamlit as st
 from database import cadastrar_paciente
 
-def def profissional_page():
+def profissional_dashboard():
     st.title("Área do Profissional")
 
     # Verifica se o usuário está autenticado e é um profissional
