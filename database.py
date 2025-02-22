@@ -42,12 +42,17 @@ def listar_escalas_pendentes(paciente_username):
 
 def get_profissional_da_escala(paciente_username, escala):
     """Obtém o nome do profissional que enviou a escala para o paciente."""
+    
     response = supabase_client.table("escalas_enviadas").select("profissional").eq("paciente", paciente_username).eq("escala", escala).execute()
 
-    if response.data:
-        return response.data[0]["profissional"]  # ✅ Retorna o nome do profissional responsável
+    if not response.data or len(response.data) == 0:
+        st.error(f"Erro: Nenhum profissional encontrado para a escala '{escala}' enviada ao paciente '{paciente_username}'.")
+        return None  # Retorna None se não encontrar um profissional associado
     
-    return None  # ✅ Retorna None se não encontrar um profissional associado
+    profissional = response.data[0]["profissional"]
+    st.write(f"Profissional encontrado: {profissional}")  # ✅ Log para depuração
+    return profissional
+
 
 
 def listar_escalas_paciente(paciente_username):
@@ -75,24 +80,25 @@ def salvar_respostas_escala(paciente_username, escala, respostas):
     profissional_responsavel = get_profissional_da_escala(paciente_username, escala)
     
     if not profissional_responsavel:
-        st.error("Erro: Profissional responsável pela escala não encontrado.")
+        st.error(f"Erro ao salvar respostas: Profissional responsável pela escala '{escala}' do paciente '{paciente_username}' não encontrado.")
         return False  # Impede o salvamento caso o profissional não seja encontrado
 
     try:
         response = supabase_client.table("respostas_escalas").insert({
             "paciente": paciente_username,
-            "profissional": profissional_responsavel,  # ✅ Agora armazenamos corretamente
+            "profissional": profissional_responsavel,  # ✅ Agora garantimos que está preenchido
             "escala": escala,
             "respostas": json.dumps(respostas),  # ✅ Converte dicionário para JSON
             "criado_em": "now()"  # ✅ Salva o timestamp atual
         }).execute()
 
+        if response.data:
+            st.success("Respostas salvas com sucesso!")
         return response.data is not None  # Retorna True se o insert foi bem-sucedido
 
     except Exception as e:
         st.error(f"Erro ao salvar respostas no banco: {str(e)}")  # ✅ Exibe erro detalhado no app
         return False
-
 
 
 def enviar_escala(profissional, paciente, escala):
