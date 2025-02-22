@@ -1,5 +1,6 @@
 import bcrypt
 from database import get_user_password, insert_user
+from utils import check_password, hash_password
 
 def hash_password(password):
     """ Gera um hash seguro para a senha. """
