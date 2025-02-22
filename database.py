@@ -1,6 +1,5 @@
 import supabase
 import streamlit as st
-from auth import check_password  # ✅ Corrige o erro de NameError
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
@@ -16,6 +15,8 @@ def get_user_uuid(username):
 def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
     """Autentica um paciente antes de cadastrá-lo ao profissional e insere na tabela pacientes."""
     
+    from auth import check_password  # ✅ Importação dentro da função para evitar ciclo
+
     # Obtém o UUID do profissional
     profissional_uuid = get_user_uuid(profissional_username)
     if not profissional_uuid:
@@ -25,7 +26,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
     user_data = get_user_credentials(paciente_username)
     
     if user_data and "password" in user_data and check_password(user_data["password"], paciente_password):
-        # Verifica se o paciente já está vinculado a outro profissional
+        # Verifica se o paciente já está vinculado
         existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
         
         if existing.data:
@@ -33,7 +34,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
 
         # Insere o paciente na tabela 'pacientes' usando o UUID do profissional
         response = supabase_client.table("pacientes").insert({
-            "profissional": profissional_uuid,  # Agora usamos o UUID corretamente
+            "profissional": profissional_uuid,
             "paciente": paciente_username
         }).execute()
 
