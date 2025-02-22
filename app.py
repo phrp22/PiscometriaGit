@@ -1,7 +1,7 @@
 import streamlit as st
 import bcrypt
+from auth import authenticate_user
 from database import check_user_exists, insert_user, supabase_client
-from auth import authenticate_user  # Certifique-se de importar a função correta
 
 def hash_password(password):
     """ Gera um hash seguro para a senha """
@@ -16,26 +16,22 @@ def check_password(stored_password, provided_password):
 def main():
     st.title("Bem-vindo ao App")
 
-    # Inicializa session_state se ainda não estiver definido
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
-        st.session_state.user_type = None
-        st.session_state.username = None
+    # Verifica se o usuário já está logado e redireciona
+    if "user_type" in st.session_state:
+        if st.session_state["user_type"] == "Profissional":
+            profissional_page()
+            return
+        elif st.session_state["user_type"] == "Paciente":
+            paciente_page()
+            return
 
-    # Se o usuário já estiver autenticado, direciona para a interface correspondente
-    if st.session_state.authenticated:
-        if st.session_state.user_type == "Profissional":
-            profissional_interface()
-        else:
-            paciente_interface()
-    else:
-        # Escolha entre Login e Registro
-        choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
-
-        if choice == "Login":
-            login()
-        elif choice == "Registro":
-            register()
+    # Se não estiver logado, exibe a tela de login/registro
+    choice = st.radio("Selecione uma opção:", ["Login", "Registro"])
+    
+    if choice == "Login":
+        login()
+    elif choice == "Registro":
+        register()
 
 def login():
     st.subheader("Tela de Login")
@@ -45,19 +41,16 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
-                authenticated, user_type = authenticate_user(username, password)  # Agora usamos a função correta
+                authenticated, user_type = authenticate_user(username, password)
 
                 if authenticated:
                     st.success(f"Bem-vindo, {username}!")
 
-                    # Armazena o tipo de usuário na sessão para direcionamento
+                    # Armazena o tipo de usuário na sessão para redirecionamento
                     st.session_state["user_type"] = user_type
 
-                    # Redirecionamento baseado no tipo de usuário
-                    if user_type == "Profissional":
-                        st.session_state["page"] = "profissional"
-                    else:
-                        st.session_state["page"] = "paciente"
+                    # Atualiza a página sem sidebar
+                    st.experimental_rerun()
                 else:
                     st.error("Usuário ou senha incorretos.")
             except Exception as e:
@@ -65,25 +58,24 @@ def login():
         else:
             st.error("Por favor, preencha os campos de usuário e senha.")
 
-
 def register():
     st.subheader("Tela de Registro")
     new_username = st.text_input("Escolha um nome de usuário")
     new_password = st.text_input("Escolha uma senha", type="password")
     confirm_password = st.text_input("Confirme sua senha", type="password")
-    user_type = st.radio("Você é um:", ["Profissional", "Paciente"])  # Novo campo
-    
+    user_type = st.radio("Você é um:", ["Profissional", "Paciente"])
+
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
             hashed_password = hash_password(new_password)
-            
+
             try:
                 if check_user_exists(new_username):
                     st.error("Nome de usuário já está em uso. Escolha outro.")
                     return
-                
-                response = insert_user(new_username, hashed_password, user_type)  # Adicionado user_type
-                
+
+                response = insert_user(new_username, hashed_password, user_type)
+
                 if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")
                 else:
@@ -93,15 +85,15 @@ def register():
         else:
             st.error("Por favor, preencha todos os campos corretamente.")
 
-def profissional_interface():
-    st.subheader("Área do Profissional")
-    st.write(f"Bem-vindo, {st.session_state.username}! Aqui estão suas opções:")
-    # Adicione elementos específicos para profissionais aqui
+def profissional_page():
+    """ Página específica para profissionais """
+    st.title("Área do Profissional")
+    st.write("Bem-vindo à área exclusiva para profissionais!")
 
-def paciente_interface():
-    st.subheader("Área do Paciente")
-    st.write(f"Bem-vindo, {st.session_state.username}! Aqui estão suas opções:")
-    # Adicione elementos específicos para pacientes aqui
+def paciente_page():
+    """ Página específica para pacientes """
+    st.title("Área do Paciente")
+    st.write("Bem-vindo à área exclusiva para pacientes!")
 
 if __name__ == "__main__":
     main()
