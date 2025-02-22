@@ -60,13 +60,12 @@ def register():
 
     if st.button("Registrar"):
         if new_username and new_password and new_password == confirm_password:
-            hashed_password = hash_password(new_password)
             try:
                 if check_user_exists(new_username):
                     st.error("Nome de usuário já está em uso. Escolha outro.")
                     return
-
-                response = insert_user(new_username, hashed_password, user_type)
+                
+                response = register_user(new_username, new_password, user_type)  # Agora chamando auth.py corretamente
                 if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")
                 else:
