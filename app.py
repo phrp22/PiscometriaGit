@@ -50,7 +50,7 @@ def login():
                     st.session_state["user_type"] = user_type
 
                     # Atualiza a página sem sidebar
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error("Usuário ou senha incorretos.")
             except Exception as e:
