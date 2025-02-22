@@ -32,7 +32,7 @@ def profissional_dashboard():
     pacientes = listar_pacientes(st.session_state.username)
     if pacientes:
         for paciente in pacientes:
-            st.write(f"{paciente['paciente']}")
+            st.write(f"{paciente}")
     else:
         st.write("Nenhum paciente cadastrado ainda.")
 
