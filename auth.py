@@ -1,5 +1,5 @@
 from database import get_user_credentials, insert_user
-from utils import check_password, hash_password  # Apenas importamos, sem redefinir
+from utils import hash_password, check_password  # ✅ Agora usamos do utils.py
 
 def authenticate_user(username, password):
     """Autentica um usuário verificando suas credenciais no banco de dados."""
@@ -18,5 +18,5 @@ def authenticate_user(username, password):
 
 def register_user(username, password, user_type):
     """Registra um novo usuário no sistema."""
-    hashed_password = hash_password(password)
-    return insert_user(username, hashed_password, user_type)  # Passando user_type corretamente
+    hashed_password = hash_password(password)  # ✅ Agora usa o utils.py
+    return insert_user(username, hashed_password, user_type)
