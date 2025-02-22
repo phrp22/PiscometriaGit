@@ -5,14 +5,15 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def cadastrar_paciente(profissional_username, paciente_nome):
-    """Registra um paciente vinculado a um profissional."""
-    response = supabase_client.table("pacientes").insert({
-        "profissional": profissional_username,
-        "paciente": paciente_nome,
-        "data_cadastro": "now()"
-    }).execute()
-    return response
+def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
+    """Autentica um paciente antes de cadastrá-lo ao profissional."""
+    user_data = get_user_credentials(paciente_username)
+    if user_data and check_password(user_data["password"], paciente_password):
+        return {"success": True, "message": "Paciente autenticado e vinculado ao profissional."}
+    return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
+
+if __name__ == "__main__":
+    main()
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
