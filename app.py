@@ -31,22 +31,20 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
-                # Buscar senha e tipo de usuário no banco de dados
-                response = supabase_client.table("users").select("password, user_type").eq("username", username).execute()
+                response = supabase_client.table("users").select("password", "user_type").eq("username", username).execute()
                 
                 if response.data:
                     stored_password = response.data[0]["password"]
-                    user_type = response.data[0]["user_type"]
-
+                    user_type = response.data[0]["user_type"]  # Obtendo o tipo de usuário
+                    
                     if check_password(stored_password, password):
                         st.success(f"Bem-vindo, {username}!")
-
-                        # Redirecionamento baseado no tipo de usuário
+                        
+                        # Direcionamento com base no tipo de usuário
                         if user_type == "Profissional":
-                            st.query_params.update({"page": "profissional_dashboard"})
+                            st.switch_page("profissional.py")  # Ajuste o caminho correto
                         else:
-                            st.query_params.update({"page": "paciente_dashboard"})
-
+                            st.switch_page("paciente.py")  # Ajuste o caminho correto
                     else:
                         st.error("Senha incorreta.")
                 else:
@@ -68,13 +66,11 @@ def register():
             hashed_password = hash_password(new_password)
             
             try:
-                # Verificar se o usuário já existe usando database.py
                 if check_user_exists(new_username):
                     st.error("Nome de usuário já está em uso. Escolha outro.")
                     return
                 
-                # Se não existir, inserir no banco de dados usando database.py
-                response = insert_user(new_username, hashed_password, user_type)
+                response = insert_user(new_username, hashed_password, user_type)  # Adicionado user_type
                 
                 if response:
                     st.success("Registro concluído com sucesso! Agora você pode fazer login.")

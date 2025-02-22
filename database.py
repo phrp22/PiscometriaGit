@@ -12,13 +12,12 @@ def check_user_exists(username):
     return bool(response.data)  # Retorna True se o usuário existir, False caso contrário
 
 def insert_user(username, hashed_password, user_type):
-    """ Insere um novo usuário no banco de dados com o tipo especificado """
     response = supabase_client.table("users").insert({
         "username": username,
         "password": hashed_password,
-        "user_type": user_type  # Adicionando o tipo de usuário
+        "user_type": user_type  # Novo campo adicionado
     }).execute()
-    return response.data  # Retorna os dados inseridos, se bem-sucedido
+    return response # Retorna os dados inseridos, se bem-sucedido
 
 def get_user_password(username):
     """ Obtém a senha hash do usuário a partir do banco de dados """
