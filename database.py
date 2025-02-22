@@ -11,8 +11,22 @@ def check_password(stored_password, provided_password):
     """Verifica se a senha digitada corresponde ao hash armazenado."""
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
+def get_user_uuid(username):
+    """Obtém o UUID do usuário com base no nome de usuário."""
+    response = supabase_client.table("users").select("id").eq("username", username).execute()
+    if response.data:
+        return response.data[0]["id"]
+    return None
+
 def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
     """Autentica um paciente antes de cadastrá-lo ao profissional e insere na tabela pacientes."""
+    
+    # Obtém o UUID do profissional
+    profissional_uuid = get_user_uuid(profissional_username)
+    if not profissional_uuid:
+        return {"success": False, "message": "Erro: Profissional não encontrado no banco de dados."}
+
+    # Autentica o paciente
     user_data = get_user_credentials(paciente_username)
     
     if user_data and check_password(user_data["password"], paciente_password):
@@ -22,9 +36,9 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
         if existing.data:
             return {"success": False, "message": "Paciente já está vinculado a um profissional."}
 
-        # Insere o paciente na tabela 'pacientes'
+        # Insere o paciente na tabela 'pacientes' usando o UUID do profissional
         response = supabase_client.table("pacientes").insert({
-            "profissional": profissional_username,
+            "profissional": profissional_uuid,  # Agora usamos o UUID corretamente
             "paciente": paciente_username
         }).execute()
 
@@ -34,7 +48,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
             return {"success": False, "message": "Erro ao cadastrar paciente no banco de dados."}
     
     return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
-
+    
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
     response = supabase_client.table("pacientes").select("paciente, data_cadastro").eq("profissional", profissional_username).execute()
