@@ -26,7 +26,6 @@ def get_user_credentials(username):
 def insert_paciente(profissional, paciente):
     response = supabase_client.table("pacientes").insert({
         "profissional": profissional,
-        "paciente": paciente,
-        "data_cadastro": supabase.func.now()
-    }).execute()
+        "paciente": paciente
+    }).execute()  # Removemos "data_cadastro" para ver se Supabase preenche automaticamente
     return response
