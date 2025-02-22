@@ -5,6 +5,15 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
+def get_profissional_da_escala(paciente_username, escala):
+    """Obtém o nome do profissional que enviou a escala para o paciente."""
+    response = supabase_client.table("escalas_enviadas").select("profissional").eq("paciente", paciente_username).eq("escala", escala).execute()
+    
+    if response.data:
+        return response.data[0]["profissional"]  # Retorna o nome do profissional responsável
+    
+    return None  # Retorna None se não encontrar
+
 def listar_escalas_paciente(paciente_username):
     """Retorna a lista de escalas enviadas para um paciente."""
     response = supabase_client.table("escalas_enviadas").select("escala").eq("paciente", paciente_username).execute()
@@ -14,15 +23,22 @@ def listar_escalas_paciente(paciente_username):
     
     return []  # Retorna uma lista vazia se nenhuma escala foi enviada
 
-def salvar_respostas_escala(paciente_username, escala, respostas):
+def salvar_respostas_escala(profissional_username, paciente_username, escala, respostas):
     """Salva as respostas do paciente para uma escala no banco de dados."""
-    response = supabase_client.table("respostas_escalas").insert({
-        "paciente": paciente_username,
-        "escala": escala,
-        "respostas": respostas  # Salva o dicionário de respostas
-    }).execute()
+    try:
+        response = supabase_client.table("respostas_escalas").insert({
+            "paciente": paciente_username,
+            "profissional": profissional_username,  # ✅ Agora armazenamos o profissional
+            "escala": escala,
+            "respostas": json.dumps(respostas),  # ✅ Converte dicionário para JSON
+            "criado_em": "now()"  # ✅ Salva o timestamp atual
+        }).execute()
 
-    return response.data is not None  # Retorna True se o insert foi bem-sucedido
+        return response.data is not None  # Retorna True se o insert foi bem-sucedido
+
+    except Exception as e:
+        st.error(f"Erro ao salvar respostas no banco: {str(e)}")  # ✅ Exibe erro detalhado no app
+        return False
 
 def enviar_escala(profissional, paciente, escala):
     """Registra o envio de uma escala psicométrica para um paciente"""
