@@ -1,5 +1,6 @@
 import supabase
 import streamlit as st
+import json
 
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
@@ -64,41 +65,30 @@ def listar_escalas_paciente(paciente_username):
     
     return []  # Retorna uma lista vazia se nenhuma escala foi enviada
 
-import json
-import supabase
-import streamlit as st
-
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
-
-
 def salvar_respostas_escala(paciente_username, escala, respostas):
-    """Salva as respostas do paciente para uma escala no banco de dados."""
-
-    # Obtém o profissional que enviou essa escala
+    """Salva as respostas do paciente e adiciona o profissional responsável."""
+    
     profissional_responsavel = get_profissional_da_escala(paciente_username, escala)
     
     if not profissional_responsavel:
-        st.error(f"Erro ao salvar respostas: Profissional responsável pela escala '{escala}' do paciente '{paciente_username}' não encontrado.")
-        return False  # Impede o salvamento caso o profissional não seja encontrado
+        st.error("Erro: Nenhum profissional encontrado para essa escala.")
+        return False
 
     try:
         response = supabase_client.table("respostas_escalas").insert({
             "paciente": paciente_username,
-            "profissional": profissional_responsavel,  # ✅ Agora garantimos que está preenchido
+            "profissional": profissional_responsavel,  # ✅ Agora armazenamos o profissional
             "escala": escala,
             "respostas": json.dumps(respostas),  # ✅ Converte dicionário para JSON
             "criado_em": "now()"  # ✅ Salva o timestamp atual
         }).execute()
 
-        if response.data:
-            st.success("Respostas salvas com sucesso!")
         return response.data is not None  # Retorna True se o insert foi bem-sucedido
 
     except Exception as e:
         st.error(f"Erro ao salvar respostas no banco: {str(e)}")  # ✅ Exibe erro detalhado no app
         return False
+
 
 
 def enviar_escala(profissional, paciente, escala):

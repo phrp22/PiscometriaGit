@@ -40,7 +40,7 @@ def paciente_page():
         profissional_responsavel = get_profissional_da_escala(st.session_state.username, escala_selecionada)  # ✅ Busca o profissional responsável
 
         if profissional_responsavel:
-            sucesso = salvar_respostas_escala(profissional_responsavel, st.session_state.username, escala_selecionada, respostas)
+            sucesso = salvar_respostas_escala(st.session_state.username, escala_selecionada, respostas)
             if sucesso:
                 st.success("Respostas enviadas com sucesso!")
                 st.rerun()  # ✅ Atualiza a interface para remover a escala respondida
