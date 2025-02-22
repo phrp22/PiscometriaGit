@@ -1,7 +1,7 @@
 import supabase
 import streamlit as st
 import bcrypt
-from paciente_db import cadastrar_paciente
+from paciente_db import cadastrar_paciente, listar_pacientes
 
 
 # Conexão com o Supabase
