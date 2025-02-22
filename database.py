@@ -1,26 +1,11 @@
 import supabase
 import streamlit as st
 
-import bcrypt
-
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def listar_pacientes(profissional_username):
-    """Lista os pacientes vinculados a um profissional, garantindo que a busca seja feita pelo UUID."""
-    # Buscar o ID do profissional usando o username
-    profissional_data = supabase_client.table("users").select("id").eq("username", profissional_username).execute()
-    
-    if not profissional_data.data:
-        return []
-    
-    profissional_id = profissional_data.data[0]["id"]  # Converte username para UUID
-
-    # Buscar os pacientes vinculados ao profissional (sem 'data_cadastro')
-    response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_id).execute()
-    
-    return response.data if response.data else []
+import bcrypt
 
 def check_password(stored_password, provided_password):
     """Verifica se a senha digitada corresponde ao hash armazenado."""
