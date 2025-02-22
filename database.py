@@ -5,6 +5,25 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
+def listar_escalas_paciente(paciente_username):
+    """Retorna a lista de escalas enviadas para um paciente."""
+    response = supabase_client.table("escalas_enviadas").select("escala").eq("paciente", paciente_username).execute()
+    
+    if response.data:
+        return [item["escala"] for item in response.data]
+    
+    return []  # Retorna uma lista vazia se nenhuma escala foi enviada
+
+def salvar_respostas_escala(paciente_username, escala, respostas):
+    """Salva as respostas do paciente para uma escala no banco de dados."""
+    response = supabase_client.table("respostas_escalas").insert({
+        "paciente": paciente_username,
+        "escala": escala,
+        "respostas": respostas  # Salva o dicionário de respostas
+    }).execute()
+
+    return response.data is not None  # Retorna True se o insert foi bem-sucedido
+
 def enviar_escala(profissional, paciente, escala):
     """Registra o envio de uma escala psicométrica para um paciente"""
     response = supabase_client.table("escalas_enviadas").insert({
