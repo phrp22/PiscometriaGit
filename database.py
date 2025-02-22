@@ -22,3 +22,11 @@ def get_user_credentials(username):
     if response.data:
         return response.data[0]
     return None
+
+def insert_paciente(profissional, paciente):
+    response = supabase_client.table("pacientes").insert({
+        "profissional": profissional,
+        "paciente": paciente,
+        "data_cadastro": supabase.func.now()
+    }).execute()
+    return response
