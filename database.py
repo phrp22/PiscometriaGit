@@ -56,8 +56,17 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
-    response = supabase_client.table("pacientes").select("paciente, data_cadastro").eq("profissional", profissional_username).execute()
-    return response.data if response.data else []
+    try:
+        response = supabase_client.table("pacientes").select("paciente").eq("profissional", profissional_username).execute()
+
+        if not response.data:
+            return []  # Retorna uma lista vazia se não houver pacientes
+        
+        return response.data  # Retorna a lista de pacientes
+
+    except Exception as e:
+        st.error(f"Erro ao listar pacientes: {str(e)}")  # Exibe o erro no app
+        return []
 
 def check_user_exists(username):
     response = supabase_client.table("users").select("username").eq("username", username).execute()

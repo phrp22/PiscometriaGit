@@ -13,15 +13,6 @@ def profissional_dashboard():
         st.error("Acesso restrito a profissionais.")
         return
 
-    # Adicionando opção no menu lateral
-    opcao = st.sidebar.selectbox("Menu", ["Cadastrar Paciente", "Enviar Escala Psicométrica"])
-
-    if opcao == "Cadastrar Paciente":
-        cadastrar_paciente_interface()  # Mantemos o cadastro de paciente
-
-    elif opcao == "Enviar Escala Psicométrica":
-        enviar_escala_interface()  # Função que criará a interface de envio
-
 def enviar_escala_interface():
     st.subheader("Enviar Escala Psicométrica")
 
