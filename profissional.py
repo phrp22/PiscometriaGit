@@ -1,5 +1,5 @@
 import streamlit as st
-from database import cadastrar_paciente
+from database import cadastrar_paciente, listar_pacientes
 
 def profissional_dashboard():
     st.title("Área do Profissional")
@@ -22,10 +22,19 @@ def profissional_dashboard():
             response = cadastrar_paciente(st.session_state.username, paciente_username, paciente_password)
             if response["success"]:
                 st.success(response["message"])
+                st.rerun()
             else:
                 st.error(response["message"])
         else:
             st.error("Preencha todos os campos!")
+    
+    st.subheader("Pacientes Cadastrados")
+    pacientes = listar_pacientes(st.session_state.username)
+    if pacientes:
+        for paciente in pacientes:
+            st.write(f"{paciente['paciente']}")
+    else:
+        st.write("Nenhum paciente cadastrado ainda.")
 
 if __name__ == "__main__":
     profissional_dashboard()
