@@ -32,20 +32,14 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
-                user_data = get_user_credentials(username)
-                if user_data:
-                    stored_password = user_data["password"]
-                    user_type = user_data["user_type"]
-
-                    if check_password(stored_password, password):
-                        st.session_state.authenticated = True
-                        st.session_state.username = username
-                        st.session_state.user_type = user_type
-                        st.rerun()
-                    else:
-                        st.error("Senha incorreta.")
+                authenticated, user_type = authenticate_user(username, password)  # Chamando auth.py corretamente
+                if authenticated:
+                    st.session_state.authenticated = True
+                    st.session_state.username = username
+                    st.session_state.user_type = user_type
+                    st.rerun()
                 else:
-                    st.error("Usuário não encontrado.")
+                    st.error("Usuário ou senha incorretos.")
             except Exception as e:
                 st.error(f"Erro ao buscar usuário: {str(e)}")
         else:
