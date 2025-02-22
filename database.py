@@ -5,6 +5,28 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
+def listar_escalas_pendentes(paciente_username):
+    """Retorna apenas as escalas que ainda não foram respondidas pelo paciente."""
+    
+    # Buscar todas as escalas enviadas para o paciente
+    escalas_enviadas = supabase_client.table("escalas_enviadas").select("escala").eq("paciente", paciente_username).execute()
+    
+    if not escalas_enviadas.data:
+        return []  # Se não houver escalas enviadas, retorna uma lista vazia
+
+    # Buscar todas as escalas que o paciente já respondeu
+    escalas_respondidas = supabase_client.table("respostas_escalas").select("escala").eq("paciente", paciente_username).execute()
+    
+    # Criar listas com os nomes das escalas
+    enviadas = {item["escala"] for item in escalas_enviadas.data}  # Conjunto de escalas enviadas
+    respondidas = {item["escala"] for item in escalas_respondidas.data}  # Conjunto de escalas respondidas
+
+    # Escalas pendentes são as enviadas menos as já respondidas
+    escalas_pendentes = list(enviadas - respondidas)
+
+    return escalas_pendentes
+
+
 def get_profissional_da_escala(paciente_username, escala):
     """Obtém o nome do profissional que enviou a escala para o paciente."""
     response = supabase_client.table("escalas_enviadas").select("profissional").eq("paciente", paciente_username).eq("escala", escala).execute()
