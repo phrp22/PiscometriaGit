@@ -31,6 +31,7 @@ def login():
     if st.button("Entrar"):
         if username and password:
             try:
+                # Buscar senha e tipo de usuário no banco de dados
                 response = supabase_client.table("users").select("password, user_type").eq("username", username).execute()
                 
                 if response.data:
@@ -42,9 +43,9 @@ def login():
 
                         # Redirecionamento baseado no tipo de usuário
                         if user_type == "Profissional":
-                            st.experimental_set_query_params(page="profissional_dashboard")
+                            st.query_params.update({"page": "profissional_dashboard"})
                         else:
-                            st.experimental_set_query_params(page="paciente_dashboard")
+                            st.query_params.update({"page": "paciente_dashboard"})
 
                     else:
                         st.error("Senha incorreta.")
