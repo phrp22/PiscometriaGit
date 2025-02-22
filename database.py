@@ -7,14 +7,14 @@ supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def listar_respostas_pacientes(profissional_username):
     """Retorna todas as respostas das escalas enviadas pelo profissional."""
-    response = supabase_client.table("respostas_escalas").select(
-        "paciente", "escala", "respostas", "criado_em"
-    ).eq("profissional", profissional_username).execute()
+    response = supabase_client.rpc("listar_respostas_pacientes", {
+        "profissional": profissional_username
+    }).execute()
 
     if not response.data:
-        return []  # Se não houver respostas, retorna uma lista vazia
+        return []
 
-    return response.data  # Retorna as respostas disponíveis
+    return response.data
 
 def listar_escalas_pendentes(paciente_username):
     """Retorna apenas as escalas que ainda não foram respondidas pelo paciente."""
@@ -61,7 +61,7 @@ def salvar_respostas_escala(profissional_username, paciente_username, escala, re
     try:
         response = supabase_client.table("respostas_escalas").insert({
             "paciente": paciente_username,
-            "profissional": profissional_username,  # ✅ Agora armazenamos o profissional
+            "profissional": profissional_username,  # ✅ Agora armazenamos o profissional corretamente
             "escala": escala,
             "respostas": json.dumps(respostas),  # ✅ Converte dicionário para JSON
             "criado_em": "now()"  # ✅ Salva o timestamp atual
@@ -72,6 +72,7 @@ def salvar_respostas_escala(profissional_username, paciente_username, escala, re
     except Exception as e:
         st.error(f"Erro ao salvar respostas no banco: {str(e)}")  # ✅ Exibe erro detalhado no app
         return False
+
 
 def enviar_escala(profissional, paciente, escala):
     """Registra o envio de uma escala psicométrica para um paciente"""
