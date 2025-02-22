@@ -12,14 +12,28 @@ def check_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def cadastrar_paciente(profissional_username, paciente_username, paciente_password):
-    """Autentica um paciente antes de cadastrá-lo ao profissional."""
+    """Autentica um paciente antes de cadastrá-lo ao profissional e insere na tabela pacientes."""
     user_data = get_user_credentials(paciente_username)
+    
     if user_data and check_password(user_data["password"], paciente_password):
-        return {"success": True, "message": "Paciente autenticado e vinculado ao profissional."}
-    return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
+        # Verifica se o paciente já está vinculado
+        existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
+        
+        if existing.data:
+            return {"success": False, "message": "Paciente já está vinculado a um profissional."}
 
-if __name__ == "__main__":
-    main()
+        # Insere o paciente na tabela 'pacientes'
+        response = supabase_client.table("pacientes").insert({
+            "profissional": profissional_username,
+            "paciente": paciente_username
+        }).execute()
+
+        if response.data:
+            return {"success": True, "message": "Paciente autenticado e vinculado ao profissional."}
+        else:
+            return {"success": False, "message": "Erro ao cadastrar paciente no banco de dados."}
+    
+    return {"success": False, "message": "Falha na autenticação. Verifique as credenciais do paciente."}
 
 def listar_pacientes(profissional_username):
     """Lista pacientes cadastrados pelo profissional."""
