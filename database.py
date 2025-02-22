@@ -25,7 +25,7 @@ def cadastrar_paciente(profissional_username, paciente_username, paciente_passwo
     user_data = get_user_credentials(paciente_username)
     
     if user_data and "password" in user_data and check_password(user_data["password"], paciente_password):
-        # Verifica se o paciente já está vinculado
+        # Verifica se o paciente já está vinculado a outro profissional
         existing = supabase_client.table("pacientes").select("*").eq("paciente", paciente_username).execute()
         
         if existing.data:
