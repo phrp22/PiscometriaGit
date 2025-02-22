@@ -1,4 +1,5 @@
 import streamlit as st
+import json  # Import necessário
 from database import cadastrar_paciente, listar_pacientes, enviar_escala, listar_respostas_pacientes  # ✅ Agora importando corretamente
 from escalas import listar_escalas  # ✅ Importamos a lista de escalas
 
@@ -24,11 +25,12 @@ def ver_respostas_interface():
     for resposta in respostas_paciente:
         st.markdown(f"### Escala: {resposta['escala']}")
         st.write(f"Data de resposta: {resposta['criado_em']}")
-        respostas_json = resposta["respostas"]
+        respostas_json = json.loads(resposta["respostas"])  # ✅ Converte string para JSON
 
         # Exibir as respostas formatadas
         for pergunta, resposta in respostas_json.items():
             st.write(f"**{pergunta}**: {resposta}")
+
 
         st.markdown("---")  # Linha divisória entre escalas
 
