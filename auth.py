@@ -1,24 +1,22 @@
-import bcrypt
-from database import get_user_password, insert_user
-from utils import check_password, hash_password
-
-def hash_password(password):
-    """ Gera um hash seguro para a senha. """
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
-
-def check_password(stored_password, provided_password):
-    """ Verifica se a senha digitada corresponde ao hash armazenado. """
-    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
+from database import get_user_credentials, insert_user
+from utils import check_password, hash_password  # Apenas importamos, sem redefinir
 
 def authenticate_user(username, password):
-    stored_password, user_type = get_user_password(username)  # Agora pegamos user_type também
-    if stored_password and check_password(stored_password, password):
-        return True, user_type  # Retorna True e o tipo de usuário
-    return False, None
+    """Autentica um usuário verificando suas credenciais no banco de dados."""
+    user_data = get_user_credentials(username)
+    
+    if not user_data:
+        return False, None  # Retorna falso se o usuário não existir
+
+    stored_password = user_data["password"]
+    user_type = user_data["user_type"]
+
+    if check_password(stored_password, password):
+        return True, user_type  # Autenticação bem-sucedida
+    
+    return False, None  # Senha incorreta
 
 def register_user(username, password, user_type):
-    """ Registra um novo usuário no sistema. """
+    """Registra um novo usuário no sistema."""
     hashed_password = hash_password(password)
-    return insert_user(username, hashed_password, user_type)  # Passando user_type
+    return insert_user(username, hashed_password, user_type)  # Passando user_type corretamente
