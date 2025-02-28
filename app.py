@@ -1,6 +1,7 @@
 import streamlit as st
-from auth import get_user, sign_out
+from auth import get_user
 from layout import render_main_layout
+from dashboard import render_dashboard
 
 # 🔧 Configuração inicial
 st.set_page_config(
@@ -14,20 +15,15 @@ st.set_page_config(
 if "user" not in st.session_state:
     st.session_state["user"] = None
 
-if "show_sidebar" not in st.session_state:
-    st.session_state["show_sidebar"] = False  # Sidebar começa fechada
-
 def main():
     """Controla a execução do aplicativo."""
     
     user = get_user()
     
-    # 🔐 Renderiza a sidebar apenas se necessário
-    if st.session_state["show_sidebar"]:
-        render_sidebar(user)
-
-    # 🎨 Renderiza o layout principal
-    render_main_layout()
+    if user:
+        render_dashboard()  # 🚀 Se o usuário está logado, mostramos o dashboard
+    else:
+        render_main_layout()  # 🏠 Se não está logado, mostramos a tela inicial
 
     # 🔄 Atualiza a interface caso necessário
     if st.session_state.get("refresh", False):
