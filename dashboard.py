@@ -27,7 +27,6 @@ def render_sidebar(user):
                     if prof_key == "automatizeja":
                         success, msg = enable_professional_area(user["email"], user["display_name"])
                         if success:
-                            st.success(msg)
                             st.session_state["refresh"] = True
                             st.rerun()
                         else:

@@ -49,16 +49,13 @@ def render_main_layout():
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
-        
-    # Aplica estilo ao botão
-    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
     
     # Se o usuário alterna para Login, reseta a flag de conta criada
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
     
     # Define o texto do botão conforme a opção
-    action_text = "Entrar" if option == "Login" else "Criar Conta"
+    action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
     
     # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
