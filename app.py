@@ -1,6 +1,5 @@
 import streamlit as st
-from auth import sign_in, sign_out, get_user
-import supabase
+from auth import sign_in, sign_up, sign_out, get_user
 
 # 🔧 Configuração inicial da página
 st.set_page_config(page_title="PsyTrack Beta", page_icon="📊", layout="centered")
@@ -39,11 +38,21 @@ def main():
 
 def auth_section():
     """Área de autenticação"""
-    option = st.sidebar.radio("Acesso", ["Login"])
+    option = st.sidebar.radio("Acesso", ["Login", "Cadastro"])
     email = st.sidebar.text_input("Email")
     password = st.sidebar.text_input("Senha", type="password")
 
-    if option == "Login":
+    if option == "Cadastro":
+        confirm_password = st.sidebar.text_input("Confirme a Senha", type="password")
+        if st.sidebar.button("Criar Conta"):
+            user, message = sign_up(email, password, confirm_password)
+            if user:
+                st.sidebar.success(message)
+                st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+            else:
+                st.sidebar.error(message)
+
+    elif option == "Login":
         if st.sidebar.button("Entrar"):
             user, message = sign_in(email, password)
             if user:
