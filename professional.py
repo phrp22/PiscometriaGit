@@ -54,4 +54,12 @@ def render_professional_dashboard(user):
             st.session_state.clear()
             st.rerun()  
 
-    st.title(f"🎉 Bem-vindo, {user['display_name
+    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    st.markdown("### 📊 Painel de Controle Profissional")
+    
+    st.metric(label="📁 Pacientes cadastrados", value="42")
+    st.metric(label="📊 Avaliações realizadas", value="128")
+    st.metric(label="📆 Última atualização", value="Hoje")
+
+    st.markdown("---")
+    st.info("🔍 Novos recursos serão adicionados em breve!")
