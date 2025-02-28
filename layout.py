@@ -68,21 +68,31 @@ def render_main_layout():
         """, unsafe_allow_html=True
     )
 
+    # 📌 Controle para suspender o botão de cadastro temporariamente
+    if "account_created" not in st.session_state:
+        st.session_state["account_created"] = False
+
     # 📌 Botão real do Streamlit (único)
     action_text = "🚀 Entrar" if option == "Login" else "📩 Criar Conta"
-    if st.button(action_text, key="auth_action"):
-        if option == "Login":
-            user, message = sign_in(email, password)
-        else:
-            user, message = sign_up(email, password, confirm_password)
 
-        if user:
-            st.session_state["user"] = user
-            st.success("✅ Autenticação realizada com sucesso!")
-            st.session_state["refresh"] = True
-            st.rerun()
-        else:
-            st.error(message)
+    if not st.session_state["account_created"]:  
+        if st.button(action_text, key="auth_action"):
+            if option == "Login":
+                user, message = sign_in(email, password)
+            else:
+                user, message = sign_up(email, password, confirm_password)
+
+            if user:
+                st.session_state["user"] = user
+                if option == "Cadastro":
+                    st.session_state["account_created"] = True  # Suspende o botão
+                st.success("✅ Autenticação realizada com sucesso!" if option == "Login" else "📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
+                st.session_state["refresh"] = True
+                st.rerun()
+            else:
+                st.error(message)
+    else:
+        st.info("📩 Um e-mail de verificação foi enviado. Por favor, confirme para acessar sua conta.")
 
     # 📌 Botão "Esqueci minha senha"
     if option == "Login":
