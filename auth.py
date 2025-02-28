@@ -14,11 +14,11 @@ def sign_in(email, password):
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
         if response and hasattr(response, "user") and response.user:
             user_obj = response.user
-            # Converte para dicionário, incluindo display_name dos metadados, se existir
+            # Converte para dicionário, incluindo display_name dos metadados
             user_data = {
                 "email": user_obj.email,
                 "id": user_obj.id,
-                "display_name": user_obj.user_metadata.get("display_name") if hasattr(user_obj, "user_metadata") else ""
+                "display_name": user_obj.user_metadata.get("display_name", "Usuário")  # Nome padrão se não existir
             }
             st.session_state["user"] = user_data
             st.session_state["refresh"] = True  # 🚀 Marca para atualizar
