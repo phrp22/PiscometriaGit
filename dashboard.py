@@ -34,7 +34,7 @@ def render_sidebar(user):
                     else:
                         st.error("Chave incorreta!")
         else:
-            st.info("Área do profissional habilitada!")
+            st.success("✅ Área do profissional habilitada!")
 
 
 def render_dashboard():

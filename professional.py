@@ -57,7 +57,7 @@ def render_professional_dashboard(user):
     with st.sidebar:
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")  # Saudação com o nome em destaque,
         st.markdown(f"✉️ {user['email']}")                        # E o email mostrado, num toque vibrante.
-        st.success("✅ Área do profissional habilitada!")        # Mensagem de sucesso, bem iluminada!
+        st.success("✅ Área do profissional habilitada!")         # Mensagem de sucesso, bem iluminada!
 
         # Botão de Logout, que é um método para sair,
         # Se o usuário clicar, a sessão limpa e o app vai recomeçar.
