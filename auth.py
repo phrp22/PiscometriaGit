@@ -1,5 +1,6 @@
 import streamlit as st
 import supabase
+import uuid
 
 # 🔑 Credenciais do Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
@@ -19,18 +20,32 @@ def sign_in(email, password):
     except Exception as e:
         return None, f"❌ Erro ao logar: {str(e)}"
 
-def sign_up(email, password, confirm_password):
-    """Cria um novo usuário no sistema."""
+def sign_up(email, password, confirm_password, display_name):
+    """Cria um novo usuário no sistema e insere dados extras na tabela de perfis."""
     if password != confirm_password:
-        return None, "As senhas não coincidem! ❌"
+        return None, "❌ As senhas não coincidem!"
 
     try:
+        # Cria o usuário via Supabase Auth
         response = supabase_client.auth.sign_up({"email": email, "password": password})
         if response and hasattr(response, "user") and response.user:
-            return response.user, "📩 Um email de confirmação foi enviado."
+            user_obj = response.user
+
+            # Gera um UUID para o perfil do usuário
+            new_uuid = str(uuid.uuid4())
+            data = {
+                "id": new_uuid,
+                "email": email,
+                "display_name": display_name
+            }
+            # Insere os dados na tabela user_profiles
+            insert_response = supabase_client.from_("user_profiles").insert(data).execute()
+            if insert_response.error:
+                return None, f"Erro ao criar perfil: {insert_response.error.message}"
+            return user_obj, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
-        return None, f"Erro ao criar conta: {str(e)} ❌"
+        return None, f"❌ Erro ao criar conta: {str(e)}"
 
 def reset_password(email):
     """Envia um email para redefinição de senha."""
