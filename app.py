@@ -2,7 +2,7 @@ import streamlit as st
 from auth import sign_in, sign_up, sign_out, get_user
 
 # 🔧 Configuração inicial da página
-st.set_page_config(page_title="PsyTrack Beta", page_icon="📊", layout="centered")
+st.set_page_config(page_title="Academia Diagnóstica", page_icon="🧠", layout="centered")
 
 # 🌱 Inicializa a sessão do usuário
 if "user" not in st.session_state:
@@ -28,37 +28,47 @@ def main():
     else:
         auth_section()
 
-    # Nome do app na tela principal
-    # Título principal
-    st.title("Academia Diagnóstica 🧠")
-
-    #Cabeçalho de apresentação
-    st.subheader("Um sistema inteligente e adaptado para o novo paradigma dos transtornos mentais")
-
-    # Texto de introdução
-    st.markdown(
-        """
-        Bem-vindo à **Academia Diagnóstica**, um sistema avançado que segue o **novo paradigma dimensional** dos transtornos mentais.  
-        Ao invés de classificações rígidas e dicotômicas, seguimos uma abordagem **contínua e dinâmica**, permitindo um olhar mais preciso sobre a saúde do paciente ao longo do tempo.  
-
-        ##### **Transforme sua prática clínica com tecnologia avançada** 💡
-        - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
-        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
-        - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados, fundamentados nas diretrizes científicas mais recentes.
-        - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados e auxiliando a tomada de decisão.
-        - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
-
-        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente, intuitivo e baseado em evidências.** 
-        
-        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
- 
-        """
-    )
+    # 🎨 Interface principal
+    render_main_layout()
 
     # 🔄 Atualiza a interface caso necessário
     if st.session_state.get("refresh", False):
         st.session_state["refresh"] = False
         st.rerun()
+
+def render_main_layout():
+    """Renderiza a interface principal com título e botão de navegação."""
+    
+    # 📌 Nome do App
+    st.title("Academia Diagnóstica 🧠")
+
+    # 📌 Subtítulo
+    st.subheader("Um sistema inteligente e adaptado para o novo paradigma dos transtornos mentais")
+
+    # 📌 Criando um botão interativo para explorar a plataforma
+    col1, col2, col3 = st.columns([1, 3, 1])  # Cria um layout centralizado
+
+    with col2:  # Centraliza o botão
+        if st.button("🚀 Explorar Agora", use_container_width=True):
+            # Simula a abertura da sidebar em dispositivos móveis
+            st.session_state["show_sidebar"] = not st.session_state.get("show_sidebar", False)
+
+    # 📌 Introdução com Markdown
+    st.markdown(
+        """
+        #### **Como a Academia Diagnóstica pode transformar sua prática?**  
+        
+        - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
+        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
+        - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
+        - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados.
+        - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
+
+        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
+        
+        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        """
+    )
 
 def auth_section():
     """Área de autenticação"""
@@ -87,3 +97,4 @@ def auth_section():
 
 if __name__ == "__main__":
     main()
+
