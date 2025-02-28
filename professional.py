@@ -36,9 +36,3 @@ def enable_professional_area(email, display_name):
         return False, response.error.message
     return True, "Área do profissional habilitada com sucesso!"
 
-def render_professional_dashboard():
-    """Renderiza o dashboard exclusivo para profissionais habilitados."""
-    st.title("Dashboard Profissional")
-    st.markdown("### Bem-vindo à área profissional!")
-    st.markdown("Aqui você pode acessar funcionalidades exclusivas para profissionais da saúde mental.")
-    # Adicione aqui os widgets e estatísticas específicas para profissionais
