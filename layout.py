@@ -86,7 +86,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("Recuperar Senha"):
+        if st.button("Esqueci Minha Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)
