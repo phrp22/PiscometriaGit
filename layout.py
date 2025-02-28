@@ -4,45 +4,36 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    st.title("🧙 Academia Diagnóstica")
+    st.title("Academia Diagnóstica 🧠")
 
     st.markdown(
         """
-        ##### ✨ **Transforme a sua prática clínica com tecnologia avançada.**  
+        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada.**  
         
-        - 🔮 **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
-        - 📜 **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
-        - 🪄 **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
-        - 🧠 **Utilize nossas correções automatizadas** para garantir mais precisão na interpretação dos dados.
-        - 🔍 **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
+        - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
+        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
+        - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
+        - **Utilize nossas correções automatizadas** para garantir mais precisão na interpretação dos dados.
+        - **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
         
-        🚀 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
+        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🧙‍♂️ **Eleve sua prática clínica a um nível místico e ofereça um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
     )
     
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
-
-    # 📌 Estiliza o radio button (Login/Cadastro) com tema místico
+    
+    # Estiliza o radio button para combinar com o tema
     st.markdown(
         """
         <style>
-            /* Estiliza as opções do radio button */
-            div[role="radiogroup"] label {
-                color: #7159c1 !important;  /* Roxo mágico */
+            div[data-baseweb="radio"] > div {
+                color: #7159c1 !important;  /* Cor azul arroxeada */
                 font-weight: bold;
-                font-size: 16px;
             }
-            /* Aplica brilho ao passar o mouse */
-            div[role="radiogroup"] label:hover {
-                color: #836fff !important;
-                text-shadow: 0px 0px 8px rgba(131, 111, 255, 0.8);
-            }
-            /* Destaca a opção selecionada */
-            div[role="radiogroup"] input:checked + div {
-                color: #5e47b0 !important;
-                font-weight: bold;
+            div[data-baseweb="radio"] > div:hover {
+                color: #836fff !important; /* Efeito de brilho */
             }
         </style>
         """, unsafe_allow_html=True
