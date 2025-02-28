@@ -40,7 +40,7 @@ def get_user_profile(auth_user_id):
 def render_onboarding_questionnaire(user_id):
     """Renderiza o questionário inicial para coletar gênero, data de nascimento, etc."""
     st.title("Queremos saber um pouco mais sobre você!")
-    st.write("Por favor, complete o cadastro para que nós possamos continuar.")
+    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
     genero = st.selectbox("Qual seu gênero?", ["Masculino", "Feminino", "Não-binário"])
 

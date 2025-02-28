@@ -1,14 +1,22 @@
 # gender_utils.py
 
 def adjust_gender_ending(text: str, genero: str) -> str:
-    genero = genero.strip()  # remove espaços
+    """
+    Ajusta o final de 'text' de acordo com o gênero informado.
+    Espera que 'genero' seja:
+      - "M" para Masculino (não altera o texto)
+      - "F" para Feminino (troca "o" por "a" e "os" por "as")
+      - "N" para Não-binário (troca "o" por "e" e "os" por "es")
+    Se o texto não terminar em "o" ou "os", retorna o texto original.
+    """
+    genero = genero.strip().upper()  # garante que esteja em maiúsculas sem espaços
+
     SUBSTITUICOES = {
-        "Masculino":   {"o": "o", "os": "os"},  # sem mudança
-        "Feminino":    {"o": "a", "os": "as"},
-        "Não-binário": {"o": "e", "os": "es"},
+        "M": {"o": "o", "os": "os"},  # Mantém como está
+        "F": {"o": "a", "os": "as"},
+        "N": {"o": "e", "os": "es"}
     }
 
-    # Se o gênero não estiver no dicionário, retorna sem mexer
     if genero not in SUBSTITUICOES:
         return text
 
