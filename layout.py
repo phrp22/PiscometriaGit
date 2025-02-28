@@ -28,16 +28,14 @@ def render_main_layout():
     st.markdown(
         """
         <style>
-            div[data-baseweb="radio"] > div {
+            /* Texto das opções (Login/Cadastro) */
+            [data-testid="stRadio"] label[data-baseweb="radio"] > div {
                 color: #7159c1 !important;  /* Roxo Místico */
                 font-weight: bold;
             }
-            div[data-baseweb="radio"] > div:hover {
-                color: #836fff !important; /* Brilho Mágico */
-            }
-        
-            /* Estiliza a bolinha quando NÃO está selecionada */
-            div[data-baseweb="radio"] input + div {
+
+            /* Bolinha não selecionada */
+            [data-testid="stRadio"] label[data-baseweb="radio"] input + div {
                 background-color: transparent !important;
                 border: 2px solid #7159c1 !important; /* Roxo Místico */
                 border-radius: 50%;
@@ -48,21 +46,22 @@ def render_main_layout():
                 transition: all 0.3s ease-in-out;
             }
 
-            /* Modifica a bolinha quando está selecionada */
-            div[data-baseweb="radio"] input:checked + div {
+            /* Bolinha selecionada */
+            [data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
                 background-color: #d32f2f !important; /* Vermelho Feiticeiro */
                 border: 2px solid #d32f2f !important;
                 box-shadow: 0px 0px 10px rgba(211, 47, 47, 0.7);
             }
 
-            /* Efeito hover na bolinha */
-            div[data-baseweb="radio"] input:hover + div {
+            /* Hover na bolinha */
+            [data-testid="stRadio"] label[data-baseweb="radio"] input:hover + div {
                 background-color: #ff5252 !important; /* Brilho Flamejante */
                 border-color: #ff5252 !important;
             }
         </style>
         """, unsafe_allow_html=True
     )
+
     # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
     
