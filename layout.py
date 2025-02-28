@@ -4,7 +4,7 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    st.title("Academia Diagnóstica 🧠")
+     st.title("Academia Diagnóstica 🧠")
 
     st.markdown(
         """
@@ -34,9 +34,9 @@ def render_main_layout():
     display_name = None
     confirm_password = None
     if option == "Cadastro":
-        display_name = st.text_input("Nome", key="display_name_input")
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
-    
+        display_name = st.text_input("Nome", key="display_name_input")
+        
     # Aplica estilo ao botão via CSS
     st.markdown(
         """
@@ -69,28 +69,32 @@ def render_main_layout():
     # Define o texto do botão conforme a opção
     action_text = "Entrar 🚀" if option == "Login" else "Criar Conta 📩"
     
-    # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de confirmação por e-mail
+    # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
     else:
         if st.button(action_text, key="auth_action"):
             if option == "Login":
                 user, message = sign_in(email, password)
+                if user:
+                    st.session_state["user"] = user
+                    st.success("✅ Login realizado com sucesso!")
+                    st.session_state["refresh"] = True
+                    st.rerun()
+                else:
+                    st.error(message)
             else:
+                # Cadastro: cria a conta, mas NÃO loga o usuário automaticamente
                 user, message = sign_up(email, password, confirm_password, display_name)
-            
-            if user:
-                st.session_state["user"] = user
-                if option == "Cadastro":
-                    st.session_state["account_created"] = True  # Suspende o botão após cadastro
-                st.success("✅ Autenticação realizada com sucesso!" if option == "Login" 
-                           else "📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
-                st.session_state["refresh"] = True
-                st.rerun()
-            else:
-                st.error(message)
+                if user:
+                    st.session_state["account_created"] = True  # Suspende o botão de cadastro
+                    st.success("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
+                    st.session_state["refresh"] = True
+                    st.rerun()
+                else:
+                    st.error(message)
     
-    # Botão "Esqueci minha senha" aparece apenas no Login
+    # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
         if st.button("Esqueci minha senha"):
             if email:
