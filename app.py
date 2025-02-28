@@ -33,23 +33,24 @@ def main():
     st.title("Academia Diagnóstica 🧠")
 
     #Cabeçalho de apresentação
-    st.header("## Um sistema inteligênte, adaptado para o novo paradigma dos transtornos mentais")
+    st.subheader("Um sistema inteligente e adaptado para o novo paradigma dos transtornos mentais")
 
     # Texto de introdução
     st.markdown(
         """
         Bem-vindo à **Academia Diagnóstica**, um sistema avançado que segue o **novo paradigma dimensional** dos transtornos mentais.  
-        Ao invés de classificações rígidas e dicotômicas, seguimos uma abordagem **contínua e dinâmica**, permitindo um olhar mais preciso sobre a saúde dos pacientes ao longo do tempo.  
+        Ao invés de classificações rígidas e dicotômicas, seguimos uma abordagem **contínua e dinâmica**, permitindo um olhar mais preciso sobre a saúde do paciente ao longo do tempo.  
 
-        #### 💡 **Transforme sua prática clínica com tecnologia avançada**
+        ##### **Transforme sua prática clínica com tecnologia avançada** 💡
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
         - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados, fundamentados nas diretrizes científicas mais recentes.
         - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados e auxiliando a tomada de decisão.
         - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
 
-        **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente, intuitivo e baseado em evidências.** 🚀  
-        **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente, intuitivo e baseado em evidências.** 
+        
+        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
  
         """
     )
