@@ -62,15 +62,3 @@ def sign_out():
 
 def get_user():
     return st.session_state.get("user", None)
-
-
-def is_professional_enabled(email):
-    response = supabase_client.from_("professional").select("*").eq("email", email).execute()
-    try:
-        data = response.data
-    except Exception as e:
-        st.error("Erro ao consultar área profissional: " + str(e))
-        return False
-    if data and len(data) > 0:
-        return data[0].get("area_habilitada", False)
-    return False
