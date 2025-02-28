@@ -25,7 +25,7 @@ def render_sidebar(user):
                 prof_key = st.text_input("Digite a chave do profissional", key="prof_key_input")
                 if prof_key:
                     if prof_key == "automatizeja":
-                        success, msg = enable_professional_area(user["email"], user["display_name"])
+                        success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
                         if success:
                             st.session_state["refresh"] = True
                             st.rerun()
