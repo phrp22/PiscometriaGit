@@ -37,25 +37,25 @@ def render_main_layout():
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
         
-    # Aplica estilo ao botão via CSS (Agora AZUL)
+    # Aplica estilo ao botão via CSS (Agora ROXO)
     st.markdown(
         """
         <style>
             div.stButton > button:first-child {
-                background-color: #007bff;
+                background-color: #6a0dad;
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
-                transition: 0.3s;
+                transition: 0.3s ease-in-out;
                 width: 100%;
                 padding: 12px 24px;
                 text-align: center;
             }
             div.stButton > button:first-child:hover {
-                background-color: #0056b3;
+                background-color: #5c0aa3;
                 transform: scale(1.05);
             }
         </style>
