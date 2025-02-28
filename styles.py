@@ -32,8 +32,8 @@ BUTTON_STYLE = """
         transform: scale(0.98);
     }
 
-    /* Quando o botão está desativado (durante carregamento) */
-    div.stButton > button:first-child:disabled {
+    /* Estado Desativado (durante carregamento) */
+    div.stButton > button:first-child:disabled, div.stButton > button:first-child[disabled] {
         background-color: #2e8b57 !important;  /* Verde escuro no carregamento */
         color: white !important;  /* Mantém o texto branco */
         border: 2px solid #3cb371 !important;
