@@ -4,18 +4,14 @@ from auth import supabase_client, sign_out
 
 # Função que checa se o profissional está habilitado, sem hesitar,
 # Ela consulta o banco e retorna True ou False, pra você usar.
-def is_professional_enabled(email):
-    """Verifica se a área profissional está habilitada para o usuário."""
-    # Do banco, na tabela "professional", fazemos a consulta com destemor,
-    # Selecionamos o campo 'area_habilitada' onde o email bate com o valor.
-    response = supabase_client.from_("professional").select("area_habilitada").eq("email", email).execute()
+def is_professional_enabled(auth_user_id):
+    """Verifica se a área profissional está habilitada para o usuário usando auth_user_id."""
+    response = supabase_client.from_("professional").select("area_habilitada").eq("auth_user_id", auth_user_id).execute()
 
-    # Se a resposta tem dados e o atributo "data" está presente,
-    # Retorna o valor da área habilitada do primeiro registro, de forma evidente.
     if response and hasattr(response, "data") and response.data:
         return response.data[0].get("area_habilitada", False)
-    # Se não houver resposta ou dados, retorna False, sem temor.
     return False
+
 
 # Função para habilitar a área profissional, com elegância e precisão,
 # Sem criar registros duplicados, ela cuida da informação.

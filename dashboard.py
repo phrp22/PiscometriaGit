@@ -17,7 +17,7 @@ def render_sidebar(user):
         
         st.markdown("---")
         # Verifica se a área profissional está habilitada
-        if not is_professional_enabled(user["email"]):
+        if not is_professional_enabled(user["id"]):
             st.write("Área do Profissional")
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True

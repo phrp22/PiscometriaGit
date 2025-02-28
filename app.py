@@ -28,7 +28,7 @@ def main():
             render_onboarding_questionnaire(user["id"])
         else:
             # Se já tem perfil, verifica se é profissional ou não
-            if is_professional_enabled(user["email"]):
+            if is_professional_enabled(user["id"]):  
                 render_professional_dashboard(user)
             else:
                 render_dashboard()
