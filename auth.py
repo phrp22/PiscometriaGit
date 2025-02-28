@@ -1,6 +1,5 @@
 import streamlit as st
 import supabase
-import uuid
 
 # 🔑 Credenciais do Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
@@ -10,44 +9,44 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def sign_in(email, password):
-    """Faz login no sistema."""
+    """Faz login no sistema e recupera o nome do usuário."""
     try:
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
+
         if response and hasattr(response, "user") and response.user:
-            st.session_state["user"] = {"email": response.user.email, "id": response.user.id}
+            user_obj = response.user
+
+            # 🔍 Recupera o display_name salvo no Supabase
+            display_name = user_obj.user_metadata.get("display_name", "Usuário")
+
+            # 🔐 Salva o usuário na sessão
+            st.session_state["user"] = {
+                "email": user_obj.email,
+                "id": user_obj.id,
+                "display_name": display_name  # Agora temos o nome salvo!
+            }
             st.session_state["refresh"] = True  # 🚀 Marca para atualizar
-            return response.user, "✅ Login realizado com sucesso!"
+            return st.session_state["user"], "✅ Login realizado com sucesso!"
     except Exception as e:
-        return None, f"Erro ao logar: {str(e)} ❌"
+        return None, f"❌ Erro ao logar: {str(e)}"
 
 def sign_up(email, password, confirm_password, display_name):
-    """Cria um novo usuário no sistema e insere dados extras na tabela de perfis."""
+    """Cria um novo usuário e salva o display_name no Supabase Auth."""
     if password != confirm_password:
         return None, "❌ As senhas não coincidem!"
 
     try:
-        # Cria o usuário via Supabase Auth
-        response = supabase_client.auth.sign_up({"email": email, "password": password})
-        if response and hasattr(response, "user") and response.user:
-            user_obj = response.user
+        response = supabase_client.auth.sign_up({
+            "email": email,
+            "password": password,
+            "options": {"data": {"display_name": display_name}}  # 🔥 Armazena o nome no próprio Supabase Auth!
+        })
 
-            # Gera um UUID para o perfil do usuário
-            new_uuid = str(uuid.uuid4())
-            data = {
-                "id": new_uuid,
-                "email": email,
-                "display_name": display_name
-            }
-            # Usa upsert para inserir ou atualizar, evitando erros de duplicidade
-            insert_response = supabase_client.from_("user_profiles").upsert(data, on_conflict="email").execute()
-            # Se houver erro, mas o registro já existir, podemos ignorá-lo
-            if insert_response.error and "already exists" not in insert_response.error.message.lower():
-                return None, f"Erro ao criar perfil: {insert_response.error.message}"
-            return user_obj, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
+        if response and hasattr(response, "user") and response.user:
+            return response.user, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
         return None, f"❌ Erro ao criar conta: {str(e)}"
-
 
 def reset_password(email):
     """Envia um email para redefinição de senha."""
