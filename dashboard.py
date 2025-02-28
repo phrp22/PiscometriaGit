@@ -9,7 +9,7 @@ def render_sidebar(user):
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
         
-        if st.button("🚪 Sair"):
+        if st.button("Logout 🚪"):
             sign_out()
             st.success("Você saiu com sucesso!")
             st.session_state["refresh"] = True

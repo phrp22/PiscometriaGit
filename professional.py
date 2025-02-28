@@ -23,7 +23,7 @@ def enable_professional_area(email, display_name):
         if hasattr(update_response, "error") and update_response.error:
             return False, f"Erro ao atualizar: {update_response.error.message}"
         
-        return True, "Área do profissional habilitada com sucesso! ✅✅✅"
+        return True, None
 
     # Se o email não existir, cria um novo registro
     new_uuid = str(uuid.uuid4())
@@ -39,7 +39,7 @@ def enable_professional_area(email, display_name):
     if hasattr(insert_response, "error") and insert_response.error:
         return False, f"Erro ao criar registro: {insert_response.error.message}"
     
-    return True, "Área do profissional habilitada com sucesso! ✅✅✅"
+    return True, None
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
@@ -50,7 +50,7 @@ def render_professional_dashboard(user):
         st.success("✅ Área do profissional habilitada!")
 
         # 🔴 Botão de Logout estilizado
-        if st.button("🚪 Logout"):
+        if st.button("Logout 🚪"):
             sign_out()
             st.session_state.clear()
             st.rerun()
