@@ -3,7 +3,10 @@ from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
+from styles import BUTTON_STYLE
 
+# Aplica os estilos globais uma única vez
+st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
 st.set_page_config(
     page_title="Academia Diagnóstica",

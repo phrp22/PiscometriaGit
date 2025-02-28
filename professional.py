@@ -1,7 +1,6 @@
 import uuid
 import streamlit as st
 from auth import supabase_client, sign_out 
-from styles import SIDEBAR_BUTTON_STYLE  # Importa o estilo do botão
 
 def is_professional_enabled(email):
     """Verifica se a área profissional está habilitada para o usuário."""
@@ -44,8 +43,6 @@ def enable_professional_area(email, display_name):
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
-
-    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
     with st.sidebar:
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")

@@ -1,7 +1,6 @@
 import streamlit as st
 from auth import get_user, sign_out
 from professional import is_professional_enabled, render_professional_dashboard, enable_professional_area
-from styles import BUTTON_STYLE
 
 def render_sidebar(user):
     """Renderiza a sidebar para usuários logados."""
@@ -9,7 +8,6 @@ def render_sidebar(user):
         st.title("🔑 Bem-vindo!")
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
-        st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
         
         if st.button("🚪 Sair"):
             sign_out()
@@ -49,6 +47,5 @@ def render_dashboard():
     render_sidebar(user)
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📈 Estatísticas recentes")
-    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
     st.metric(label="Pacientes cadastrados", value="42")
     st.metric(label="Avaliações concluídas", value="120")
