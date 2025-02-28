@@ -16,7 +16,7 @@ def render_main_layout():
         - **Utilize nossas correções automatizadas** para garantir mais precisão na interpretação dos dados.
         - **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
         
-        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
+        🎯 **Tenha em mãos um sistema inteligente e baseado em evidências.**  
         
         🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
@@ -24,33 +24,46 @@ def render_main_layout():
     
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
     
-    # Estiliza o radio button para combinar com o tema
+    # 🔥 Estilizando a Radio Button (Login/Cadastro)
     st.markdown(
         """
         <style>
             div[data-baseweb="radio"] > div {
-                color: #7159c1 !important;  /* Cor azul arroxeada */
+                color: #7159c1 !important;  /* Roxo Místico */
                 font-weight: bold;
             }
             div[data-baseweb="radio"] > div:hover {
-                color: #836fff !important; /* Efeito de brilho */
+                color: #836fff !important; /* Brilho Mágico */
+            }
+            
+            /* Modifica a bolinha selecionada */
+            div[data-baseweb="radio"] input:checked + div {
+                background-color: #d32f2f !important; /* Vermelho Feiticeiro */
+                border-color: #d32f2f !important;
+                box-shadow: 0px 0px 10px rgba(211, 47, 47, 0.7);
+            }
+            
+            /* Efeito hover na bolinha */
+            div[data-baseweb="radio"] input:hover + div {
+                background-color: #ff5252 !important; /* Brilho Flamejante */
+                border-color: #ff5252 !important;
             }
         </style>
         """, unsafe_allow_html=True
     )
 
     # Alternador entre Login e Cadastro
-    option = st.radio("🔑 Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
+    option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
     
-    email = st.text_input("📩 Email", key="email_input")
-    password = st.text_input("🔑 Senha", type="password", key="password_input")
+    email = st.text_input("Email 📩", key="email_input")
+    password = st.text_input("Senha 🔒", type="password", key="password_input")
     
     # Se for Cadastro, exibe os campos adicionais para nome e confirmação de senha
     display_name = None
     confirm_password = None
     if option == "Cadastro":
-        confirm_password = st.text_input("🔒 Confirme a Senha", type="password", key="confirm_password_input")
-        display_name = st.text_input("🧑‍💼 Nome", key="display_name_input")
+        confirm_password = st.text_input("Confirme a Senha 🔒", type="password", key="confirm_password_input")
+        display_name = st.text_input("🧑‍💼🔑 Nome", key="display_name_input")
         
     # Aplica estilo ao botão via CSS (Agora com o tema Mago)
     st.markdown(
@@ -88,7 +101,7 @@ def render_main_layout():
     
     # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
-        st.info("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
+        st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
         if st.button(action_text, key="auth_action"):
             if option == "Login":
@@ -105,7 +118,7 @@ def render_main_layout():
                 user, message = sign_up(email, password, confirm_password, display_name)
                 if user:
                     st.session_state["account_created"] = True  # Suspende o botão de cadastro
-                    st.success("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
+                    st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
                     st.session_state["refresh"] = True
                     st.rerun()
                 else:
@@ -113,7 +126,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("🔁 Esqueci minha senha"):
+        if st.button("Esqueci minha senha 🔑"):
             if email:
                 message = reset_password(email)
                 st.info(message)
