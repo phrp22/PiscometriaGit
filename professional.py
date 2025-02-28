@@ -1,6 +1,8 @@
 import uuid
 import streamlit as st
 from auth import supabase_client, sign_out 
+from profile import get_user_profile
+from gender_utils import adjust_gender_ending
 
 # Função que checa se o profissional está habilitado, sem hesitar,
 # Ela consulta o banco e retorna True ou False, pra você usar.
@@ -52,30 +54,35 @@ def enable_professional_area(auth_user_id, email, display_name):
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
     
-    # Abre a sidebar, que é um objeto visual de interação,
-    # E nela exibe informações do usuário com muita emoção.
+    # Sidebar com informações do usuário e logout
     with st.sidebar:
-        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")  # Saudação com o nome em destaque,
-        st.markdown(f"✉️ {user['email']}")                        # E o email mostrado, num toque vibrante.
-        st.success("✅ Área do profissional habilitada!")         # Mensagem de sucesso, bem iluminada!
-
-        # Botão de Logout, que é um método para sair,
-        # Se o usuário clicar, a sessão limpa e o app vai recomeçar.
+        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
+        st.markdown(f"✉️ {user['email']}")
+        st.success("✅ Área do profissional habilitada!")
+        
         if st.button("Logout 🚪"):
-            sign_out()                 # Chama a função para desconectar o usuário,
-            st.session_state.clear()   # Limpa a sessão, sem nenhum pormenor.
-            st.rerun()                 # Roda novamente o app, com vigor e amor.
-
-    # Fora da sidebar, exibe o título e as métricas com atenção,
-    st.title(f"🎉 Bem-vindo, {user['display_name']}!")  # Título que saúda com animação,
-    st.markdown("### 📊 Painel de Controle Profissional")  # Subtítulo que revela a visão.
+            sign_out()
+            st.session_state.clear()
+            st.rerun()
     
-    # Mostra as métricas, atributos e valores, com precisão,
+    # Busca o perfil do usuário para ajustar a saudação de acordo com o gênero
+    profile = get_user_profile(user["id"])
+    saudacao_base = "Bem-vindo"  # Saudação padrão no masculino
+    
+    if profile and profile.get("genero"):
+        # Aqui, espera-se que o campo 'genero' esteja armazenado como "M", "F" ou "N"
+        genero = profile.get("genero")
+        saudacao = adjust_gender_ending(saudacao_base, genero)
+    else:
+        saudacao = saudacao_base
+
+    # Exibe a saudação personalizada e outras informações
+    st.title(f"🎉 {saudacao}, {user['display_name']}!")
+    st.markdown("### 📊 Painel de Controle Profissional")
+    
     st.metric(label="📁 Pacientes cadastrados", value="42")
     st.metric(label="📊 Avaliações realizadas", value="128")
     st.metric(label="📆 Última atualização", value="Hoje")
-
-    # Linha divisória para separar seções com estilo,
+    
     st.markdown("---")
-    # Informação adicional, que anuncia novidades com brilho,
     st.info("🔍 Novos recursos serão adicionados em breve!")
