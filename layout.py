@@ -1,23 +1,23 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE, TITLE_STYLE, PAGE_BG_STYLE  # Importando estilos
+from styles import BUTTON_STYLE, TITLE_STYLE, ORANGE_TEXT_STYLE
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    # Aplica o fundo azul-marinho e texto em branco
-    st.markdown(PAGE_BG_STYLE, unsafe_allow_html=True)
-
     # Aplica o estilo do título
     st.markdown(TITLE_STYLE, unsafe_allow_html=True)
+    # Aplica o estilo da frase laranja
+    st.markdown(ORANGE_TEXT_STYLE, unsafe_allow_html=True)
+
     st.title("Academia Diagnóstica 🧠")
 
-    # Frase em destaque laranja
-    st.markdown("<p class='orange-text'>Sistema inteligente e adaptado para o novo paradigma dos transtornos mentais</p>", unsafe_allow_html=True)
+    # Frase em destaque (agora maior)
+    st.markdown("<p class='orange-text'>Transforme a sua prática clínica com tecnologia avançada</p>", unsafe_allow_html=True)
 
     st.markdown(
         """
-        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
+        ##### 💻 **Aqui vão alguns destaques**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.

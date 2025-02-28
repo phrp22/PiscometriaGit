@@ -1,4 +1,5 @@
 # styles.py
+
 BUTTON_STYLE = """
 <style>
     div.stButton > button:first-child {
@@ -35,27 +36,20 @@ TITLE_STYLE = """
         font-size: 42px;
         font-weight: bold;
         text-align: left; 
-        color: #ffffff !important; /* Título em branco */
+        color: #ffffff !important; /* Caso queira o título em branco */
     }
 </style>
 """
 
-PAGE_BG_STYLE = """
+ORANGE_TEXT_STYLE = """
 <style>
-    /* Fundo da página no estilo azul marinho */
-    .stApp {
-        background-color: #1B2B48 !important; /* Ajuste esse tom se quiser mais claro ou mais escuro */
-        color: #FFFFFF !important;
-    }
-    /* Ajusta a cor de textos padrões (labels, parágrafos, etc.) */
-    h2, h3, h4, h5, h6, p, label, div, span, .css-1cpxqw2, .css-14xtw13 {
-        color: #FFFFFF !important;
-    }
-    /* Destaque laranja para a frase */
+    /* Aumenta o tamanho da frase em laranja */
     .orange-text {
-        color: #FFA500 !important; /* Laranja */
+        color: #FFA500 !important;
         font-weight: bold;
-        font-size: 1.1rem;
+        font-size: 2rem; /* Aumente conforme desejar */
     }
 </style>
 """
+
+# Se você tinha algo como PAGE_BG_STYLE definindo o fundo, remova-o ou comente-o.
