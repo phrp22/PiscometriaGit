@@ -8,25 +8,19 @@ st.set_page_config(page_title="Academia Diagnóstica", page_icon="🧠", layout=
 if "user" not in st.session_state:
     st.session_state["user"] = None
 
+if "show_sidebar" not in st.session_state:
+    st.session_state["show_sidebar"] = False  # Inicialmente a sidebar está fechada
+
 def main():
     """Função principal do aplicativo."""
     
     # Obtém o usuário autenticado
     user = get_user()
     
-    # 🔐 Barra lateral para autenticação
-    st.sidebar.title("🔑 Autenticação")
-
-    if user:
-        st.sidebar.write(f"👤 Usuário: {user['email']}")  
-
-        # 🚪 Botão de logout
-        if st.sidebar.button("Sair"):
-            sign_out()
-            st.session_state["refresh"] = True  # 🚀 Marca para atualizar
-
-    else:
-        auth_section()
+    # 🔐 Sidebar de autenticação, que abre automaticamente se `show_sidebar` for True
+    if st.session_state["show_sidebar"]:
+        with st.sidebar:
+            render_sidebar(user)
 
     # 🎨 Interface principal
     render_main_layout()
@@ -35,6 +29,18 @@ def main():
     if st.session_state.get("refresh", False):
         st.session_state["refresh"] = False
         st.rerun()
+
+def render_sidebar(user):
+    """Renderiza a sidebar de autenticação"""
+    st.title("🔑 Autenticação")
+
+    if user:
+        st.write(f"👤 Usuário: {user['email']}")  
+        if st.button("Sair", key="logout"):
+            sign_out()
+            st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+    else:
+        auth_section()
 
 def render_main_layout():
     """Renderiza a interface principal com título e botão de navegação."""
@@ -45,18 +51,45 @@ def render_main_layout():
     # 📌 Subtítulo
     st.subheader("Um sistema inteligente e adaptado para o novo paradigma dos transtornos mentais")
 
-    # 📌 Criando um botão interativo para explorar a plataforma
-    col1, col2, col3 = st.columns([1, 3, 1])  # Cria um layout centralizado
+    # 📌 Criando um botão estilizado para abrir a sidebar
+    col1, col2, col3 = st.columns([1, 3, 1])  # Layout centralizado
 
     with col2:  # Centraliza o botão
-        if st.button("**Transforme sua prática clínica com tecnologia avançada** 💡", use_container_width=True):
-            # Simula a abertura da sidebar em dispositivos móveis
-            st.session_state["show_sidebar"] = not st.session_state.get("show_sidebar", False)
+        button_html = """
+        <style>
+            .explore-button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 12px 24px;
+                font-size: 18px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+                width: 100%;
+                text-align: center;
+            }
+            .explore-button:hover {
+                background-color: #45a049;
+                transform: scale(1.05);
+            }
+        </style>
+        <script>
+            function openSidebar() {
+                var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {
+                    sidebar.style.display = "block";
+                }
+            }
+        </script>
+        <button class="explore-button" onclick="openSidebar()">🚀 Explorar Agora</button>
+        """
+        st.markdown(button_html, unsafe_allow_html=True)
 
     # 📌 Introdução com Markdown
     st.markdown(
         """
-        #### **Benefícios**  
+        #### **Como a Academia Diagnóstica pode transformar sua prática?**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
@@ -66,35 +99,34 @@ def render_main_layout():
 
         🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática clínica e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
         """
     )
 
 def auth_section():
     """Área de autenticação"""
-    option = st.sidebar.radio("Acesso", ["Login", "Cadastro"])
-    email = st.sidebar.text_input("Email")
-    password = st.sidebar.text_input("Senha", type="password")
+    option = st.radio("Acesso", ["Login", "Cadastro"], key="auth_option")
+    email = st.text_input("Email")
+    password = st.text_input("Senha", type="password")
 
     if option == "Cadastro":
-        confirm_password = st.sidebar.text_input("Confirme a Senha", type="password")
-        if st.sidebar.button("Criar Conta"):
+        confirm_password = st.text_input("Confirme a Senha", type="password")
+        if st.button("Criar Conta"):
             user, message = sign_up(email, password, confirm_password)
             if user:
-                st.sidebar.success(message)
+                st.success(message)
                 st.session_state["refresh"] = True  # 🚀 Marca para atualizar
             else:
-                st.sidebar.error(message)
+                st.error(message)
 
     elif option == "Login":
-        if st.sidebar.button("Entrar"):
+        if st.button("Entrar"):
             user, message = sign_in(email, password)
             if user:
-                st.sidebar.success(message)
+                st.success(message)
                 st.session_state["refresh"] = True  # 🚀 Marca para atualizar
             else:
-                st.sidebar.error(message)
+                st.error(message)
 
 if __name__ == "__main__":
     main()
-
