@@ -21,21 +21,23 @@ def render_main_layout():
         🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
         """
     )
-
-    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
-
     
+    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
+    
+    # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
-
+    
     email = st.text_input("Email", key="email_input")
     password = st.text_input("Senha", type="password", key="password_input")
     
+    # Se for Cadastro, exibe os campos adicionais para nome e confirmação de senha
     display_name = None
     confirm_password = None
     if option == "Cadastro":
-        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
-
+        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
+    
+    # Aplica estilo ao botão via CSS
     st.markdown(
         """
         <style>
@@ -60,11 +62,14 @@ def render_main_layout():
         """, unsafe_allow_html=True
     )
     
+    # Se o usuário alterna para Login, reseta a flag de conta criada
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
-
+    
+    # Define o texto do botão conforme a opção
     action_text = "Entrar 🚀" if option == "Login" else "Criar Conta 📩"
     
+    # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de confirmação por e-mail
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
     else:
@@ -77,13 +82,15 @@ def render_main_layout():
             if user:
                 st.session_state["user"] = user
                 if option == "Cadastro":
-                    st.session_state["account_created"] = True
-                st.success("✅ Autenticação realizada com sucesso!" if option == "Login" else "📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
+                    st.session_state["account_created"] = True  # Suspende o botão após cadastro
+                st.success("✅ Autenticação realizada com sucesso!" if option == "Login" 
+                           else "📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
                 st.session_state["refresh"] = True
                 st.rerun()
             else:
                 st.error(message)
     
+    # Botão "Esqueci minha senha" aparece apenas no Login
     if option == "Login":
         if st.button("Esqueci minha senha"):
             if email:
