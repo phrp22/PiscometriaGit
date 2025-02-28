@@ -13,9 +13,38 @@ def render_main_layout():
     col1, col2, col3 = st.columns([1, 3, 1])  # Layout centralizado
 
     with col2:  # Centraliza o botão
-        if st.button("🚀 Explorar Agora", key="explore", use_container_width=True):
-            st.session_state["show_sidebar"] = True  # 🚀 Ativa a sidebar
-            st.rerun()  # 🔄 Recarrega a interface para mostrar a sidebar
+        button_html = """
+        <style>
+            .explore-button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 12px 24px;
+                font-size: 18px;
+                font-weight: bold;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+            .explore-button:hover {
+                background-color: #45a049;
+                transform: scale(1.05);
+            }
+        </style>
+        <button class="explore-button" onclick="openSidebar()">🚀 Explorar Agora</button>
+        <script>
+            function openSidebar() {
+                var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {
+                    sidebar.style.display = "block";
+                }
+            }
+        </script>
+        """
+        st.markdown(button_html, unsafe_allow_html=True)
 
     # 📌 Introdução com Markdown
     st.markdown(
