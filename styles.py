@@ -53,3 +53,24 @@ ORANGE_TEXT_STYLE = """
 """
 
 # Se você tinha algo como PAGE_BG_STYLE definindo o fundo, remova-o ou comente-o.
+
+
+PAGE_BG_STYLE = """
+<style>
+    /* Fundo da página no estilo azul marinho */
+    .stApp {
+        background-color: #1B2B48 !important; /* Ajuste esse tom se quiser mais claro ou mais escuro */
+        color: #FFFFFF !important;
+    }
+    /* Ajusta a cor de textos padrões (labels, parágrafos, etc.) */
+    h2, h3, h4, h5, h6, p, label, div, span, .css-1cpxqw2, .css-14xtw13 {
+        color: #FFFFFF !important;
+    }
+    /* Destaque laranja para a frase */
+    .orange-text {
+        color: #FFA500 !important; /* Laranja */
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+</style>
+"""
