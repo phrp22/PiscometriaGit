@@ -7,15 +7,13 @@ def is_professional_enabled(email):
     Consulta a tabela 'professional' no Supabase para verificar se o usuário
     com o email informado tem a área profissional habilitada.
     """
-    response = supabase_client.from_("professional").select("*").eq("email", email).execute()
+    response = supabase_client.from_("professional").select("area_habilitada").eq("email", email).execute()
 
-    # 📌 Verifica se há erro na resposta do Supabase
     if response.data:
         data = response.data
         if len(data) > 0:
             return data[0].get("area_habilitada", False)
     return False
-
 
 def enable_professional_area(email, display_name):
     """
@@ -29,8 +27,10 @@ def enable_professional_area(email, display_name):
     if response.data and len(response.data) > 0:
         # Se o email já existe, apenas atualiza o campo `area_habilitada`
         update_response = supabase_client.from_("professional").update({"area_habilitada": True}).eq("email", email).execute()
+        
         if update_response.error:
             return False, f"Erro ao atualizar: {update_response.error.message}"
+        
         return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
     # Se o email não existir, cria um novo registro
@@ -41,6 +41,7 @@ def enable_professional_area(email, display_name):
         "display_name": display_name,
         "area_habilitada": True
     }
+    
     insert_response = supabase_client.from_("professional").insert(data).execute()
 
     if insert_response.error:
