@@ -62,17 +62,17 @@ def get_user_profile(auth_user_id):
 
 def render_onboarding_questionnaire(user_id):
     """Renderiza o questionário inicial para coletar gênero, data de nascimento, etc."""
-    st.title("Questionário Inicial")
-    st.write("Por favor, preencha suas informações para personalizar a experiência.")
+    st.title("Queremos saber um pouco mais sobre você!")
+    st.write("Por favor, complete o cadastro para que nós possamos continuar.")
 
-    genero = st.selectbox("Qual seu gênero?", ["Masculino", "Feminino", "Neutro", "Prefiro não informar"])
+    genero = st.selectbox("Qual seu gênero?", ["Masculino", "Feminino", "Não-binário"])
 
     # Define limites para a data de nascimento
     max_date = datetime.date.today()  # O usuário não pode escolher datas futuras
     min_date = datetime.date(1900, 1, 1)  # Permite qualquer nascimento razoável
 
     # `st.date_input` usa o locale do navegador, então a ordem deve seguir o sistema do usuário.
-    data_nascimento = st.date_input("Data de Nascimento", min_value=min_date, max_value=max_date, format="DD/MM/YYYY")
+    data_nascimento = st.date_input("Quando você nasceu?", min_value=min_date, max_value=max_date, format="DD/MM/YYYY")
 
     if st.button("Salvar"):
         success, msg = create_user_profile(user_id, genero, data_nascimento)
