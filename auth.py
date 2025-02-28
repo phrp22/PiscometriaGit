@@ -1,12 +1,13 @@
 import streamlit as st
 import supabase
 
-# 🔑 Credenciais do Supabase
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+@st.cache_resource
+def get_supabase_client():
+    SUPABASE_URL = st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+    return supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 📡 Criando o cliente Supabase
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase_client = get_supabase_client()
 
 def sign_in(email, password):
     try:
