@@ -4,27 +4,19 @@ from styles import BUTTON_STYLE  # Mantemos apenas os estilos necessários
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
-    
-    # Aplica um fundo azul-marinho escuro
+
+    # Título principal alinhado à esquerda
     st.markdown(
-        """
-        <style>
-            body {
-                background-color: #0A0F1D;  /* Azul-marinho quase preto */
-            }
-            .stApp {
-                background-color: #0A0F1D;
-            }
-        </style>
-        """,
+        "<h1 style='text-align: left; color: white;'>Academia Diagnóstica 🧠</h1>",
         unsafe_allow_html=True
     )
 
-    # Título principal
-    st.markdown("<h1 style='text-align: center; color: white;'>Academia Diagnóstica 🧠</h1>", unsafe_allow_html=True)
-
-    # Frase de destaque (em laranja e maior)
-    st.markdown("<h2 style='text-align: center; color: #FFA500; font-size: 28px;'>Transforme a sua prática clínica com tecnologia avançada</h2>", unsafe_allow_html=True)
+    # Frase de destaque em laranja, alinhada à esquerda
+    st.markdown(
+        "<h2 style='text-align: left; color: #FFA500; font-size: 28px;'>"
+        "Transforme a sua prática clínica com tecnologia avançada</h2>",
+        unsafe_allow_html=True
+    )
 
     st.markdown(
         """
