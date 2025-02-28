@@ -17,17 +17,12 @@ if "user" not in st.session_state:
 def main():
     user = get_user()
     if user:
-        # Verifica se o usuário tem área profissional habilitada
         if is_professional_enabled(user["email"]):
-            render_professional_dashboard()
+            render_professional_dashboard(user)  # ✅ Agora só existe essa função
         else:
             render_dashboard()
     else:
         render_main_layout()
-
-    if st.session_state.get("refresh", False):
-        st.session_state["refresh"] = False
-        st.rerun()
 
 if __name__ == "__main__":
     main()
