@@ -23,7 +23,7 @@ def sign_in(email, password):
 def sign_up(email, password, confirm_password, display_name):
     """Cria um novo usuário no sistema e insere dados extras na tabela de perfis."""
     if password != confirm_password:
-        return None, "As senhas não coincidem! ❌"
+        return None, "❌ As senhas não coincidem!"
 
     try:
         # Cria o usuário via Supabase Auth
@@ -38,14 +38,16 @@ def sign_up(email, password, confirm_password, display_name):
                 "email": email,
                 "display_name": display_name
             }
-            # Insere os dados na tabela user_profiles
-            insert_response = supabase_client.from_("user_profiles").insert(data).execute()
-            if insert_response.error:
+            # Usa upsert para inserir ou atualizar, evitando erros de duplicidade
+            insert_response = supabase_client.from_("user_profiles").upsert(data, on_conflict="email").execute()
+            # Se houver erro, mas o registro já existir, podemos ignorá-lo
+            if insert_response.error and "already exists" not in insert_response.error.message.lower():
                 return None, f"Erro ao criar perfil: {insert_response.error.message}"
             return user_obj, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
-        return None, f"Erro ao criar conta: {str(e)} ❌ "
+        return None, f"❌ Erro ao criar conta: {str(e)}"
+
 
 def reset_password(email):
     """Envia um email para redefinição de senha."""
