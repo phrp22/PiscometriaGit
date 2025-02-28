@@ -2,7 +2,9 @@
 
 BUTTON_STYLE = """
 <style>
-    div.stButton > button:first-child {
+    /* Estilização geral para todos os botões */
+    div.stButton > button:first-child,
+    section[data-testid="stSidebar"] div.stButton > button:first-child {
         background-color: #7159c1;
         color: white;
         font-size: 18px;
@@ -16,20 +18,26 @@ BUTTON_STYLE = """
         text-align: center;
         box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5);
     }
-    div.stButton > button:first-child:hover {
+    
+    /* Efeito hover */
+    div.stButton > button:first-child:hover,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
         background-color: #5e47b0;
         transform: scale(1.05);
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
     }
-    div.stButton > button:first-child:active {
-        background-color: #5e47b0 !important; /* Mantém o efeito roxo ao clicar */
+
+    /* Evita a borda vermelha ao clicar */
+    div.stButton > button:first-child:active,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+        background-color: #5e47b0 !important;
         border-color: #7159c1 !important;
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
         transform: scale(0.98);
     }
-
 </style>
 """
+
 
 SIDEBAR_BUTTON_STYLE = """
 <style>
