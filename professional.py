@@ -6,24 +6,24 @@ def is_professional_enabled(email):
     """Verifica se a área profissional está habilitada para o usuário."""
     response = supabase_client.from_("professional").select("area_habilitada").eq("email", email).execute()
     
-    if "data" in response and response["data"]:
+    if response and "data" in response and response["data"]:
         return response["data"][0].get("area_habilitada", False)
     return False
 
 def enable_professional_area(email, display_name):
-    """Habilita a área do profissional ou insere um novo registro caso não exista."""
+    """Habilita a área do profissional sem duplicação de registros."""
     response = supabase_client.from_("professional").select("email").eq("email", email).execute()
 
-    if "data" in response and len(response["data"]) > 0:
-        # Atualiza se já existir
+    if response and "data" in response and len(response["data"]) > 0:
+        # Se o email já existe, apenas atualiza o campo `area_habilitada`
         update_response = supabase_client.from_("professional").update({"area_habilitada": True}).eq("email", email).execute()
         
         if "error" in update_response and update_response["error"]:
             return False, f"Erro ao atualizar: {update_response['error']}"
         
-        return True, None
+        return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
-    # Se não existir, insere um novo
+    # Se o email não existir, cria um novo registro
     new_uuid = str(uuid.uuid4())
     data = {
         "id": new_uuid,
@@ -37,7 +37,7 @@ def enable_professional_area(email, display_name):
     if "error" in insert_response and insert_response["error"]:
         return False, f"Erro ao criar registro: {insert_response['error']}"
     
-    return True, None
+    return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
