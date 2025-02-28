@@ -52,6 +52,7 @@ def reset_password(email):
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
 
+
 def sign_out():
     """Desconecta o usuário."""
     supabase_client.auth.sign_out()

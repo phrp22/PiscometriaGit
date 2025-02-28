@@ -16,10 +16,20 @@ BUTTON_STYLE = """
         text-align: center;
         box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5);
     }
+
+    /* Efeito Hover (passar o mouse) */
     div.stButton > button:first-child:hover {
         background-color: #5e47b0;
         transform: scale(1.05);
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
+    }
+
+    /* Efeito Active (quando pressionado) */
+    div.stButton > button:first-child:active {
+        background-color: #3cb371 !important;  /* Verde Encantado */
+        border-color: #2e8b57 !important;  /* Verde mais escuro para contraste */
+        box-shadow: 0px 0px 15px rgba(60, 179, 113, 0.7);
+        transform: scale(0.98);
     }
 </style>
 """
