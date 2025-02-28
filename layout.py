@@ -14,13 +14,14 @@ def render_main_layout():
     # Frase de destaque em laranja, alinhada à esquerda
     st.markdown(
         "<h2 style='text-align: left; color: #FFA500; font-size: 28px;'>"
-        "💻 Transforme a sua prática clínica com tecnologia avançada</h2>",
+        "Sistema inteligente e adaptado para o novo paradigma dos transtornos mentais</h2>",
         unsafe_allow_html=True
     )
 
     st.markdown(
         """
-                
+        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
+        
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
         - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
