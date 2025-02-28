@@ -22,7 +22,7 @@ def sign_in(email, password):
 def sign_up(email, password, confirm_password):
     """Cria um novo usuário no sistema."""
     if password != confirm_password:
-        return None, "❌ As senhas não coincidem!"
+        return None, "As senhas não coincidem! ❌"
 
     try:
         response = supabase_client.auth.sign_up({"email": email, "password": password})
@@ -30,7 +30,7 @@ def sign_up(email, password, confirm_password):
             return response.user, "📩 Um email de confirmação foi enviado."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
-        return None, f"❌ Erro ao criar conta: {str(e)}"
+        return None, f"Erro ao criar conta: {str(e)} ❌"
 
 def reset_password(email):
     """Envia um email para redefinição de senha."""

@@ -7,10 +7,8 @@ def render_main_layout():
     # 📌 Nome do App
     st.title("Academia Diagnóstica 🧠")
 
-    # 📌 Subtítulo
-    st.subheader("Um sistema inteligente e adaptado para o novo paradigma dos transtornos mentais")
-
-    # 📌 Introdução com Markdown
+    # 📝 Aqui trazemos a explicação,  
+    # De como usar essa inovação!  
     st.markdown(
         """
         ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
@@ -27,23 +25,27 @@ def render_main_layout():
         """
     )
 
-    # 🔻 Login/Cadastro na parte inferior
+    # 🔻 Aqui o Login e Cadastro vão se encontrar,  
+    # Só escolher qual você quer usar!  
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center;'>🔑 Acesse sua Conta</h3>", unsafe_allow_html=True)
-
-    # 📌 Alternador entre Login e Cadastro
+    # 🔄 Alternância entre Login e Cadastro  
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
+    # ✉️ Digite seu email, sem hesitar,  
     email = st.text_input("Email", key="email_input")
+
+    # 🔐 Sua senha agora vamos guardar!  
     password = st.text_input("Senha", type="password", key="password_input")
 
-    # 📌 Se for Cadastro, exibir confirmação de senha
+    # 📌 Se for Cadastro, há algo a mais,  
+    # Precisamos confirmar a senha, sem sinais!  
     confirm_password = None
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
 
-    # 📌 Estilizar o botão com CSS para ficar verde
+    # 🎨 Um botão bonito, pra ficar sensacional,  
+    # Verde, elegante, um toque especial!  
     st.markdown(
         """
         <style>
@@ -68,22 +70,27 @@ def render_main_layout():
         """, unsafe_allow_html=True
     )
 
-    # 📌 Se o usuário alternar para Login, resetamos a flag de conta criada
+    # 🛠️ Se mudar para Login, vamos ajeitar,  
+    # O aviso de conta criada precisa apagar!  
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
-    # 📌 Botão real do Streamlit (único)
-    action_text = "🚀 Entrar" if option == "Login" else "📩 Criar Conta"
+    # 🔘 O botão com ação especial,  
+    action_text = "Entrar 🚀" if option == "Login" else "📩 Criar Conta"
 
+    # 📩 Se a conta foi criada, não há mais ação,  
+    # Só mostramos um aviso, sem preocupação!  
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado. Confirme para acessar sua conta.")
     else:
+        # 🎯 Aqui vem a lógica, simples e sagaz,  
         if st.button(action_text, key="auth_action"):
             if option == "Login":
                 user, message = sign_in(email, password)
             else:
                 user, message = sign_up(email, password, confirm_password)
 
+            # 🎉 Se tudo der certo, é hora de vibrar,  
             if user:
                 st.session_state["user"] = user
                 if option == "Cadastro":
@@ -92,13 +99,14 @@ def render_main_layout():
                 st.session_state["refresh"] = True
                 st.rerun()
             else:
-                st.error(message)
+                st.error(message)  # 🚨 Se algo falhou, vamos avisar!
 
-    # 📌 Botão "Esqueci minha senha"
+    # 🔑 Se a senha sumiu da sua mente,  
+    # Não se preocupe, tem um jeito excelente!  
     if option == "Login":
-        if st.button("🔑 Esqueci minha senha"):
+        if st.button("Esqueci minha senha"):
             if email:
                 message = reset_password(email)
-                st.info(message)
+                st.info(message)  # 📩 Um email será enviado rapidinho!
             else:
-                st.warning("Por favor, insira seu email antes de redefinir a senha.")
+                st.warning("Por favor, insira seu email antes de redefinir a senha.")  # ⚠️ Não podemos adivinhar!
