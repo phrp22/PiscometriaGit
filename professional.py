@@ -31,7 +31,7 @@ def enable_professional_area(email, display_name):
         if update_response.error:
             return False, f"Erro ao atualizar: {update_response.error.message}"
         
-        return True, None
+        return True, ""
 
     # Se o email não existir, cria um novo registro
     new_uuid = str(uuid.uuid4())
@@ -47,7 +47,7 @@ def enable_professional_area(email, display_name):
     if insert_response.error:
         return False, f"Erro ao criar registro: {insert_response.error.message}"
     
-    return True, None
+    return True, ""
 
 
 def render_professional_dashboard(user):
