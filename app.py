@@ -4,6 +4,7 @@ from layout import render_main_layout
 from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
 
+
 st.set_page_config(
     page_title="Academia Diagnóstica",
     page_icon="🧠",

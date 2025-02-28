@@ -45,8 +45,7 @@ def enable_professional_area(email, display_name):
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
 
-    # Aplica o estilo dos botões na sidebar
-    st.markdown(SIDEBAR_BUTTON_STYLE, unsafe_allow_html=True)
+    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
     with st.sidebar:
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
