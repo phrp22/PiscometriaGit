@@ -1,8 +1,8 @@
 import streamlit as st
-from auth import sign_in
+from auth import sign_in, sign_up
 
 def render_main_layout():
-    """Renderiza a interface principal com título e login na parte inferior."""
+    """Renderiza a interface principal com título e opções de Login e Cadastro na parte inferior."""
 
     # 📌 Nome do App
     st.title("Academia Diagnóstica 🧠")
@@ -27,15 +27,25 @@ def render_main_layout():
         """
     )
 
-    # 🔻 Login na parte inferior
+    # 🔻 Login/Cadastro na parte inferior
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center;'>🔑 Faça seu Login</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>🔑 Acesse sua Conta</h3>", unsafe_allow_html=True)
+
+    # 📌 Alternador entre Login e Cadastro
+    option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
     email = st.text_input("Email", key="email_input")
     password = st.text_input("Senha", type="password", key="password_input")
 
-    login_button_html = f"""
+    # 📌 Se for Cadastro, exibir confirmação de senha
+    confirm_password = None
+    if option == "Cadastro":
+        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
+
+    # 📌 Botão estilizado para Login/Cadastro
+    action_text = "🚀 Entrar" if option == "Login" else "📩 Criar Conta"
+    button_html = f"""
     <style>
         .green-button {{
             background-color: #4CAF50;
@@ -57,24 +67,21 @@ def render_main_layout():
             transform: scale(1.05);
         }}
     </style>
-    <form action="" method="POST">
-        <input type="hidden" name="email" value="{email}">
-        <input type="hidden" name="password" value="{password}">
-        <button class="green-button" type="submit">🚀 Entrar</button>
-    </form>
+    <button class="green-button" onclick="document.getElementById('auth_action').click()">{action_text}</button>
     """
-    st.markdown(login_button_html, unsafe_allow_html=True)
+    st.markdown(button_html, unsafe_allow_html=True)
 
-    # Capturar o clique e processar login
-    if "email_input" in st.session_state and "password_input" in st.session_state:
-        email = st.session_state["email_input"]
-        password = st.session_state["password_input"]
-        if email and password:  # Se os campos estiverem preenchidos
+    # 📌 Captura do clique e execução da autenticação
+    if st.button(action_text, key="auth_action", help="Clique no botão verde acima para continuar"):
+        if option == "Login":
             user, message = sign_in(email, password)
-            if user:
-                st.session_state["user"] = user
-                st.success("✅ Login realizado com sucesso!")
-                st.session_state["refresh"] = True
-                st.rerun()
-            else:
-                st.error(message)
+        else:
+            user, message = sign_up(email, password, confirm_password)
+
+        if user:
+            st.session_state["user"] = user
+            st.success("✅ Autenticação realizada com sucesso!")
+            st.session_state["refresh"] = True
+            st.rerun()
+        else:
+            st.error(message)
