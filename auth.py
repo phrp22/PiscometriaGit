@@ -68,14 +68,13 @@ def get_user():
 
     try:
         user = supabase_client.auth.get_user()  # Obtém o usuário autenticado
-
         if user and hasattr(user, "user") and user.user:
             user_obj = user.user
             user_data = {
                 "email": user_obj.email,
                 "id": user_obj.id,
                 "display_name": user_obj.user_metadata.get("display_name", "Usuário") 
-                if hasattr(user_obj, "user_metadata") else "Usuário"
+                               if hasattr(user_obj, "user_metadata") else "Usuário"
             }
             st.session_state["user"] = user_data  # Salva na sessão
             return user_data
@@ -84,7 +83,3 @@ def get_user():
         st.error(f"Erro ao buscar usuário autenticado: {e}")
 
     return None  # Retorna None se não encontrar um usuário logado
-
-
-
-
