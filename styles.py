@@ -22,11 +22,12 @@ BUTTON_STYLE = """
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
     }
     div.stButton > button:first-child:active {
-        background-color: #d32f2f !important;
-        border-color: #a82828 !important;
-        box-shadow: 0px 0px 10px rgba(211, 47, 47, 0.8);
+        background-color: #5e47b0 !important; /* Mantém o efeito roxo ao clicar */
+        border-color: #7159c1 !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
         transform: scale(0.98);
     }
+
 </style>
 """
 
