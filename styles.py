@@ -27,12 +27,22 @@ BUTTON_STYLE = """
 TITLE_STYLE = """
 <style>
     h1 {
-        font-size: 44px;
+        font-size: 42px;
         font-weight: bold;
-        text-align: left;
-        background: linear-gradient(90deg, #4a90e2, #2c6ed5);
+        background: linear-gradient(90deg, #7159c1, #836fff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 8px rgba(113, 89, 193, 0.4);
+        animation: glowTitle 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes glowTitle {
+        0% {
+            text-shadow: 2px 2px 8px rgba(113, 89, 193, 0.4);
+        }
+        100% {
+            text-shadow: 4px 4px 12px rgba(113, 89, 193, 0.6);
+        }
     }
 </style>
 """
