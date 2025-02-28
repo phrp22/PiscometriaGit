@@ -1,6 +1,7 @@
 import streamlit as st
 from auth import get_user, sign_out
 from professional import is_professional_enabled, render_professional_dashboard, enable_professional_area
+from profile import get_user_profile
 
 def render_sidebar(user):
     """Renderiza a sidebar para usuários logados."""
@@ -35,15 +36,29 @@ def render_sidebar(user):
         else:
             st.info("Área do profissional habilitada!")
 
+
 def render_dashboard():
-    """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
     if not user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    render_sidebar(user)
-    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    # Busca o perfil
+    profile = get_user_profile(user["id"])
+    if profile:
+        genero = profile.get("genero", None)
+        # Lógica simples de saudação
+        if genero == "Feminino":
+            saudacao = "Bem-vinda"
+        elif genero == "Neutro":
+            saudacao = "Bem-vinde"
+        else:
+            saudacao = "Bem-vindo"
+    else:
+        # Se não tiver perfil, fallback para "Bem-vindo"
+        saudacao = "Bem-vindo"
+
+    st.title(f"{saudacao}, {user['display_name']}!")
     st.markdown("### 📈 Estatísticas recentes")
     st.metric(label="Pacientes cadastrados", value="42")
     st.metric(label="Avaliações concluídas", value="120")
