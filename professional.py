@@ -3,15 +3,21 @@ import streamlit as st
 from auth import supabase_client  # Certifique-se de que supabase_client está exportado no auth.py
 
 def is_professional_enabled(email):
+    """
+    Consulta a tabela 'professional' no Supabase para verificar se o usuário
+    com o email informado tem a área profissional habilitada.
+    """
     response = supabase_client.from_("professional").select("*").eq("email", email).execute()
-    try:
+
+    # 📌 Verifica se há erro na resposta do Supabase
+    if hasattr(response, "data") and response.data is not None:
         data = response.data
-    except Exception as e:
-        st.error("Erro ao consultar área profissional: " + str(e))
+        if data and len(data) > 0:
+            return data[0].get("area_habilitada", False)
         return False
-    if data and len(data) > 0:
-        return data[0].get("area_habilitada", False)
-    return False
+    else:
+        st.error(f"Erro ao consultar área profissional: {response}")
+        return False
 
 
 def enable_professional_area(email, display_name):
@@ -30,32 +36,9 @@ def enable_professional_area(email, display_name):
         return False, response.error.message
     return True, "Área do profissional habilitada com sucesso!"
 
-import streamlit as st
-from auth import get_user, sign_out
-
-def render_professional_sidebar(user):
-    """Renderiza a sidebar para a dashboard profissional."""
-    with st.sidebar:
-        st.title("Área Profissional Habilitada")
-        st.write(f"Bem-vindo, {user['display_name']}!")
-        st.write(f"Email: {user['email']}")
-        if st.button("🚪 Sair"):
-            sign_out()
-            st.success("Você saiu com sucesso!")
-            st.session_state["refresh"] = True
-            st.rerun()
-
 def render_professional_dashboard():
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
-    user = get_user()
-    if not user:
-        st.warning("⚠️ Você precisa estar logado para acessar esta área.")
-        return
-
-    render_professional_sidebar(user)
-    
-    # Conteúdo principal do dashboard profissional:
     st.title("Dashboard Profissional")
-    st.markdown("### Funcionalidades exclusivas para profissionais")
-    st.markdown("Aqui você pode acessar relatórios, configurar sua área, e muito mais!")
-    # Adicione aqui os widgets e funcionalidades específicas para profissionais.
+    st.markdown("### Bem-vindo à área profissional!")
+    st.markdown("Aqui você pode acessar funcionalidades exclusivas para profissionais da saúde mental.")
+    # Adicione aqui os widgets e estatísticas específicas para profissionais
