@@ -64,10 +64,21 @@ def sign_out():
 @st.cache_data(ttl=300)  # Cache expira a cada 5 minutos
 def get_user_data(email):
     """Busca os dados do usuário no Supabase com cache para evitar consultas excessivas."""
-    response = supabase_client.from_("users").select("*").eq("email", email).execute()
-    if response and hasattr(response, "data") and response.data:
-        return response.data[0]  # Retorna apenas o primeiro usuário encontrado
-    return None
+    if not email:
+        return None  # Retorna None se o email for inválido
+
+    try:
+        response = supabase_client.from_("users").select("*").eq("email", email).execute()
+
+        if response and hasattr(response, "data") and response.data:
+            return response.data[0]  # Retorna o primeiro usuário encontrado
+
+        return None  # Retorna None se não houver dados
+
+    except Exception as e:
+        st.error(f"Erro ao buscar usuário: {e}")
+        return None
+
 
 
 def get_user():
@@ -76,12 +87,17 @@ def get_user():
         return st.session_state["user"]
     
     email = st.session_state.get("user_email")
-    if email:
-        user_data = get_user_data(email)  # Usa cache para evitar consultas repetidas
-        if user_data:
-            st.session_state["user"] = user_data  # Salva na sessão
-            return user_data
+    
+    if not email:
+        return None  # Se não há email na sessão, não faz a consulta
 
-    return None  # Nenhum usuário logado
+    user_data = get_user_data(email)  # Usa cache para evitar consultas repetidas
+    
+    if user_data:
+        st.session_state["user"] = user_data  # Salva na sessão
+        return user_data
+
+    return None  # Nenhum usuário encontrado
+
 
 
