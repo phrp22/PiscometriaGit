@@ -1,5 +1,3 @@
-# styles.py
-
 BUTTON_STYLE = """
 <style>
     /* Estilização geral para todos os botões */
@@ -17,8 +15,9 @@ BUTTON_STYLE = """
         padding: 12px 24px;
         text-align: center;
         box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5);
+        outline: none !important; /* Remove contorno de foco */
     }
-    
+
     /* Efeito hover */
     div.stButton > button:first-child:hover,
     section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
@@ -27,13 +26,21 @@ BUTTON_STYLE = """
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
     }
 
-    /* Evita a borda vermelha ao clicar */
+    /* Efeito ao clicar (ativo) */
     div.stButton > button:first-child:active,
     section[data-testid="stSidebar"] div.stButton > button:first-child:active {
         background-color: #5e47b0 !important;
         border-color: #7159c1 !important;
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
         transform: scale(0.98);
+        color: white !important; /* Garante que o texto não fique vermelho */
+    }
+
+    /* Remove borda vermelha de foco após o clique */
+    div.stButton > button:first-child:focus,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
+        outline: none !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
     }
 </style>
 """
