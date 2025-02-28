@@ -48,10 +48,3 @@ def render_dashboard():
     st.markdown("### 📈 Estatísticas recentes")
     st.metric(label="Pacientes cadastrados", value="42")
     st.metric(label="Avaliações concluídas", value="120")
-
-# Se você quiser exportar a função render_professional_dashboard separadamente:
-def render_professional_dashboard():
-    """Renderiza o dashboard exclusivo para profissionais habilitados."""
-    st.title("Dashboard Profissional")
-    st.markdown("### Bem-vindo à área profissional!")
-    st.markdown("Aqui você pode acessar funcionalidades exclusivas para profissionais da saúde mental.")
