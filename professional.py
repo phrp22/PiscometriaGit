@@ -5,21 +5,23 @@ from auth import supabase_client, sign_out
 def is_professional_enabled(email):
     """Verifica se a área profissional está habilitada para o usuário."""
     response = supabase_client.from_("professional").select("area_habilitada").eq("email", email).execute()
-    
-    if response and "data" in response and response["data"]:
-        return response["data"][0].get("area_habilitada", False)
+
+    if response and hasattr(response, "data") and response.data:
+        return response.data[0].get("area_habilitada", False)
     return False
 
 def enable_professional_area(email, display_name):
     """Habilita a área do profissional sem duplicação de registros."""
+    
+    # Verifica se o email já existe
     response = supabase_client.from_("professional").select("email").eq("email", email).execute()
 
-    if response and "data" in response and len(response["data"]) > 0:
+    if response and hasattr(response, "data") and response.data:
         # Se o email já existe, apenas atualiza o campo `area_habilitada`
         update_response = supabase_client.from_("professional").update({"area_habilitada": True}).eq("email", email).execute()
         
-        if "error" in update_response and update_response["error"]:
-            return False, f"Erro ao atualizar: {update_response['error']}"
+        if hasattr(update_response, "error") and update_response.error:
+            return False, f"Erro ao atualizar: {update_response.error.message}"
         
         return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
@@ -34,13 +36,14 @@ def enable_professional_area(email, display_name):
     
     insert_response = supabase_client.from_("professional").insert(data).execute()
 
-    if "error" in insert_response and insert_response["error"]:
-        return False, f"Erro ao criar registro: {insert_response['error']}"
+    if hasattr(insert_response, "error") and insert_response.error:
+        return False, f"Erro ao criar registro: {insert_response.error.message}"
     
     return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
+    
     with st.sidebar:
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
@@ -51,12 +54,4 @@ def render_professional_dashboard(user):
             st.session_state.clear()
             st.rerun()  
 
-    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
-    st.markdown("### 📊 Painel de Controle Profissional")
-    
-    st.metric(label="📁 Pacientes cadastrados", value="42")
-    st.metric(label="📊 Avaliações realizadas", value="128")
-    st.metric(label="📆 Última atualização", value="Hoje")
-
-    st.markdown("---")
-    st.info("🔍 Novos recursos serão adicionados em breve!")
+    st.title(f"🎉 Bem-vindo, {user['display_name
