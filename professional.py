@@ -55,18 +55,18 @@ def render_professional_dashboard(user):
 
     # 🔹 Configuração da Sidebar (Menu Lateral)
     with st.sidebar:
-        st.markdown("## 👨‍⚕️ Área Profissional")
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
         
         # ✅ Mensagem de sucesso dentro de um box verde
-        st.success("✅ Área do profissional habilitada com sucesso! ✅✅✅")
+        st.success("✅ Área do profissional habilitada!")
 
         # 🔴 Botão de Logout
         if st.button("🔓 Logout"):
             sign_out()
             st.session_state.clear()
-            st.experimental_rerun()
+            st.rerun()  # ✅ Use a versão correta
+
     
     # 🔹 Conteúdo Principal da Dashboard
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
