@@ -49,32 +49,9 @@ def render_dashboard():
     st.metric(label="Pacientes cadastrados", value="42")
     st.metric(label="Avaliações concluídas", value="120")
 
-import streamlit as st
-from auth import get_user, sign_out
-
-def render_professional_sidebar(user):
-    """Renderiza a sidebar para a dashboard profissional."""
-    with st.sidebar:
-        st.title("Área Profissional Habilitada")
-        st.write(f"Bem-vindo, {user['display_name']}!")
-        st.write(f"Email: {user['email']}")
-        if st.button("🚪 Sair"):
-            sign_out()
-            st.success("Você saiu com sucesso!")
-            st.session_state["refresh"] = True
-            st.rerun()
-
+# Se você quiser exportar a função render_professional_dashboard separadamente:
 def render_professional_dashboard():
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
-    user = get_user()
-    if not user:
-        st.warning("⚠️ Você precisa estar logado para acessar esta área.")
-        return
-
-    render_professional_sidebar(user)
-    
-    # Conteúdo principal do dashboard profissional:
     st.title("Dashboard Profissional")
-    st.markdown("### Funcionalidades exclusivas para profissionais")
-    st.markdown("Aqui você pode acessar relatórios, configurar sua área, e muito mais!")
-    # Adicione aqui os widgets e funcionalidades específicas para profissionais.
+    st.markdown("### Bem-vindo à área profissional!")
+    st.markdown("Aqui você pode acessar funcionalidades exclusivas para profissionais da saúde mental.")
