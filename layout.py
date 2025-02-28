@@ -1,11 +1,13 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE  # Importando estilos
+from styles import BUTTON_STYLE, TITLE_STYLE  # Importando estilos
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    st.title("Academia Diagnóstica 🧠")
+    # Aplica o efeito mágico no título
+    st.markdown(TITLE_STYLE, unsafe_allow_html=True)
+    st.title("Academia Diagnóstica 🧠")  # O título original permanece
 
     st.markdown(
         """
@@ -75,7 +77,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("🪄 Recuperar Senha"):
+        if st.button("🔓 Recuperar Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)
