@@ -1,3 +1,10 @@
+import locale
+
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except locale.Error:
+    locale.setlocale(locale.LC_TIME, '')
+
 import streamlit as st
 from auth import get_user
 from layout import render_main_layout
