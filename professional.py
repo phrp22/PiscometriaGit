@@ -33,29 +33,47 @@ def enable_professional_area(email, display_name):
 import streamlit as st
 from auth import get_user, sign_out
 
+import streamlit as st
+from auth import get_user, sign_out
+from professional import is_professional_enabled, enable_professional_area
+
 def render_professional_sidebar(user):
-    """Renderiza a sidebar para a dashboard profissional."""
+    """Renderiza a sidebar para usuários com área profissional habilitada."""
     with st.sidebar:
-        st.title("Área Profissional Habilitada")
+        # Exibe uma mensagem de sucesso com mais "V" para enfatizar o status
+        st.success("Área do profissional habilitada! VVVVV")
         st.write(f"Bem-vindo, {user['display_name']}!")
         st.write(f"Email: {user['email']}")
+        
         if st.button("🚪 Sair"):
             sign_out()
             st.success("Você saiu com sucesso!")
             st.session_state["refresh"] = True
             st.rerun()
 
-def render_professional_dashboard():
-    """Renderiza o dashboard exclusivo para profissionais habilitados."""
+def render_dashboard():
+    """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
     if not user:
-        st.warning("⚠️ Você precisa estar logado para acessar esta área.")
+        st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    render_professional_sidebar(user)
-    
-    # Conteúdo principal do dashboard profissional:
-    st.title("Dashboard Profissional")
-    st.markdown("### Funcionalidades exclusivas para profissionais")
-    st.markdown("Aqui você pode acessar relatórios, configurar sua área, e muito mais!")
-    # Adicione aqui os widgets e funcionalidades específicas para profissionais.
+    # Se o usuário já tem a área profissional habilitada, usamos a sidebar específica
+    if is_professional_enabled(user["email"]):
+        render_professional_sidebar(user)
+    else:
+        # Aqui você pode exibir a sidebar padrão ou outro conteúdo
+        with st.sidebar:
+            st.title("🔑 Bem-vindo!")
+            st.write(f"👤 {user['display_name']} ({user['email']})")
+            if st.button("🚪 Sair"):
+                sign_out()
+                st.success("Você saiu com sucesso!")
+                st.session_state["refresh"] = True
+                st.rerun()
+
+    # Conteúdo principal do dashboard
+    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    st.markdown("### 📈 Estatísticas recentes")
+    st.metric(label="Pacientes cadastrados", value="42")
+    st.metric(label="Avaliações concluídas", value="120")
