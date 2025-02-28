@@ -6,7 +6,7 @@ def render_sidebar(user):
     """Renderiza a sidebar para usuários logados."""
     with st.sidebar:
         st.title("🔑 Bem-vindo!")
-        st.write(f"**👤 Bem vindo, {user['display_name']}**}")
+        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
         
         if st.button("🚪 Sair"):
