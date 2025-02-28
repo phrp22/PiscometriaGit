@@ -35,15 +35,6 @@ TITLE_STYLE = """
         text-shadow: 2px 2px 8px rgba(113, 89, 193, 0.4);
         animation: glowTitle 3s infinite alternate ease-in-out;
     }
-
-    @keyframes glowTitle {
-        0% {
-            text-shadow: 2px 2px 8px rgba(113, 89, 193, 0.4);
-        }
-        100% {
-            text-shadow: 4px 4px 12px rgba(113, 89, 193, 0.6);
-        }
-    }
 </style>
 """
 
