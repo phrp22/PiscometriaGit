@@ -3,21 +3,15 @@ import streamlit as st
 from auth import supabase_client  # Certifique-se de que supabase_client está exportado no auth.py
 
 def is_professional_enabled(email):
-    """
-    Consulta a tabela 'professional' no Supabase para verificar se o usuário
-    com o email informado tem a área profissional habilitada.
-    """
     response = supabase_client.from_("professional").select("*").eq("email", email).execute()
-
-    # 📌 Verifica se há erro na resposta do Supabase
-    if hasattr(response, "data") and response.data is not None:
+    try:
         data = response.data
-        if data and len(data) > 0:
-            return data[0].get("area_habilitada", False)
+    except Exception as e:
+        st.error("Erro ao consultar área profissional: " + str(e))
         return False
-    else:
-        st.error(f"Erro ao consultar área profissional: {response}")
-        return False
+    if data and len(data) > 0:
+        return data[0].get("area_habilitada", False)
+    return False
 
 
 def enable_professional_area(email, display_name):
