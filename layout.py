@@ -1,55 +1,62 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE, TITLE_STYLE, GLOBAL_FONT_STYLE  
+from styles import BUTTON_STYLE, TITLE_STYLE, PAGE_BG_STYLE  # Importando estilos
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    # Se quiser mudar a fonte global:
-    # st.markdown(GLOBAL_FONT_STYLE, unsafe_allow_html=True)
+    # Aplica o fundo azul-marinho e texto em branco
+    st.markdown(PAGE_BG_STYLE, unsafe_allow_html=True)
 
-    # Se tiver um TITLE_STYLE, aplique:
+    # Aplica o estilo do título
     st.markdown(TITLE_STYLE, unsafe_allow_html=True)
     st.title("Academia Diagnóstica 🧠")
 
-    # Frase maior em laranja com ícone de computador
+    # Frase em destaque laranja
+    st.markdown("<p class='orange-text'>Sistema inteligente e adaptado para o novo paradigma dos transtornos mentais</p>", unsafe_allow_html=True)
+
     st.markdown(
         """
-        <div style="font-size:1.3rem; color:#FFA500; font-weight:bold; margin-bottom:10px;">
-            💻 Transforme a sua prática clínica com tecnologia avançada
-        </div>
-        <ul>
-            <li><strong>Crie uma conta profissional</strong> e acesse um ambiente especializado para profissionais da saúde mental.</li>
-            <li><strong>Cadastre pacientes e acompanhe sua trajetória clínica</strong> com dados organizados em tempo real.</li>
-            <li><strong>Aplique avaliações informatizadas</strong> e obtenha resultados rápidos e padronizados.</li>
-            <li><strong>Utilize nossas correções automatizadas</strong> para garantir mais precisão na interpretação dos dados.</li>
-            <li><strong>Monitore a evolução longitudinalmente</strong> observando padrões ao longo do tempo.</li>
-        </ul>
-        🎯 <strong>Tenha em mãos um sistema inteligente e baseado em evidências.</strong>  
-        🔍 <strong>Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.</strong>
-        """,
-        unsafe_allow_html=True
+        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
+        
+        - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
+        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
+        - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
+        - **Utilize nossas correções automatizadas** para garantir mais precisão na interpretação dos dados.
+        - **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
+        
+        🎯 **Tenha em mãos um sistema inteligente e baseado em evidências.**  
+        
+        🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
+        """
     )
-
+    
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
+    # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
+    
     email = st.text_input("Email", key="email_input")
     password = st.text_input("Senha", type="password", key="password_input")
-
+    
+    # Se for Cadastro, exibe os campos adicionais para nome e confirmação de senha
     display_name = None
     confirm_password = None
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
-
+        
+    # Aplica estilo ao botão
     st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
-
+    
+    # Se o usuário alterna para Login, reseta a flag de conta criada
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
-
+    
+    # Define o texto do botão conforme a opção
     action_text = "Entrar" if option == "Login" else "Criar Conta"
-
+    
+    # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
@@ -63,6 +70,7 @@ def render_main_layout():
                 else:
                     st.error(message)
             else:
+                # Cadastro: cria a conta, mas NÃO loga o usuário automaticamente
                 user, message = sign_up(email, password, confirm_password, display_name)
                 if user:
                     st.session_state["account_created"] = True
@@ -71,7 +79,8 @@ def render_main_layout():
                     st.rerun()
                 else:
                     st.error(message)
-
+    
+    # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
         if st.button("Recuperar Senha"):
             if email:
