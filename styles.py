@@ -27,24 +27,25 @@ BUTTON_STYLE = """
 TITLE_STYLE = """
 <style>
     h1 {
-        font-size: 48px;
+        font-size: 60px;
         font-weight: bold;
         text-align: left;
-        background: linear-gradient(90deg, #ffffff, #836fff, #7159c1);
+        background: linear-gradient(90deg, #dcd6f7, #8a72c1, #7159c1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.6);
-        animation: glowTitle 3s infinite alternate ease-in-out;
+        text-shadow: 1px 1px 6px rgba(140, 122, 191, 0.6);
+        animation: fadeGlow 4s infinite alternate ease-in-out;
     }
 
-    @keyframes glowTitle {
+    @keyframes fadeGlow {
         0% {
-            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.6);
+            text-shadow: 1px 1px 6px rgba(140, 122, 191, 0.6);
         }
         100% {
-            text-shadow: 4px 4px 12px rgba(255, 255, 255, 0.8);
+            text-shadow: 2px 2px 10px rgba(140, 122, 191, 0.8);
         }
     }
 </style>
 """
+
 
