@@ -6,7 +6,8 @@ def render_sidebar(user):
     """Renderiza a sidebar para usuários logados."""
     with st.sidebar:
         st.title("🔑 Bem-vindo!")
-        st.write(f"👤 {user['display_name']} ({user['email']})")
+        st.write(f"**👤 Bem vindo, {user['display_name']}**}")
+        st.markdown(f"✉️ {user['email']}")
         
         if st.button("🚪 Sair"):
             sign_out()
@@ -17,8 +18,8 @@ def render_sidebar(user):
         st.markdown("---")
         # Verifica se a área profissional está habilitada
         if not is_professional_enabled(user["email"]):
-            st.write("🔐 Habilitar área do profissional")
-            if st.button("Habilitar área do profissional"):
+            st.write("Área do Profissional")
+            if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
             if st.session_state.get("show_prof_input", False):
                 prof_key = st.text_input("Digite a chave do profissional", key="prof_key_input")
