@@ -28,8 +28,26 @@ def main():
     else:
         auth_section()
 
-    # 📊 Nome do app na tela principal
-    st.title("📊 PsyTrack Beta - Gestão de Dados")
+    # Nome do app na tela principal
+    # Título principal
+    st.title("Academia Diagnóstica 🧠")
+
+    #Cabeçalho de apresentação
+    st.header("Inovação no Diagnóstico e Acompanhamento de Transtornos Mentais")
+
+    # Texto de introdução
+    st.markdown(
+        """
+        Bem-vindo à **Academia Diagnóstica**, um sistema avançado que segue o **novo paradigma dimensional** dos transtornos mentais.  
+        Aqui, você pode criar uma **conta profissional**, **cadastrar pacientes** e acompanhar a evolução clínica ao longo do tempo.  
+
+        🔍 **Correções automatizadas** para maior precisão nos diagnósticos.  
+        📊 **Acompanhamento longitudinal** para observar mudanças nos transtornos mentais.  
+        🖥️ **Aplicação de avaliações informatizadas** para um processo mais ágil e confiável.  
+
+        **Transforme a maneira como você avalia e acompanha seus pacientes!** 🚀
+        """
+    )
 
     # 🔄 Atualiza a interface caso necessário
     if st.session_state.get("refresh", False):
