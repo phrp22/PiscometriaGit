@@ -18,7 +18,7 @@ def render_main_layout():
         
         🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
     )
     
@@ -37,12 +37,12 @@ def render_main_layout():
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
         
-    # Aplica estilo ao botão via CSS
+    # Aplica estilo ao botão via CSS (Agora AZUL)
     st.markdown(
         """
         <style>
             div.stButton > button:first-child {
-                background-color: #4CAF50;
+                background-color: #007bff;
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
@@ -55,7 +55,7 @@ def render_main_layout():
                 text-align: center;
             }
             div.stButton > button:first-child:hover {
-                background-color: #45a049;
+                background-color: #0056b3;
                 transform: scale(1.05);
             }
         </style>
