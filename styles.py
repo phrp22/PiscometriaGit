@@ -27,9 +27,18 @@ BUTTON_STYLE = """
     /* Efeito Active (quando pressionado) */
     div.stButton > button:first-child:active {
         background-color: #3cb371 !important;  /* Verde Encantado */
-        border-color: #2e8b57 !important;  /* Verde mais escuro para contraste */
+        border-color: #2e8b57 !important;  /* Verde mais escuro */
         box-shadow: 0px 0px 15px rgba(60, 179, 113, 0.7);
         transform: scale(0.98);
+    }
+
+    /* Quando o botão está desativado (durante carregamento) */
+    div.stButton > button:first-child:disabled {
+        background-color: #2e8b57 !important;  /* Verde escuro no carregamento */
+        color: white !important;  /* Mantém o texto branco */
+        border: 2px solid #3cb371 !important;
+        box-shadow: 0px 0px 10px rgba(46, 139, 87, 0.5);
+        opacity: 0.8;
     }
 </style>
 """
