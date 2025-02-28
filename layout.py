@@ -29,7 +29,7 @@ def render_main_layout():
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
     # 🔳 Criando colunas (0.5 | 1 | 0.5)
-    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    col1, col2, col3 = st.columns([0.5, 3, 0.5])
 
     with col2:  # 🏛️ Área centralizada
         # Alternador entre Login e Cadastro
