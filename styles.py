@@ -29,11 +29,21 @@ TITLE_STYLE = """
     h1 {
         font-size: 42px;
         font-weight: bold;
-        background: linear-gradient(90deg, #7159c1, #836fff);
+        text-align: left;  /* Alinha à esquerda */
+        background: linear-gradient(90deg, #5a69c9, #6d5fcc);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 8px rgba(113, 89, 193, 0.4);
+        text-shadow: 2px 2px 8px rgba(90, 105, 201, 0.4);
         animation: glowTitle 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes glowTitle {
+        0% {
+            text-shadow: 2px 2px 8px rgba(90, 105, 201, 0.3);
+        }
+        100% {
+            text-shadow: 3px 3px 12px rgba(90, 105, 201, 0.5);
+        }
     }
 </style>
 """
