@@ -18,3 +18,26 @@ def sign_in(email, password):
             return response.user, "✅ Login realizado com sucesso!"
     except Exception as e:
         return None, f"❌ Erro ao logar: {str(e)}"
+
+def sign_up(email, password, confirm_password):
+    """Cria um novo usuário no sistema."""
+    if password != confirm_password:
+        return None, "❌ As senhas não coincidem!"
+
+    try:
+        response = supabase_client.auth.sign_up({"email": email, "password": password})
+        if response and hasattr(response, "user") and response.user:
+            return response.user, "📩 Um email de confirmação foi enviado."
+        return None, "⚠️ Não foi possível criar a conta. Tente novamente."
+    except Exception as e:
+        return None, f"❌ Erro ao criar conta: {str(e)}"
+
+def sign_out():
+    """Desconecta o usuário."""
+    supabase_client.auth.sign_out()
+    st.session_state.pop("user", None)
+    st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+
+def get_user():
+    """Retorna o usuário autenticado."""
+    return st.session_state.get("user")
