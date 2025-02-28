@@ -1,15 +1,20 @@
 import streamlit as st
 from auth import sign_in, sign_up, sign_out, get_user
 
-# 🔧 Configuração inicial da página
-st.set_page_config(page_title="Academia Diagnóstica", page_icon="🧠", layout="centered")
+# 🔧 Configuração inicial: modo escuro e sidebar fechada
+st.set_page_config(
+    page_title="Academia Diagnóstica",
+    page_icon="🧠",
+    layout="centered",
+    initial_sidebar_state="collapsed"  # Fecha a sidebar no início
+)
 
 # 🌱 Inicializa a sessão do usuário
 if "user" not in st.session_state:
     st.session_state["user"] = None
 
 if "show_sidebar" not in st.session_state:
-    st.session_state["show_sidebar"] = False  # Inicialmente a sidebar está fechada
+    st.session_state["show_sidebar"] = False  # Sidebar começa fechada
 
 def main():
     """Função principal do aplicativo."""
@@ -17,7 +22,7 @@ def main():
     # Obtém o usuário autenticado
     user = get_user()
     
-    # 🔐 Sidebar de autenticação, que abre automaticamente se `show_sidebar` for True
+    # 🔐 Sidebar de autenticação (abre automaticamente se `show_sidebar` for True)
     if st.session_state["show_sidebar"]:
         with st.sidebar:
             render_sidebar(user)
@@ -62,12 +67,14 @@ def render_main_layout():
                 color: white;
                 padding: 12px 24px;
                 font-size: 18px;
+                font-weight: bold;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
                 transition: 0.3s;
                 width: 100%;
                 text-align: center;
+                display: inline-block;
             }
             .explore-button:hover {
                 background-color: #45a049;

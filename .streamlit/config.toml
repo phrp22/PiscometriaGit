@@ -1,0 +1,6 @@
+[theme]
+base="dark"  # Força o modo escuro
+primaryColor="#4CAF50"  # Verde para botões e destaques
+backgroundColor="#0e1117"  # Fundo escuro
+secondaryBackgroundColor="#161a1f"  # Fundo da sidebar
+textColor="#FFFFFF"  # Texto branco
