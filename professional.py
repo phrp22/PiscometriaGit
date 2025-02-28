@@ -1,6 +1,6 @@
 import uuid
 import streamlit as st
-from auth import supabase_client  # Certifique-se de que supabase_client está exportado no auth.py
+from auth import supabase_client, sign_out  # Certifique-se de que supabase_client está exportado no auth.py
 
 def is_professional_enabled(email):
     """
@@ -49,8 +49,35 @@ def enable_professional_area(email, display_name):
     
     return True, "Área do profissional habilitada com sucesso! ✅✅✅"
 
-def render_professional_dashboard():
+
+def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
-    st.title("Dashboard Profissional")
-    st.markdown("### Bem-vindo à área profissional!")
+
+    # 🔹 Configuração da Sidebar (Menu Lateral)
+    with st.sidebar:
+        st.markdown("## 👨‍⚕️ Área Profissional")
+        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
+        st.markdown(f"✉️ {user['email']}")
+        
+        # ✅ Mensagem de sucesso dentro de um box verde
+        st.success("✅ Área do profissional habilitada com sucesso! ✅✅✅")
+
+        # 🔴 Botão de Logout
+        if st.button("🔓 Logout"):
+            sign_out()
+            st.session_state.clear()
+            st.experimental_rerun()
+    
+    # 🔹 Conteúdo Principal da Dashboard
+    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    st.markdown("### 📊 Painel de Controle Profissional")
+    
+    # 📈 Estatísticas (pode ser expandido no futuro)
     st.markdown("Aqui você pode acessar funcionalidades exclusivas para profissionais da saúde mental.")
+    
+    st.metric(label="📁 Pacientes cadastrados", value="42")
+    st.metric(label="📊 Avaliações realizadas", value="128")
+    st.metric(label="📆 Última atualização", value="Hoje")
+
+    st.markdown("---")
+    st.info("🔍 Novos recursos serão adicionados em breve!")
