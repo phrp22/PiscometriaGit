@@ -27,14 +27,14 @@ BUTTON_STYLE = """
 TITLE_STYLE = """
 <style>
     h1 {
-        font-size: 44px;
+        font-size: 72px;
         font-weight: bold;
         text-align: left;
         background: linear-gradient(90deg, #e6e0f8, #9b88cc, #7159c1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-shadow: 1px 1px 4px rgba(113, 89, 193, 0.4);
-        animation: softGlow 6s infinite alternate ease-in-out;
+        animation: softGlow 8s infinite alternate ease-in-out;
     }
 
     @keyframes softGlow {
