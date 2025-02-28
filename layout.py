@@ -1,8 +1,6 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE, TITLE_STYLE  # supondo que você já tenha esses
-# Caso queira usar a fonte global, importe também:
-# from styles import GLOBAL_FONT_STYLE
+from styles import BUTTON_STYLE, TITLE_STYLE, GLOBAL_FONT_STYLE  
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
@@ -14,7 +12,8 @@ def render_main_layout():
     st.markdown(TITLE_STYLE, unsafe_allow_html=True)
     st.title("Academia Diagnóstica 🧠")
 
-   st.markdown(
+    # Frase maior em laranja com ícone de computador
+    st.markdown(
         """
         <div style="font-size:1.3rem; color:#FFA500; font-weight:bold; margin-bottom:10px;">
             💻 Transforme a sua prática clínica com tecnologia avançada
@@ -26,13 +25,11 @@ def render_main_layout():
             <li><strong>Utilize nossas correções automatizadas</strong> para garantir mais precisão na interpretação dos dados.</li>
             <li><strong>Monitore a evolução longitudinalmente</strong> observando padrões ao longo do tempo.</li>
         </ul>
-
         🎯 <strong>Tenha em mãos um sistema inteligente e baseado em evidências.</strong>  
         🔍 <strong>Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.</strong>
         """,
         unsafe_allow_html=True
     )
-
 
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
