@@ -23,44 +23,6 @@ def render_main_layout():
     )
     
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
-    
-    # 🔥 Estilizando a Radio Button (Login/Cadastro)
-    st.markdown(
-        """
-        <style>
-            /* Texto das opções (Login/Cadastro) */
-            [data-testid="stRadio"] label[data-baseweb="radio"] > div {
-                color: #7159c1 !important;  /* Roxo Místico */
-                font-weight: bold;
-            }
-
-            /* Bolinha não selecionada */
-            [data-testid="stRadio"] label[data-baseweb="radio"] input + div {
-                background-color: transparent !important;
-                border: 2px solid #7159c1 !important; /* Roxo Místico */
-                border-radius: 50%;
-                width: 16px;
-                height: 16px;
-                display: inline-block;
-                margin-right: 8px;
-                transition: all 0.3s ease-in-out;
-            }
-
-            /* Bolinha selecionada */
-            [data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
-                background-color: #d32f2f !important; /* Vermelho Feiticeiro */
-                border: 2px solid #d32f2f !important;
-                box-shadow: 0px 0px 10px rgba(211, 47, 47, 0.7);
-            }
-
-            /* Hover na bolinha */
-            [data-testid="stRadio"] label[data-baseweb="radio"] input:hover + div {
-                background-color: #ff5252 !important; /* Brilho Flamejante */
-                border-color: #ff5252 !important;
-            }
-        </style>
-        """, unsafe_allow_html=True
-    )
 
     # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
