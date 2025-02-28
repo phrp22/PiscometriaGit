@@ -61,43 +61,29 @@ def sign_out():
     st.session_state["refresh"] = True  # 🚀 Marca para atualizar
 
 
-@st.cache_data(ttl=300)  # Cache expira a cada 5 minutos
-def get_user_data(email):
-    """Busca os dados do usuário no Supabase com cache para evitar consultas excessivas."""
-    if not email:
-        return None  # Retorna None se o email for inválido
-
-    try:
-        response = supabase_client.from_("users").select("*").eq("email", email).execute()
-
-        if response and hasattr(response, "data") and response.data:
-            return response.data[0]  # Retorna o primeiro usuário encontrado
-
-        return None  # Retorna None se não houver dados
-
-    except Exception as e:
-        st.error(f"Erro ao buscar usuário: {e}")
-        return None
-
-
-
 def get_user():
-    """Obtém o usuário logado a partir da sessão ou do banco de dados."""
+    """Obtém o usuário logado diretamente da autenticação do Supabase."""
     if "user" in st.session_state and st.session_state["user"]:
         return st.session_state["user"]
-    
-    email = st.session_state.get("user_email")
-    
-    if not email:
-        return None  # Se não há email na sessão, não faz a consulta
 
-    user_data = get_user_data(email)  # Usa cache para evitar consultas repetidas
-    
-    if user_data:
-        st.session_state["user"] = user_data  # Salva na sessão
-        return user_data
+    try:
+        user = supabase_client.auth.get_user()  # Obtém o usuário autenticado
 
-    return None  # Nenhum usuário encontrado
+        if user and hasattr(user, "user") and user.user:
+            user_obj = user.user
+            user_data = {
+                "email": user_obj.email,
+                "id": user_obj.id,
+                "display_name": user_obj.user_metadata.get("display_name", "Usuário") 
+                if hasattr(user_obj, "user_metadata") else "Usuário"
+            }
+            st.session_state["user"] = user_data  # Salva na sessão
+            return user_data
+
+    except Exception as e:
+        st.error(f"Erro ao buscar usuário autenticado: {e}")
+
+    return None  # Retorna None se não encontrar um usuário logado
 
 
 

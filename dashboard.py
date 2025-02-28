@@ -11,7 +11,6 @@ def render_sidebar(user):
         
         if st.button("Logout 🚪"):
             sign_out()
-            st.success("Você saiu com sucesso!")
             st.session_state["refresh"] = True
             st.rerun()
         
