@@ -1,27 +1,33 @@
-import bcrypt
-from database import insert_user, get_user_credentials  # Nome correto da função no banco de dados
+import streamlit as st
+import supabase
 
+# 🔑 As credenciais do Supabase são protegidas em `st.secrets`
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-def hash_password(password):
-    """ Gera um hash seguro para a senha. """
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
+# 📡 Criando o cliente Supabase
+supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def check_password(stored_password, provided_password):
-    """ Verifica se a senha digitada corresponde ao hash armazenado. """
-    return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
+def sign_in(email, password):
+    """Faz login no sistema."""
+    try:
+        response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
+        
+        if response and hasattr(response, "user") and response.user:
+            user = response.user
+            st.session_state["user"] = {"email": user.email, "id": user.id}
+            st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+            return user, "✅ Login realizado com sucesso!"
 
-def authenticate_user(username, password):
-    user_data = get_user_credentials(username)  # Obtendo credenciais completas
-    if user_data:
-        stored_password = user_data["password"]
-        user_type = user_data["user_type"]
-        if check_password(stored_password, password):
-            return True, user_type  # Retorna True e o tipo de usuário
-    return False, None
+    except Exception as e:
+        return None, f"❌ Erro ao logar: {str(e)}"
 
-def register_user(username, password, user_type):
-    """ Registra um novo usuário no sistema. """
-    hashed_password = hash_password(password)
-    return insert_user(username, hashed_password, user_type)  # Passando user_type
+def sign_out():
+    """Desconecta o usuário."""
+    supabase_client.auth.sign_out()
+    st.session_state.pop("user", None)
+    st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+
+def get_user():
+    """Retorna o usuário autenticado"""
+    return st.session_state.get("user")
