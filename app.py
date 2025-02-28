@@ -1,6 +1,5 @@
 import streamlit as st
 from auth import get_user, sign_out
-from sidebar import render_sidebar
 from layout import render_main_layout
 
 # 🔧 Configuração inicial
