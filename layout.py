@@ -13,7 +13,7 @@ def render_main_layout():
     # 📌 Introdução com Markdown
     st.markdown(
         """
-        #### **Como a Academia Diagnóstica pode transformar sua prática?**  
+        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
@@ -43,36 +43,34 @@ def render_main_layout():
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
 
-    # 📌 Botão estilizado para Login/Cadastro
-    action_text = "🚀 Entrar" if option == "Login" else "📩 Criar Conta"
-    button_html = f"""
-    <style>
-        .green-button {{
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 100%;
-            text-align: center;
-            display: block;
-            margin-top: 10px;
-        }}
-        .green-button:hover {{
-            background-color: #45a049;
-            transform: scale(1.05);
-        }}
-    </style>
-    <button class="green-button" onclick="document.getElementById('auth_action').click()">{action_text}</button>
-    """
-    st.markdown(button_html, unsafe_allow_html=True)
+    # 📌 Estilizar o botão com CSS para ficar verde
+    st.markdown(
+        """
+        <style>
+            div.stButton > button:first-child {
+                background-color: #4CAF50;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+                width: 100%;
+                padding: 12px 24px;
+                text-align: center;
+            }
+            div.stButton > button:first-child:hover {
+                background-color: #45a049;
+                transform: scale(1.05);
+            }
+        </style>
+        """, unsafe_allow_html=True
+    )
 
-    # 📌 Captura do clique e execução da autenticação
-    if st.button(action_text, key="auth_action", help="Clique no botão verde acima para continuar"):
+    # 📌 Botão real do Streamlit (único)
+    action_text = "🚀 Entrar" if option == "Login" else "📩 Criar Conta"
+    if st.button(action_text, key="auth_action"):
         if option == "Login":
             user, message = sign_in(email, password)
         else:
