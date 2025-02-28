@@ -20,6 +20,7 @@ def sign_in(email, password):
                 "display_name": user_obj.user_metadata.get("display_name", "Usuário") if hasattr(user_obj, "user_metadata") else "Usuário"
             }
             st.session_state["user"] = user_data
+            st.session_state["user_email"] = user_obj.email  # Armazena o email na sessão
             st.session_state["refresh"] = True
             return user_data, None
     except Exception as e:
@@ -60,5 +61,27 @@ def sign_out():
     st.session_state["refresh"] = True  # 🚀 Marca para atualizar
 
 
+@st.cache_data(ttl=300)  # Cache expira a cada 5 minutos
+def get_user_data(email):
+    """Busca os dados do usuário no Supabase com cache para evitar consultas excessivas."""
+    response = supabase_client.from_("users").select("*").eq("email", email).execute()
+    if response and hasattr(response, "data") and response.data:
+        return response.data[0]  # Retorna apenas o primeiro usuário encontrado
+    return None
+
+
 def get_user():
-    return st.session_state.get("user", None)
+    """Obtém o usuário logado a partir da sessão ou do banco de dados."""
+    if "user" in st.session_state and st.session_state["user"]:
+        return st.session_state["user"]
+    
+    email = st.session_state.get("user_email")
+    if email:
+        user_data = get_user_data(email)  # Usa cache para evitar consultas repetidas
+        if user_data:
+            st.session_state["user"] = user_data  # Salva na sessão
+            return user_data
+
+    return None  # Nenhum usuário logado
+
+
