@@ -34,7 +34,7 @@ def render_main_layout():
                 transform: scale(1.05);
             }
         </style>
-        <button class="explore-button" onclick="openSidebar()">🚀 Explorar Agora</button>
+        <button class="explore-button" onclick="openSidebar()">Experimente Agora</button>
         <script>
             function openSidebar() {
                 var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
@@ -49,7 +49,7 @@ def render_main_layout():
     # 📌 Introdução com Markdown
     st.markdown(
         """
-        #### **Como a Academia Diagnóstica pode transformar sua prática?**  
+        ##### **Transforme a sua prática clínica com tecnologia avançada** 
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
@@ -57,8 +57,8 @@ def render_main_layout():
         - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados.
         - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
 
-        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
+        🎯  **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🔍  **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
         """
     )
