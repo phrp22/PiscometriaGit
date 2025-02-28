@@ -1,6 +1,6 @@
 import uuid
 import streamlit as st
-from auth import supabase_client  # Certifique-se de que supabase_client esteja acessível
+from auth import supabase_client  # Certifique-se de que supabase_client está exportado no auth.py
 
 def is_professional_enabled(email):
     """
@@ -13,15 +13,14 @@ def is_professional_enabled(email):
         return False
     data = response.data
     if data and len(data) > 0:
-        # Considera que se o primeiro registro tiver area_habilitada == True, então está habilitado
+        # Se o primeiro registro tiver area_habilitada == True, então está habilitado
         return data[0].get("area_habilitada", False)
     return False
 
 def enable_professional_area(email, display_name):
     """
-    Insere (ou atualiza) um registro na tabela 'professional' com a área habilitada.
+    Insere um registro na tabela 'professional' no Supabase para habilitar a área do profissional.
     """
-    # Gera um novo UUID para o registro, se necessário
     new_uuid = str(uuid.uuid4())
     data = {
         "id": new_uuid,
