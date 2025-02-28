@@ -14,14 +14,14 @@ def render_main_layout():
         ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
-        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
+        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
         - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
         - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados.
-        - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
+        - **Monitore a evolução longitudinalmente**, observando padrões ao longo do tempo.
 
         🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
     )
 
