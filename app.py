@@ -49,14 +49,14 @@ def render_main_layout():
     col1, col2, col3 = st.columns([1, 3, 1])  # Cria um layout centralizado
 
     with col2:  # Centraliza o botão
-        if st.button("🚀 Explorar Agora", use_container_width=True):
+        if st.button("**Transforme sua prática clínica com tecnologia avançada** 💡", use_container_width=True):
             # Simula a abertura da sidebar em dispositivos móveis
             st.session_state["show_sidebar"] = not st.session_state.get("show_sidebar", False)
 
     # 📌 Introdução com Markdown
     st.markdown(
         """
-        #### **Como a Academia Diagnóstica pode transformar sua prática?**  
+        #### **Benefícios**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
@@ -66,7 +66,7 @@ def render_main_layout():
 
         🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática clínica e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
         """
     )
 
