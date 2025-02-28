@@ -1,5 +1,5 @@
 import streamlit as st
-from auth import sign_in, sign_up
+from auth import sign_in, sign_up, reset_password
 
 def render_main_layout():
     """Renderiza a interface principal com título e opções de Login e Cadastro na parte inferior."""
@@ -83,3 +83,12 @@ def render_main_layout():
             st.rerun()
         else:
             st.error(message)
+
+    # 📌 Botão "Esqueci minha senha"
+    if option == "Login":
+        if st.button("🔑 Esqueci minha senha"):
+            if email:
+                message = reset_password(email)
+                st.info(message)
+            else:
+                st.warning("Por favor, insira seu email antes de redefinir a senha.")

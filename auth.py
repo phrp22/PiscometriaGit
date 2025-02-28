@@ -32,6 +32,14 @@ def sign_up(email, password, confirm_password):
     except Exception as e:
         return None, f"❌ Erro ao criar conta: {str(e)}"
 
+def reset_password(email):
+    """Envia um email para redefinição de senha."""
+    try:
+        supabase_client.auth.reset_password_for_email(email)
+        return f"📩 Um email de recuperação foi enviado para {email}. Verifique sua caixa de entrada."
+    except Exception as e:
+        return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
+
 def sign_out():
     """Desconecta o usuário."""
     supabase_client.auth.sign_out()
