@@ -35,14 +35,26 @@ def render_main_layout():
             div[data-baseweb="radio"] > div:hover {
                 color: #836fff !important; /* Brilho Mágico */
             }
-            
-            /* Modifica a bolinha selecionada */
+        
+            /* Estiliza a bolinha quando NÃO está selecionada */
+            div[data-baseweb="radio"] input + div {
+                background-color: transparent !important;
+                border: 2px solid #7159c1 !important; /* Roxo Místico */
+                border-radius: 50%;
+                width: 16px;
+                height: 16px;
+                display: inline-block;
+                margin-right: 8px;
+                transition: all 0.3s ease-in-out;
+            }
+
+            /* Modifica a bolinha quando está selecionada */
             div[data-baseweb="radio"] input:checked + div {
                 background-color: #d32f2f !important; /* Vermelho Feiticeiro */
-                border-color: #d32f2f !important;
+                border: 2px solid #d32f2f !important;
                 box-shadow: 0px 0px 10px rgba(211, 47, 47, 0.7);
             }
-            
+
             /* Efeito hover na bolinha */
             div[data-baseweb="radio"] input:hover + div {
                 background-color: #ff5252 !important; /* Brilho Flamejante */
@@ -51,19 +63,18 @@ def render_main_layout():
         </style>
         """, unsafe_allow_html=True
     )
-
     # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
     
-    email = st.text_input("Email 📩", key="email_input")
-    password = st.text_input("Senha 🔒", type="password", key="password_input")
+    email = st.text_input("Email", key="email_input")
+    password = st.text_input("Senha", type="password", key="password_input")
     
     # Se for Cadastro, exibe os campos adicionais para nome e confirmação de senha
     display_name = None
     confirm_password = None
     if option == "Cadastro":
-        confirm_password = st.text_input("Confirme a Senha 🔒", type="password", key="confirm_password_input")
-        display_name = st.text_input("🧑‍💼🔑 Nome", key="display_name_input")
+        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
+        display_name = st.text_input("Nome", key="display_name_input")
         
     # Aplica estilo ao botão via CSS (Agora com o tema Mago)
     st.markdown(
@@ -126,7 +137,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("Esqueci minha senha 🔑"):
+        if st.button("Esqueci minha senha 🔒"):
             if email:
                 message = reset_password(email)
                 st.info(message)
