@@ -2,6 +2,7 @@ import streamlit as st
 from auth import get_user, sign_out
 from professional import is_professional_enabled, render_professional_dashboard, enable_professional_area
 from profile import get_user_profile
+from gender_utils import adjust_gender_ending  # Caso queira usar para ajustar a saudação
 
 def render_sidebar(user):
     """Renderiza a sidebar para usuários logados."""
@@ -36,7 +37,6 @@ def render_sidebar(user):
         else:
             st.success("✅ Área do profissional habilitada!")
 
-
 def render_dashboard():
     user = get_user()
     if not user:
@@ -50,16 +50,39 @@ def render_dashboard():
     profile = get_user_profile(user["id"])
     if profile:
         genero = profile.get("genero", None)
-        if genero == "Feminino":
-            saudacao = "Bem-vinda"
-        elif genero == "Neutro":
-            saudacao = "Bem-vinde"
+        # Saudação base sempre no masculino
+        saudacao_base = "Bem-vindo"
+        if genero:
+            # Ajusta a saudação de acordo com o gênero
+            saudacao = adjust_gender_ending(saudacao_base, genero)
         else:
-            saudacao = "Bem-vindo"
+            saudacao = saudacao_base
     else:
         saudacao = "Bem-vindo"
 
     st.title(f"{saudacao}, {user['display_name']}!")
     st.markdown("### 📈 Estatísticas recentes")
-    st.metric(label="Pacientes cadastrados", value="42")
-    st.metric(label="Avaliações concluídas", value="120")
+    
+    # Exibe algumas métricas usando colunas
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Pacientes cadastrados", value="42")
+    with col2:
+        st.metric(label="Avaliações concluídas", value="120")
+    with col3:
+        st.metric(label="Consultas agendadas", value="15")
+    
+    st.markdown("---")
+    st.subheader("Últimas Atividades")
+    st.write("Aqui você pode exibir logs, gráficos ou outras informações relevantes para o usuário.")
+    
+    # Exemplo de gráfico de linha
+    data = {
+        "Pacientes": [10, 20, 30, 40, 50],
+        "Avaliações": [5, 15, 25, 35, 45]
+    }
+    st.line_chart(data)
+
+    st.markdown("---")
+    st.write("Outros componentes e informações podem ser adicionados aqui conforme a evolução do sistema.")
+
