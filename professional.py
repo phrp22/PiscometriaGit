@@ -51,7 +51,7 @@ def render_professional_sidebar(user):
             st.session_state["refresh"] = True
             st.rerun()
 
-def render_dashboard():
+def render_profesisonal_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
     if not user:
