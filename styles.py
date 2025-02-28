@@ -34,15 +34,15 @@ TITLE_STYLE = """
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-shadow: 1px 1px 4px rgba(140, 122, 191, 0.6);
-        animation: fadeGlow 1s infinite alternate ease-in-out;
+        animation: fadeGlow 8s infinite alternate ease-in-out;
     }
 
     @keyframes fadeGlow {
         0% {
-            text-shadow: 1px 1px 6px rgba(140, 122, 191, 0.6);
+            text-shadow: 1px 1px 4px rgba(140, 122, 191, 0.6);
         }
         100% {
-            text-shadow: 2px 2px 10px rgba(140, 122, 191, 0.8);
+            text-shadow: 2px 2px 5px rgba(140, 122, 191, 0.8);
         }
     }
 </style>
