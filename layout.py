@@ -5,8 +5,25 @@ def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
     st.title("Academia Diagnóstica 🧠")
-    st.markdown("##### 💻 **Transforme a sua prática clínica com tecnologia avançada**")
+
+    st.markdown(
+        """
+        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
+        
+        - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
+        - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
+        - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados.
+        - **Utilize nossas correções automatizadas**, garantindo precisão na interpretação dos dados.
+        - **Monitore a evolução longitudinalmente**, observando padrões de melhora ou agravamento ao longo do tempo.
+        
+        🎯 **Com a Academia Diagnóstica, você tem em mãos um sistema inteligente e baseado em evidências.**  
+        
+        🔍 **Eleve sua prática para um novo nível e ofereça aos seus pacientes um acompanhamento mais eficaz e personalizado.**  
+        """
+    )
+
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
+
     
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
@@ -16,8 +33,8 @@ def render_main_layout():
     display_name = None
     confirm_password = None
     if option == "Cadastro":
-        display_name = st.text_input("Nome", key="display_name_input")
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
+        display_name = st.text_input("Nome", key="display_name_input")
 
     st.markdown(
         """
