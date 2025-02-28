@@ -1,10 +1,23 @@
-# app.py
 import streamlit as st
 from auth import get_user
-from profile import user_has_profile, render_onboarding_questionnaire
+from layout import render_main_layout
 from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
-from layout import render_main_layout
+from styles import BUTTON_STYLE
+from profile import user_has_profile, render_onboarding_questionnaire
+
+st.set_page_config(
+    page_title="Academia Diagnóstica",
+    page_icon="🧠",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# Aplica os estilos globais uma única vez
+st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
+
+if "user" not in st.session_state:
+    st.session_state["user"] = None
 
 def main():
     user = get_user()  # Pega do Supabase Auth
