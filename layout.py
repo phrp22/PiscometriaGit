@@ -1,17 +1,23 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE, TITLE_STYLE  # Importando estilos
+from styles import BUTTON_STYLE, TITLE_STYLE, PAGE_BG_STYLE  # Importando estilos
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    # Aplica o efeito mágico no título
+    # Aplica o fundo azul-marinho e texto em branco
+    st.markdown(PAGE_BG_STYLE, unsafe_allow_html=True)
+
+    # Aplica o estilo do título
     st.markdown(TITLE_STYLE, unsafe_allow_html=True)
-    st.title("Academia Diagnóstica 🧠")  # O título original permanece
+    st.title("Academia Diagnóstica 🧠")
+
+    # Frase em destaque laranja
+    st.markdown("<p class='orange-text'>Transforme a sua prática clínica com tecnologia avançada</p>", unsafe_allow_html=True)
 
     st.markdown(
         """
-        ##### 💻 **Transforme a sua prática clínica com tecnologia avançada.**  
+        ##### 💻 **Aqui vão alguns destaques**  
         
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados em tempo real.
@@ -40,7 +46,7 @@ def render_main_layout():
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
         
-    # 📌 Aplica estilo ao botão
+    # Aplica estilo ao botão
     st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
     
     # Se o usuário alterna para Login, reseta a flag de conta criada
@@ -48,7 +54,7 @@ def render_main_layout():
         del st.session_state["account_created"]
     
     # Define o texto do botão conforme a opção
-    action_text = "🔮 Entrar" if option == "Login" else "🪄 Criar Conta"
+    action_text = "Entrar" if option == "Login" else "Criar Conta"
     
     # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
@@ -67,7 +73,7 @@ def render_main_layout():
                 # Cadastro: cria a conta, mas NÃO loga o usuário automaticamente
                 user, message = sign_up(email, password, confirm_password, display_name)
                 if user:
-                    st.session_state["account_created"] = True  # Suspende o botão de cadastro
+                    st.session_state["account_created"] = True
                     st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
                     st.session_state["refresh"] = True
                     st.rerun()
@@ -76,7 +82,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("🔓 Recuperar Senha"):
+        if st.button("Recuperar Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)
