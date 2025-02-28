@@ -1,19 +1,30 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE, TITLE_STYLE, ORANGE_TEXT_STYLE
+from styles import BUTTON_STYLE  # Mantemos apenas os estilos necessários
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
     
-    # Aplica o estilo do título
-    st.markdown(TITLE_STYLE, unsafe_allow_html=True)
-    # Aplica o estilo da frase laranja
-    st.markdown(ORANGE_TEXT_STYLE, unsafe_allow_html=True)
+    # Aplica um fundo azul-marinho escuro
+    st.markdown(
+        """
+        <style>
+            body {
+                background-color: #0A0F1D;  /* Azul-marinho quase preto */
+            }
+            .stApp {
+                background-color: #0A0F1D;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.title("Academia Diagnóstica 🧠")
+    # Título principal
+    st.markdown("<h1 style='text-align: center; color: white;'>Academia Diagnóstica 🧠</h1>", unsafe_allow_html=True)
 
-    # Frase em destaque (agora maior)
-    st.markdown("<p class='orange-text'>Transforme a sua prática clínica com tecnologia avançada</p>", unsafe_allow_html=True)
+    # Frase de destaque (em laranja e maior)
+    st.markdown("<h2 style='text-align: center; color: #FFA500; font-size: 28px;'>Transforme a sua prática clínica com tecnologia avançada</h2>", unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -30,7 +41,7 @@ def render_main_layout():
         🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
     )
-    
+
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
     # Alternador entre Login e Cadastro
