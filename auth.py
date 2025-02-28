@@ -9,29 +9,25 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def sign_in(email, password):
-    """Faz login no sistema e recupera o nome do usuário."""
+    """Faz login no sistema e retorna um dicionário com os dados do usuário."""
     try:
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
-
         if response and hasattr(response, "user") and response.user:
             user_obj = response.user
-
-            # 🔍 Recupera o display_name salvo no Supabase
-            display_name = user_obj.user_metadata.get("display_name", "Usuário")
-
-            # 🔐 Salva o usuário na sessão
-            st.session_state["user"] = {
+            # Converte para dicionário, incluindo display_name dos metadados, se existir
+            user_data = {
                 "email": user_obj.email,
                 "id": user_obj.id,
-                "display_name": display_name  # Agora temos o nome salvo!
+                "display_name": user_obj.user_metadata.get("display_name") if hasattr(user_obj, "user_metadata") else ""
             }
+            st.session_state["user"] = user_data
             st.session_state["refresh"] = True  # 🚀 Marca para atualizar
-            return st.session_state["user"], "✅ Login realizado com sucesso!"
+            return user_data, "✅ Login realizado com sucesso!"
     except Exception as e:
         return None, f"❌ Erro ao logar: {str(e)}"
 
 def sign_up(email, password, confirm_password, display_name):
-    """Cria um novo usuário no sistema com display name incluído nos metadados."""
+    """Cria um novo usuário com display name incluído nos metadados e retorna os dados como dicionário."""
     if password != confirm_password:
         return None, "❌ As senhas não coincidem!"
 
@@ -42,7 +38,13 @@ def sign_up(email, password, confirm_password, display_name):
             "data": {"display_name": display_name}
         })
         if response and hasattr(response, "user") and response.user:
-            return response.user, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
+            user_obj = response.user
+            user_data = {
+                "email": user_obj.email,
+                "id": user_obj.id,
+                "display_name": user_obj.user_metadata.get("display_name") if hasattr(user_obj, "user_metadata") else display_name
+            }
+            return user_data, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
         return None, f"❌ Erro ao criar conta: {str(e)}"
@@ -62,5 +64,5 @@ def sign_out():
     st.session_state["refresh"] = True  # 🚀 Marca para atualizar
 
 def get_user():
-    """Retorna o usuário autenticado."""
+    """Retorna o usuário autenticado (um dicionário)."""
     return st.session_state.get("user")
