@@ -18,6 +18,8 @@ def render_main_layout():
         unsafe_allow_html=True
     )
 
+    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
+
     st.markdown(
         """
         ##### 💻 **Transforme a sua prática clínica com tecnologia avançada**  
