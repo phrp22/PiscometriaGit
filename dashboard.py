@@ -43,11 +43,13 @@ def render_dashboard():
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    # Busca o perfil
+    # Renderiza a sidebar com informações e opções
+    render_sidebar(user)
+
+    # Busca o perfil para personalizar a saudação
     profile = get_user_profile(user["id"])
     if profile:
         genero = profile.get("genero", None)
-        # Lógica simples de saudação
         if genero == "Feminino":
             saudacao = "Bem-vinda"
         elif genero == "Neutro":
@@ -55,7 +57,6 @@ def render_dashboard():
         else:
             saudacao = "Bem-vindo"
     else:
-        # Se não tiver perfil, fallback para "Bem-vindo"
         saudacao = "Bem-vindo"
 
     st.title(f"{saudacao}, {user['display_name']}!")
