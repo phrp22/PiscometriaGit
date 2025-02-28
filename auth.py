@@ -1,7 +1,7 @@
 import streamlit as st
 import supabase
 
-# 🔑 As credenciais do Supabase são protegidas em `st.secrets`
+# 🔑 Credenciais do Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
@@ -15,10 +15,8 @@ def sign_up(email, password, confirm_password):
 
     try:
         response = supabase_client.auth.sign_up({"email": email, "password": password})
-
         if response and hasattr(response, "user") and response.user:
-            return response.user, "📩 Um email de confirmação foi enviado. Verifique sua caixa de entrada."
-        
+            return response.user, "📩 Um email de confirmação foi enviado."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
 
     except Exception as e:
@@ -28,13 +26,10 @@ def sign_in(email, password):
     """Faz login no sistema."""
     try:
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
-        
         if response and hasattr(response, "user") and response.user:
-            user = response.user
-            st.session_state["user"] = {"email": user.email, "id": user.id}
+            st.session_state["user"] = {"email": response.user.email, "id": response.user.id}
             st.session_state["refresh"] = True  # 🚀 Marca para atualizar
-            return user, "✅ Login realizado com sucesso!"
-
+            return response.user, "✅ Login realizado com sucesso!"
     except Exception as e:
         return None, f"❌ Erro ao logar: {str(e)}"
 
