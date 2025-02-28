@@ -1,5 +1,6 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
+from styles import BUTTON_STYLE  # Importando estilos
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
@@ -37,32 +38,8 @@ def render_main_layout():
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
         
-    # Aplica estilo ao botão via CSS (Agora com o tema Mago)
-    st.markdown(
-        """
-        <style>
-            div.stButton > button:first-child {
-                background-color: #7159c1;
-                color: white;
-                font-size: 18px;
-                font-weight: bold;
-                border: 2px solid #836fff;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: 0.3s ease-in-out;
-                width: 100%;
-                padding: 12px 24px;
-                text-align: center;
-                box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5);
-            }
-            div.stButton > button:first-child:hover {
-                background-color: #5e47b0;
-                transform: scale(1.05);
-                box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7);
-            }
-        </style>
-        """, unsafe_allow_html=True
-    )
+    # 📌 Aplica estilo ao botão
+    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
     
     # Se o usuário alterna para Login, reseta a flag de conta criada
     if option == "Login" and "account_created" in st.session_state:
@@ -98,7 +75,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("Esqueci minha senha 🔒"):
+        if st.button("🪄 Recuperar Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)
