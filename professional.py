@@ -50,7 +50,7 @@ def render_professional_dashboard(user):
         st.success("✅ Área do profissional habilitada!")
 
         # 🔴 Botão de Logout estilizado
-        if st.button("🔓 Logout"):
+        if st.button("🚪 Logout"):
             sign_out()
             st.session_state.clear()
             st.rerun()
