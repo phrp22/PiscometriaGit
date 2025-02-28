@@ -1,4 +1,5 @@
 import streamlit as st
+from auth import sign_in
 
 def render_main_layout():
     """Renderiza a interface principal com título e login na parte inferior."""
@@ -34,9 +35,9 @@ def render_main_layout():
     email = st.text_input("Email", key="email_input")
     password = st.text_input("Senha", type="password", key="password_input")
 
-    login_button = """
+    login_button_html = f"""
     <style>
-        .green-button {
+        .green-button {{
             background-color: #4CAF50;
             color: white;
             padding: 12px 24px;
@@ -50,17 +51,30 @@ def render_main_layout():
             text-align: center;
             display: block;
             margin-top: 10px;
-        }
-        .green-button:hover {
+        }}
+        .green-button:hover {{
             background-color: #45a049;
             transform: scale(1.05);
-        }
+        }}
     </style>
-    <button class="green-button" onclick="document.getElementById('login_action').click()">🚀 Entrar</button>
+    <form action="" method="POST">
+        <input type="hidden" name="email" value="{email}">
+        <input type="hidden" name="password" value="{password}">
+        <button class="green-button" type="submit">🚀 Entrar</button>
+    </form>
     """
-    st.markdown(login_button, unsafe_allow_html=True)
+    st.markdown(login_button_html, unsafe_allow_html=True)
 
-    # Botão invisível para capturar clique do HTML
-    if st.button("Entrar", key="login_action", help="Clique no botão verde acima para logar"):
-        st.session_state["auth_trigger"] = True  # Ativa autenticação
-        st.rerun()  # Recarrega a interface
+    # Capturar o clique e processar login
+    if "email_input" in st.session_state and "password_input" in st.session_state:
+        email = st.session_state["email_input"]
+        password = st.session_state["password_input"]
+        if email and password:  # Se os campos estiverem preenchidos
+            user, message = sign_in(email, password)
+            if user:
+                st.session_state["user"] = user
+                st.success("✅ Login realizado com sucesso!")
+                st.session_state["refresh"] = True
+                st.rerun()
+            else:
+                st.error(message)
