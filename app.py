@@ -30,10 +30,10 @@ def main():
 
     # Nome do app na tela principal
     # Título principal
-    st.title("🧠 Academia Diagnóstica")
+    st.title("Academia Diagnóstica 🧠")
 
     #Cabeçalho de apresentação
-    st.header("Um sistema inteligênte e adaptado para o novo paradigma dos transtornos mentais 🔍")
+    st.header("## Um sistema inteligênte, adaptado para o novo paradigma dos transtornos mentais")
 
     # Texto de introdução
     st.markdown(
@@ -41,7 +41,7 @@ def main():
         Bem-vindo à **Academia Diagnóstica**, um sistema avançado que segue o **novo paradigma dimensional** dos transtornos mentais.  
         Ao invés de classificações rígidas e dicotômicas, seguimos uma abordagem **contínua e dinâmica**, permitindo um olhar mais preciso sobre a saúde dos pacientes ao longo do tempo.  
 
-        ### 💡 **Transforme sua prática clínica com tecnologia avançada**
+        #### 💡 **Transforme sua prática clínica com tecnologia avançada**
         - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
         - **Cadastre pacientes e acompanhe sua trajetória clínica** com dados organizados e insights em tempo real.
         - **Aplique avaliações informatizadas** e obtenha resultados rápidos e padronizados, fundamentados nas diretrizes científicas mais recentes.
