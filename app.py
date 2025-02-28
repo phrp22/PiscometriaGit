@@ -19,22 +19,20 @@ st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 if "user" not in st.session_state:
     st.session_state["user"] = None
 
+
 def main():
-    user = get_user()  # Pega do Supabase Auth
+    user = get_user()  # Tenta obter o usuário autenticado
     if user:
-        # Checa se o usuário já tem um perfil na user_profile
+        # Se o usuário estiver logado, então verifica se já possui um perfil
         if not user_has_profile(user["id"]):
-            # Renderiza o questionário inicial para coletar gênero, data de nascimento, etc.
             render_onboarding_questionnaire(user["id"])
         else:
-            # Se já tem perfil, verifica se é profissional ou não
-            if is_professional_enabled(user["id"]):  
-                render_professional_dashboard(user)
-            else:
-                render_dashboard()
+            # Se já tiver perfil, exibe o dashboard ou outra tela principal
+            render_dashboard()
     else:
         # Se não estiver logado, exibe a tela de login/cadastro
         render_main_layout()
+
 
 if __name__ == "__main__":
     main()
