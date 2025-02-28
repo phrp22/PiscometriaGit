@@ -27,25 +27,26 @@ BUTTON_STYLE = """
 TITLE_STYLE = """
 <style>
     h1 {
-        font-size: 72px;
+        font-size: 44px;
         font-weight: bold;
         text-align: left;
-        background: linear-gradient(90deg, #dcd6f7, #8a72c1, #7159c1);
+        background: linear-gradient(90deg, #e6e0f8, #9b88cc, #7159c1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(140, 122, 191, 0.6);
-        animation: fadeGlow 8s infinite alternate ease-in-out;
+        text-shadow: 1px 1px 4px rgba(113, 89, 193, 0.4);
+        animation: softGlow 6s infinite alternate ease-in-out;
     }
 
-    @keyframes fadeGlow {
+    @keyframes softGlow {
         0% {
-            text-shadow: 1px 1px 4px rgba(140, 122, 191, 0.6);
+            text-shadow: 1px 1px 4px rgba(113, 89, 193, 0.4);
         }
         100% {
-            text-shadow: 2px 2px 5px rgba(140, 122, 191, 0.8);
+            text-shadow: 2px 2px 6px rgba(113, 89, 193, 0.5);
         }
     }
 </style>
 """
+
 
 
