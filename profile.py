@@ -41,6 +41,7 @@ def render_onboarding_questionnaire(user_id):
         if success:
             st.success("Informações salvas com sucesso!")
             st.session_state["refresh"] = True
-            st.experimental_rerun()
+            st.rerun()  # Substitua experimental_rerun() por rerun()
         else:
             st.error(f"Ocorreu um erro: {msg}")
+
