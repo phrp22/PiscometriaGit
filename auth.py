@@ -18,12 +18,12 @@ def sign_in(email, password):
             st.session_state["refresh"] = True  # 🚀 Marca para atualizar
             return response.user, "✅ Login realizado com sucesso!"
     except Exception as e:
-        return None, f"❌ Erro ao logar: {str(e)}"
+        return None, f"Erro ao logar: {str(e)} ❌"
 
 def sign_up(email, password, confirm_password, display_name):
     """Cria um novo usuário no sistema e insere dados extras na tabela de perfis."""
     if password != confirm_password:
-        return None, "❌ As senhas não coincidem!"
+        return None, "As senhas não coincidem! ❌"
 
     try:
         # Cria o usuário via Supabase Auth
@@ -45,7 +45,7 @@ def sign_up(email, password, confirm_password, display_name):
             return user_obj, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
         return None, "⚠️ Não foi possível criar a conta. Tente novamente."
     except Exception as e:
-        return None, f"❌ Erro ao criar conta: {str(e)}"
+        return None, f"Erro ao criar conta: {str(e)} ❌ "
 
 def reset_password(email):
     """Envia um email para redefinição de senha."""
