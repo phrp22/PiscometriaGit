@@ -5,15 +5,15 @@ from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
 from styles import BUTTON_STYLE
 
-# Aplica os estilos globais uma única vez
-st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
-
 st.set_page_config(
     page_title="Academia Diagnóstica",
     page_icon="🧠",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+
+# Aplica os estilos globais uma única vez
+st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
 if "user" not in st.session_state:
     st.session_state["user"] = None
