@@ -5,8 +5,8 @@ from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-from styles import DARK_THEME_STYLE
- # <-- Importa o tema escuro
+from styles import DARK_THEME_STYLE 
+
 
 st.set_page_config(
     page_title="PsyTrack",
