@@ -1,6 +1,6 @@
 import uuid
 import streamlit as st
-from auth import supabase_client, sign_out 
+from auth import supabase_client, sign_out, get_user
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
 
