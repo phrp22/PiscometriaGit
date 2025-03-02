@@ -3,24 +3,28 @@ import streamlit as st
 from auth import supabase_client
 from profile import get_user_profile
 
+import uuid
+from auth import supabase_client
+from profile import get_user_profile
+
 def create_patient_invitation(professional_id: str, patient_email: str):
     """
-    Cria um convite de vinculação entre um profissional e um paciente, definindo status='pending'.
-    professional_id: auth_user_id do profissional (UUID).
-    patient_email: email do paciente (vamos buscar o auth_user_id dele).
+    Cria um convite de vinculação entre um profissional e um paciente.
+    - `professional_id`: auth_user_id do profissional (UUID).
+    - `patient_email`: email do paciente (vamos buscar o auth_user_id dele).
     """
 
-    # 1. Obter o auth_user_id do paciente via email
+    # Obter o auth_user_id do paciente via email
     patient_auth_id = _get_auth_user_id_by_email(patient_email)
     if not patient_auth_id:
-        return False, "Paciente não encontrado ou não possui registro."
+        return False, "Paciente não encontrado."
 
-    # 2. Verificar se o paciente já tem um registro em user_profile
+    # Verificar se o paciente já tem um perfil
     patient_profile = get_user_profile(patient_auth_id)
     if not patient_profile:
-        return False, "O paciente não completou o onboarding (user_profile inexistente)."
+        return False, "Paciente não completou o cadastro."
 
-    # 3. Verificar se já existe um vínculo (unique constraint) ou convite pendente
+    # Verificar se já existe um convite pendente
     existing_link = supabase_client.from_("professional_patient_link") \
         .select("id, status") \
         .eq("professional_id", professional_id) \
@@ -28,16 +32,16 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         .execute()
 
     if existing_link and existing_link.data:
-        # Se já existe algum registro, verificamos o status
-        link_status = existing_link.data[0].get("status", "pending")
-        return False, f"Já existe um vínculo com status: {link_status}"
+        return False, "Convite já enviado."
 
-    # 4. Criar registro de convite em professional_patient_link
+    # Criar um novo convite
     data = {
+        "id": str(uuid.uuid4()),  # Criar um UUID único
         "professional_id": professional_id,
         "patient_id": patient_auth_id,
         "status": "pending"
     }
+
     response = supabase_client.from_("professional_patient_link").insert(data).execute()
 
     if hasattr(response, "error") and response.error:
