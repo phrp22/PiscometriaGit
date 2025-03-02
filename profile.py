@@ -58,7 +58,6 @@ def render_onboarding_questionnaire(user_id):
     if st.button("Salvar"):
         success, msg = create_user_profile(user_id, genero, data_nascimento)
         if success:
-            st.success("Informações salvas com sucesso!")
             st.session_state["refresh"] = True
             st.rerun()
         else:

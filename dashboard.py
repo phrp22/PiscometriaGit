@@ -23,7 +23,6 @@ def render_sidebar(user):
 
         if st.button("Logout 🚪"):
             sign_out()
-            st.success("Você saiu com sucesso!")
             st.session_state["refresh"] = True
             st.rerun()
 
@@ -34,7 +33,7 @@ def render_sidebar(user):
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
             if st.session_state.get("show_prof_input", False):
-                prof_key = st.text_input("Digite AUTOMATIZEJA para confirmar", key="prof_key_input")
+                prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key:
                     if prof_key == "AUTOMATIZEJA":
                         # Aqui, chamamos enable_professional_area() passando os dados do usuário
