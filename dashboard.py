@@ -163,12 +163,11 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Define os botões lado a lado
-            col1, col2 = st.columns(2)
+            # 🔹 Definindo os botões corretamente dentro de colunas 🔹
+            col1, col2 = st.columns([1, 1])
 
             with col1:
-                st.markdown('<button class="accept-btn">✅ Aceitar</button>', unsafe_allow_html=True)
-                if st.button(" ", key=f"accept_{inv['id']}"):
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
@@ -177,8 +176,7 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
-                st.markdown('<button class="reject-btn">❌ Recusar</button>', unsafe_allow_html=True)
-                if st.button("  ", key=f"reject_{inv['id']}"):
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
