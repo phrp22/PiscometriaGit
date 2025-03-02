@@ -61,10 +61,10 @@ def render_dashboard():
     else:
         saudacao = saudacao_base
 
-    st.title(f"🎉 {saudacao}, {user['display_name']}!")
+    st.title(f"{saudacao}, {user['display_name']}! 🎉")
+    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
     st.markdown("### Dashboard 🌱")
 
-    st.subheader("Convites Pendentes")
     invitations = list_invitations_for_patient(user["id"])
 
     pending_invitations = [inv for inv in invitations if inv["status"] == "pending"]
