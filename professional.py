@@ -44,12 +44,15 @@ def enable_professional_area(auth_user_id, email, display_name):
 
 
 def render_professional_dashboard(user):
-    """Renderiza o dashboard para profissionais."""
+    """Renderiza o dashboard exclusivo para profissionais habilitados."""
     
+    # 🔴 Chamar a sidebar antes de exibir qualquer conteúdo
+    render_sidebar(user)
+
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📊 Painel de Controle Profissional")
-    
-    # Exibição de métricas
+
+    # Seção de métricas
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric(label="Pacientes cadastrados", value="42")
@@ -57,11 +60,11 @@ def render_professional_dashboard(user):
         st.metric(label="Avaliações realizadas", value="128")
     with col3:
         st.metric(label="Última atualização", value="Hoje")
-    
+
     st.markdown("---")
     st.info("🔍 Novos recursos serão adicionados em breve!")
 
-    # Seção para convidar pacientes
+    # NOVA SEÇÃO: Convidar Pacientes
     st.markdown("## Convidar Paciente")
     st.write("Digite o email do paciente para enviar um convite de vinculação:")
     patient_email = st.text_input("Email do Paciente", key="patient_email_input")
@@ -75,3 +78,4 @@ def render_professional_dashboard(user):
                 st.error(f"Erro: {msg}")
         else:
             st.warning("Por favor, insira o email do paciente.")
+
