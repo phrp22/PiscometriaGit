@@ -32,7 +32,7 @@ def render_sidebar(user):
             st.write("Área do Profissional")
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
-            if st.session_state.get("show_prof_input", False):
+            if st.session_state.get("show_prof_input", True):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key:
                     if prof_key == "AUTOMATIZEJA":
