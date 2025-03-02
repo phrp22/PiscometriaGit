@@ -109,3 +109,39 @@ def render_dashboard():
 
     st.markdown("---")
     st.write("Outros componentes e informações podem ser adicionados aqui conforme a evolução do sistema.")
+
+def render_professional_dashboard(user):
+    """Renderiza o dashboard exclusivo para profissionais habilitados."""
+    
+    # 🔴 Chamar a sidebar antes de exibir qualquer conteúdo
+    render_sidebar(user)
+
+    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    st.markdown("### 📊 Painel de Controle Profissional")
+
+    # Seção de métricas
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Pacientes cadastrados", value="42")
+    with col2:
+        st.metric(label="Avaliações realizadas", value="128")
+    with col3:
+        st.metric(label="Última atualização", value="Hoje")
+
+    st.markdown("---")
+    st.info("🔍 Novos recursos serão adicionados em breve!")
+
+    # NOVA SEÇÃO: Convidar Pacientes
+    st.markdown("## Convidar Paciente")
+    st.write("Digite o email do paciente para enviar um convite de vinculação:")
+    patient_email = st.text_input("Email do Paciente", key="patient_email_input")
+    
+    if st.button("Enviar Convite"):
+        if patient_email:
+            success, msg = create_patient_invitation(user["id"], patient_email)
+            if success:
+                st.success("Convite enviado com sucesso!")
+            else:
+                st.error(f"Erro: {msg}")
+        else:
+            st.warning("Por favor, insira o email do paciente.")
