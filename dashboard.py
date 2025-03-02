@@ -134,13 +134,14 @@ def render_professional_dashboard(user):
 
 
 def render_patient_invitations(user):
+    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
         return
 
     st.markdown("## 📩 Convites Pendentes")
 
-    # Aplica estilos específicos de convite
+    # Aplica estilos aos botões de convite
     st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
     st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
 
@@ -178,8 +179,4 @@ def render_patient_invitations(user):
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
-                        st.success("Convite recusado.")
-                        st.rerun()
-                    else:
-                        st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
+                        st.success("Conv
