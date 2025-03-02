@@ -43,7 +43,7 @@ def render_sidebar(user):
                         else:
                             st.error(msg)
                     else:
-                        st.error("Chave incorreta!")
+                        st.error("❌ Chave incorreta!")
         else:
             st.success("✅ Área do profissional habilitada!")
 
