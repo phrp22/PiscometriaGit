@@ -7,7 +7,7 @@ from profile import get_user_profile, render_onboarding_questionnaire, user_has_
 from styles import BUTTON_STYLE
 
 st.set_page_config(
-    page_title="Academia Diagnóstica",
+    page_title="PsyTrack",
     page_icon="🧠",
     layout="centered",
     initial_sidebar_state="collapsed"

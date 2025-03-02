@@ -49,16 +49,13 @@ def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
     if not user:
-    st.warning("⚠️ Você precisa estar logado para acessar esta página.")
-    return
+        st.warning("⚠️ Você precisa estar logado para acessar esta página.")  # ⬅️ Certifique-se de que essa linha está indentada corretamente
+        return  # ⬅️ Retorna para evitar que o código continue executando
 
     # Busca o perfil do usuário para personalizar a saudação
     profile = get_user_profile(user["id"])
     saudacao_base = "Bem-vindo"
-    if profile and profile.get("genero"):
-        saudacao = adjust_gender_ending(saudacao_base, profile["genero"])
-    else:
-        saudacao = saudacao_base
+    saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
     render_sidebar(user)
 
