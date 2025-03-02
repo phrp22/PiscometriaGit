@@ -1,6 +1,6 @@
 import uuid
 import streamlit as st
-from auth import supabase_client, sign_out, get_user
+from auth import supabase_client, sign_out 
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
 
@@ -17,25 +17,14 @@ def is_professional_enabled(auth_user_id):
 
 # Função para habilitar a área profissional, com elegância e precisão,
 # Sem criar registros duplicados, ela cuida da informação.
-def enable_professional_area():
+def enable_professional_area(auth_user_id, email, display_name):
     """Habilita a área do profissional sem duplicação de registros, usando o UUID do Supabase Auth."""
     
-    # Obtém o usuário autenticado diretamente do Supabase
-    user = get_user()
-    
-    if not user:
-        st.error("⚠️ Você precisa estar logado para ativar a área profissional.")
-        return False, "Usuário não autenticado."
-    
-    auth_user_id = user["id"]  # Obtém o UUID do Supabase Auth
-    email = user["email"]
-    display_name = user["display_name"]
-    
-    # Verifica se o usuário já está na tabela 'professional'
+    # Primeiro, verifica se já existe um registro para esse usuário
     response = supabase_client.from_("professional").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
 
     if response and hasattr(response, "data") and response.data:
-        # Se já existir, apenas atualiza a flag `area_habilitada`
+        # Se o usuário já existe, apenas atualiza o campo `area_habilitada`
         update_response = supabase_client.from_("professional").update({"area_habilitada": True}).eq("auth_user_id", auth_user_id).execute()
         
         if hasattr(update_response, "error") and update_response.error:
@@ -43,14 +32,15 @@ def enable_professional_area():
         
         return True, None
 
-    # Se não existir, cria um novo registro usando o UUID do Supabase Auth
+    # Se não existir, cria um novo registro com o UUID do Supabase Auth
     data = {
-        "auth_user_id": auth_user_id,
+        "auth_user_id": auth_user_id,  # Agora usamos o UUID da autenticação
         "email": email,
         "display_name": display_name,
         "area_habilitada": True
     }
     
+    # Insere o novo registro
     insert_response = supabase_client.from_("professional").insert(data).execute()
 
     if hasattr(insert_response, "error") and insert_response.error:
