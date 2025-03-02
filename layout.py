@@ -1,7 +1,11 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password 
+
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
+
+    # Aplica os estilos para botões roxos
+    st.markdown(PURPLE_BUTTON_STYLE, unsafe_allow_html=True)
 
     # Título principal alinhado à esquerda
     st.markdown(
@@ -15,7 +19,6 @@ def render_main_layout():
         "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
         unsafe_allow_html=True
     )
-
 
     st.markdown(
         """
@@ -59,6 +62,8 @@ def render_main_layout():
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
+        # Aplica a classe de estilo roxo ao botão
+        st.markdown('<div class="purple-button">', unsafe_allow_html=True)
         if st.button(action_text, key="auth_action"):
             if option == "Login":
                 user, message = sign_in(email, password)
@@ -78,12 +83,15 @@ def render_main_layout():
                     st.rerun()
                 else:
                     st.error(message)
-    
+        st.markdown("</div>", unsafe_allow_html=True)  # Fecha a div do botão roxo
+
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
+        st.markdown('<div class="purple-button">', unsafe_allow_html=True)
         if st.button("🔓 Recuperar Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)
             else:
                 st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+        st.markdown("</div>", unsafe_allow_html=True)  # Fecha a div do botão roxo

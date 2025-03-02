@@ -179,4 +179,9 @@ def render_patient_invitations(user):
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
-                        st.success("Conv
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+                st.markdown("</div>", unsafe_allow_html=True)
+
