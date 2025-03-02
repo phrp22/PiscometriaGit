@@ -4,6 +4,7 @@ from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending  # Importa a função para ajustar saudações
 from patient_link import list_invitations_for_patient, create_patient_invitation
+from styles import ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE  # Importa os estilos
 
 
 def render_sidebar(user):
@@ -125,6 +126,7 @@ def render_professional_dashboard(user):
         else:
             st.warning("Por favor, insira o email do paciente.")
 
+
 def render_patient_invitations(user):
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
@@ -133,7 +135,7 @@ def render_patient_invitations(user):
         return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
-    
+
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_profile(inv["professional_id"])
@@ -151,32 +153,14 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Define os botões com cores personalizadas
+            # Renderiza os estilos externos para os botões
+            st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
+            st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+
+            # Define os botões lado a lado
             col1, col2 = st.columns(2)
 
             with col1:
-                st.markdown(
-                    f"""
-                    <style>
-                    div[data-testid="stButton"] > button {{
-                        background-color: #28a745 !important;
-                        color: white !important;
-                        border-radius: 8px !important;
-                        font-size: 16px !important;
-                        font-weight: bold !important;
-                        border: 2px solid #218838 !important;
-                        transition: 0.3s !important;
-                        padding: 10px 20px !important;
-                        text-align: center !important;
-                    }}
-                    div[data-testid="stButton"] > button:hover {{
-                        background-color: #218838 !important;
-                        transform: scale(1.05) !important;
-                    }}
-                    </style>
-                    """,
-                    unsafe_allow_html=True,
-                )
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -186,28 +170,6 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
-                st.markdown(
-                    f"""
-                    <style>
-                    div[data-testid="stButton"] > button {{
-                        background-color: #dc3545 !important;
-                        color: white !important;
-                        border-radius: 8px !important;
-                        font-size: 16px !important;
-                        font-weight: bold !important;
-                        border: 2px solid #c82333 !important;
-                        transition: 0.3s !important;
-                        padding: 10px 20px !important;
-                        text-align: center !important;
-                    }}
-                    div[data-testid="stButton"] > button:hover {{
-                        background-color: #c82333 !important;
-                        transform: scale(1.05) !important;
-                    }}
-                    </style>
-                    """,
-                    unsafe_allow_html=True,
-                )
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
