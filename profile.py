@@ -3,8 +3,10 @@ import datetime
 from auth import supabase_client
 
 def user_has_profile(auth_user_id):
-    response = supabase_client.from_("user_profile").select("id").eq("auth_user_id", auth_user_id).execute()
+    """Retorna True se o usuário já tiver um perfil, False caso contrário."""
+    response = supabase_client.from_("user_profile").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
     return bool(response.data) if response and hasattr(response, "data") else False
+
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
     """Cria um registro na tabela user_profile, incluindo o email."""
