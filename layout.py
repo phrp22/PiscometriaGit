@@ -7,7 +7,7 @@ def render_main_layout():
 
     # Título principal alinhado à esquerda
     st.markdown(
-        "<h1 style='text-align: left; color: white;'>Academia Diagnóstica 🧠</h1>",
+        "<h1 style='text-align: left; color: white;'>PsyTrack 🧠</h1>",
         unsafe_allow_html=True
     )
 

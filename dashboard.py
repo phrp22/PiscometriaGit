@@ -133,10 +133,10 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
+
 def render_patient_invitations(user):
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
-
     if not invitations:
         return  # Se não houver convites, não mostra nada
 
@@ -163,10 +163,12 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # 🔹 Definindo os botões corretamente dentro de colunas 🔹
-            col1, col2 = st.columns([1, 1])
+            # Colunas lado a lado
+            col1, col2 = st.columns(2)
 
+            # Botão "Aceitar"
             with col1:
+                st.markdown('<div class="accept-container">', unsafe_allow_html=True)
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -174,8 +176,11 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
+                st.markdown("</div>", unsafe_allow_html=True)
 
+            # Botão "Recusar"
             with col2:
+                st.markdown('<div class="reject-container">', unsafe_allow_html=True)
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -183,3 +188,4 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
+                st.markdown("</div>", unsafe_allow_html=True)
