@@ -72,6 +72,7 @@ def render_dashboard():
     with col2:
         st.metric(label="Avaliações concluídas", value="120")
     with col3:
+        st.metric(label="Consultas agendadas", value="15")
 
     st.markdown("---")
     st.subheader("📌 Últimas Atividades")
