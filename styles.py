@@ -21,8 +21,20 @@ div.stButton > button {
 div.stButton > button:hover {
     transform: scale(1.05) !important;
 }
+
+/* Efeito ao clicar */
+    div.stButton > button:first-child:active,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+        background-color: #5e47b0 !important;
+        border-color: #7159c1 !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+        transform: scale(0.98) !important;
+        color: white !important;
+    }
 </style>
 """
+
+
 
 ACCEPT_BUTTON_STYLE = """
 <style>
