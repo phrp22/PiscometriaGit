@@ -87,7 +87,7 @@ def render_dashboard():
 
     st.markdown("---")
     st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
-    
+
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
@@ -141,17 +141,42 @@ def render_patient_invitations(user):
                 profissional_nome = professional_profile.get("display_name", "Profissional")
                 genero_profissional = professional_profile.get("genero", "M")
 
-                titulo = "Dr."
+                # Define o título conforme o gênero
                 if genero_profissional == "F":
                     titulo = "Dra."
                 elif genero_profissional == "N":
                     titulo = "Drx."
+                else:
+                    titulo = "Dr."
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
+            # Define os botões com cores personalizadas
             col1, col2 = st.columns(2)
 
             with col1:
+                st.markdown(
+                    f"""
+                    <style>
+                    div[data-testid="stButton"] > button {{
+                        background-color: #28a745 !important;
+                        color: white !important;
+                        border-radius: 8px !important;
+                        font-size: 16px !important;
+                        font-weight: bold !important;
+                        border: 2px solid #218838 !important;
+                        transition: 0.3s !important;
+                        padding: 10px 20px !important;
+                        text-align: center !important;
+                    }}
+                    div[data-testid="stButton"] > button:hover {{
+                        background-color: #218838 !important;
+                        transform: scale(1.05) !important;
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -161,6 +186,28 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
+                st.markdown(
+                    f"""
+                    <style>
+                    div[data-testid="stButton"] > button {{
+                        background-color: #dc3545 !important;
+                        color: white !important;
+                        border-radius: 8px !important;
+                        font-size: 16px !important;
+                        font-weight: bold !important;
+                        border: 2px solid #c82333 !important;
+                        transition: 0.3s !important;
+                        padding: 10px 20px !important;
+                        text-align: center !important;
+                    }}
+                    div[data-testid="stButton"] > button:hover {{
+                        background-color: #c82333 !important;
+                        transform: scale(1.05) !important;
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -168,4 +215,3 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
-
