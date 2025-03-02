@@ -48,9 +48,9 @@ def render_sidebar(user):
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
-        if not user:
-        st.warning("⚠️ Você precisa estar logado para acessar esta página.")
-        return
+    if not user:
+    st.warning("⚠️ Você precisa estar logado para acessar esta página.")
+    return
 
     # Busca o perfil do usuário para personalizar a saudação
     profile = get_user_profile(user["id"])
