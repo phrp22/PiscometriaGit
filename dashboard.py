@@ -51,10 +51,7 @@ def render_dashboard():
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    # Renderiza a sidebar com informações e opções
-    render_sidebar(user)
-
-    # Busca o perfil para personalizar a saudação do dashboard
+    # Busca o perfil do usuário para personalizar a saudação
     profile = get_user_profile(user["id"])
     saudacao_base = "Bem-vindo"
     if profile and profile.get("genero"):
@@ -63,30 +60,11 @@ def render_dashboard():
         saudacao = saudacao_base
 
     st.title(f"{saudacao}, {user['display_name']}! 🎉")
-    st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
-    st.markdown("### Dashboard 🌱")
+    st.markdown("### 📈 Estatísticas Recentes")
 
-    invitations = list_invitations_for_patient(user["id"])
+    # Adiciona a renderização dos convites pendentes
+    render_patient_invitations(user)  # ⬅️ Chama a função aqui
 
-    pending_invitations = [inv for inv in invitations if inv["status"] == "pending"]
-    for inv in pending_invitations:
-        st.write(f"Convite do profissional: {inv['professional_id']}")
-        if st.button(f"Aceitar Convite {inv['id']}"):
-            success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-            if success:
-                st.success("Convite aceito!")
-                st.rerun()
-            else:
-                st.error(msg)
-
-        if st.button(f"Recusar Convite {inv['id']}"):
-            success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-            if success:
-                st.success("Convite recusado!")
-                st.rerun()
-            else:
-                st.error(msg)
-    
     # Exibe algumas métricas usando colunas
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -95,11 +73,11 @@ def render_dashboard():
         st.metric(label="Avaliações concluídas", value="120")
     with col3:
         st.metric(label="Consultas agendadas", value="15")
-    
+
     st.markdown("---")
-    st.subheader("Últimas Atividades")
-    st.write("Aqui você pode exibir logs, gráficos ou outras informações relevantes para o usuário.")
-    
+    st.subheader("📌 Últimas Atividades")
+    st.write("Aqui você pode exibir logs, gráficos ou outras informações relevantes.")
+
     # Exemplo de gráfico de linha
     data = {
         "Pacientes": [10, 20, 30, 40, 50],
@@ -108,7 +86,8 @@ def render_dashboard():
     st.line_chart(data)
 
     st.markdown("---")
-    st.write("Outros componentes e informações podem ser adicionados aqui conforme a evolução do sistema.")
+    st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
+    
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
@@ -145,3 +124,48 @@ def render_professional_dashboard(user):
                 st.error(f"Erro: {msg}")
         else:
             st.warning("Por favor, insira o email do paciente.")
+
+def render_patient_invitations(user):
+    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
+    invitations = list_invitations_for_patient(user["id"])
+
+    if not invitations:
+        return  # Se não houver convites, não mostra nada
+
+    st.markdown("## 📩 Convites Pendentes")
+    
+    for inv in invitations:
+        if inv["status"] == "pending":
+            professional_profile = get_user_profile(inv["professional_id"])
+            if professional_profile:
+                profissional_nome = professional_profile.get("display_name", "Profissional")
+                genero_profissional = professional_profile.get("genero", "M")
+
+                titulo = "Dr."
+                if genero_profissional == "F":
+                    titulo = "Dra."
+                elif genero_profissional == "N":
+                    titulo = "Drx."
+
+                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
+                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite aceito com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+
+            with col2:
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
+                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+

@@ -3,10 +3,6 @@ import streamlit as st
 from auth import supabase_client
 from profile import get_user_profile
 
-import uuid
-from auth import supabase_client
-from profile import get_user_profile
-
 def create_patient_invitation(professional_id: str, patient_email: str):
     """
     Cria um convite de vinculação entre um profissional e um paciente.
