@@ -138,22 +138,20 @@ def render_patient_invitations(user):
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
-        return  # Se não houver convites, não mostra nada
+        return
 
     st.markdown("## 📩 Convites Pendentes")
-    
-    # Aplica os estilos específicos para os botões de convite
+
+    # Aplica estilos específicos para os botões de convite
     st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
     st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
 
     for inv in invitations:
         if inv["status"] == "pending":
-            professional_profile = get_user_profile(inv["professional_id"])
-            if professional_profile:
-                profissional_nome = professional_profile.get("display_name", "Profissional")
-                genero_profissional = professional_profile.get("genero", "M")
-                
-                # Define o título com base no gênero do profissional
+            prof_profile = get_user_profile(inv["professional_id"])
+            if prof_profile:
+                prof_nome = prof_profile.get("display_name", "Profissional")
+                genero_profissional = prof_profile.get("genero", "M")
                 if genero_profissional == "F":
                     titulo = "Dra."
                 elif genero_profissional == "N":
@@ -161,11 +159,11 @@ def render_patient_invitations(user):
                 else:
                     titulo = "Dr."
 
-                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+                st.markdown(f"### {titulo} {prof_nome} deseja se vincular a você.")
 
-            # Cria duas colunas para os botões lado a lado
             col1, col2 = st.columns(2)
-            
+
+            # Botão "Aceitar" com contêiner .accept-container
             with col1:
                 st.markdown('<div class="accept-container">', unsafe_allow_html=True)
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
@@ -176,7 +174,8 @@ def render_patient_invitations(user):
                     else:
                         st.error(msg)
                 st.markdown("</div>", unsafe_allow_html=True)
-            
+
+            # Botão "Recusar" com contêiner .reject-container
             with col2:
                 st.markdown('<div class="reject-container">', unsafe_allow_html=True)
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
