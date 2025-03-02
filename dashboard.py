@@ -48,7 +48,7 @@ def render_sidebar(user):
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
-    if not user:
+        if not user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
@@ -59,6 +59,8 @@ def render_dashboard():
         saudacao = adjust_gender_ending(saudacao_base, profile["genero"])
     else:
         saudacao = saudacao_base
+
+    render_sidebar(user)
 
     st.title(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📈 Estatísticas Recentes")
@@ -93,10 +95,17 @@ def render_dashboard():
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
     
-    # 🔴 Chamar a sidebar antes de exibir qualquer conteúdo
+   # Busca o perfil do usuário para personalizar a saudação
+    profile = get_user_profile(user["id"])
+    saudacao_base = "Bem-vindo"
+    if profile and profile.get("genero"):
+        saudacao = adjust_gender_ending(saudacao_base, profile["genero"])
+    else:
+        saudacao = saudacao_base
+
     render_sidebar(user)
 
-    st.title(f"🎉 Bem-vindo, {user['display_name']}!")
+    st.title(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📊 Painel de Controle Profissional")
 
     # Seção de métricas

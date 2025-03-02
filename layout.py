@@ -31,7 +31,7 @@ def render_main_layout():
         
         🎯 **Tenha em mãos um sistema inteligente e baseado em evidências.**  
         
-        🔍 **Eleve sua prática clínica e ofereça um acompanhamento mais eficaz e personalizado.**  
+        🔍 **Eleve sua prática profissional e ofereça um acompanhamento mais eficaz e personalizado.**  
         """
     )
 
