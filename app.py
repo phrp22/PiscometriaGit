@@ -3,6 +3,7 @@ from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
+from profile import get_user_profile, render_onboarding_questionnaire
 from styles import BUTTON_STYLE
 
 st.set_page_config(
@@ -21,12 +22,17 @@ if "user" not in st.session_state:
 def main():
     user = get_user()
     if user:
-        if is_professional_enabled(user["id"]):
-            render_professional_dashboard(user)  # ✅ Agora só existe essa função
+        # Verifica se o usuário já completou o onboarding (perfil criado)
+        profile = get_user_profile(user["id"])
+        if not profile:
+            # Se não existir, exibe o questionário de onboarding
+            render_onboarding_questionnaire(user["id"])
+            return  # Após o onboarding, o app será recarregado (st.rerun())
         else:
+            # Se o perfil existir, prossegue para a dashboard
             render_dashboard()
     else:
         render_main_layout()
 
 if __name__ == "__main__":
-    main() 
+    main()
