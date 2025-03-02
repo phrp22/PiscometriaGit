@@ -44,21 +44,12 @@ def enable_professional_area(auth_user_id, email, display_name):
 
 
 def render_professional_dashboard(user):
-    """Renderiza o dashboard exclusivo para profissionais habilitados."""
+    """Renderiza o dashboard para profissionais."""
     
-    with st.sidebar:
-        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
-        st.markdown(f"✉️ {user['email']}")
-        st.success("✅ Área do profissional habilitada!")
-        if st.button("Logout 🚪"):
-            sign_out()
-            st.session_state.clear()
-            st.rerun()
-
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📊 Painel de Controle Profissional")
     
-    # Seção de métricas
+    # Exibição de métricas
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric(label="Pacientes cadastrados", value="42")
@@ -69,14 +60,14 @@ def render_professional_dashboard(user):
     
     st.markdown("---")
     st.info("🔍 Novos recursos serão adicionados em breve!")
-    
-    # NOVA SEÇÃO: Convidar Pacientes
+
+    # Seção para convidar pacientes
     st.markdown("## Convidar Paciente")
     st.write("Digite o email do paciente para enviar um convite de vinculação:")
     patient_email = st.text_input("Email do Paciente", key="patient_email_input")
+    
     if st.button("Enviar Convite"):
         if patient_email:
-            # professional_id é o auth_user_id do profissional, aqui usamos user["id"]
             success, msg = create_patient_invitation(user["id"], patient_email)
             if success:
                 st.success("Convite enviado com sucesso!")
@@ -84,8 +75,3 @@ def render_professional_dashboard(user):
                 st.error(f"Erro: {msg}")
         else:
             st.warning("Por favor, insira o email do paciente.")
-    
-    # Opcional: listar convites enviados
-    # from patient_link import list_invitations_for_professional
-    # convites = list_invitations_for_professional(user["id"])
-    # st.write("Convites enviados:", convites)

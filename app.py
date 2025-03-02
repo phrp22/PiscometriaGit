@@ -20,14 +20,17 @@ if "user" not in st.session_state:
     st.session_state["user"] = None
 
 def main():
-    user = get_user()  # retorna algo como {"id": "...", "email": "..."}
+    user = get_user()  # Obtém as informações do usuário autenticado
     if user:
-        # Verifica se o usuário já tem um perfil
+        # Primeiro verifica se o usuário tem um perfil
         if not user_has_profile(user["id"]):
-            # Passa também o email, pois não perguntaremos novamente
             render_onboarding_questionnaire(user["id"], user["email"])
         else:
-            render_dashboard()
+            # Se ele for um profissional habilitado, mostra a dashboard profissional
+            if is_professional_enabled(user["id"]):
+                render_professional_dashboard(user)
+            else:
+                render_dashboard()  # Caso contrário, mostra a dashboard padrão (para pacientes)
     else:
         render_main_layout()
 
