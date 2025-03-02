@@ -19,45 +19,25 @@ BUTTON_STYLE = """
     }
 
     /* Remove borda vermelha após clique */
-    div.stButton > button:first-child:focus,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
+    div.stButton > button:first-child:focus {
         outline: none !important;
         border-color: #836fff !important;
         box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
     }
 
     /* Efeito hover */
-    div.stButton > button:first-child:hover,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
+    div.stButton > button:first-child:hover {
         background-color: #5e47b0 !important;
         transform: scale(1.05) !important;
         box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
     }
-
-    /* Efeito ao clicar */
-    div.stButton > button:first-child:active,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
-        background-color: #5e47b0 !important;
-        border-color: #7159c1 !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
-        transform: scale(0.98) !important;
-        color: white !important;
-    }
-
-    /* Remove qualquer contorno vermelho do tema */
-    div.stButton > button:first-child:focus-visible {
-        outline: none !important;
-        border: 2px solid #836fff !important;
-        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
-    }
-
 </style>
 """
 
 # Estilo específico para os botões de convite
 ACCEPT_BUTTON_STYLE = """
 <style>
-    div[data-testid="stButton"] > button {
+    .accept-btn {
         background-color: #28a745 !important;
         color: white !important;
         border-radius: 8px !important;
@@ -67,48 +47,19 @@ ACCEPT_BUTTON_STYLE = """
         transition: 0.3s !important;
         padding: 10px 20px !important;
         text-align: center !important;
-    }
-    
-    /* Remove borda vermelha após clique */
-    div.stButton > button:first-child:focus,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
-        outline: none !important;
-        border-color: #836fff !important;
-        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+        cursor: pointer !important;
     }
 
-    /* Efeito hover */
-    div.stButton > button:first-child:hover,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
-        background-color: #5e47b0 !important;
+    .accept-btn:hover {
+        background-color: #218838 !important;
         transform: scale(1.05) !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
     }
-
-    /* Efeito ao clicar */
-    div.stButton > button:first-child:active,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
-        background-color: #5e47b0 !important;
-        border-color: #7159c1 !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
-        transform: scale(0.98) !important;
-        color: white !important;
-    }
-
-    /* Remove qualquer contorno vermelho do tema */
-    div.stButton > button:first-child:focus-visible {
-        outline: none !important;
-        border: 2px solid #836fff !important;
-        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
-    }
-
-    
 </style>
 """
 
 REJECT_BUTTON_STYLE = """
 <style>
-    div[data-testid="stButton"] > button {
+    .reject-btn {
         background-color: #dc3545 !important;
         color: white !important;
         border-radius: 8px !important;
@@ -118,39 +69,12 @@ REJECT_BUTTON_STYLE = """
         transition: 0.3s !important;
         padding: 10px 20px !important;
         text-align: center !important;
-    }
-    
-    /* Remove borda vermelha após clique */
-    div.stButton > button:first-child:focus,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
-        outline: none !important;
-        border-color: #836fff !important;
-        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+        cursor: pointer !important;
     }
 
-    /* Efeito hover */
-    div.stButton > button:first-child:hover,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
-        background-color: #5e47b0 !important;
+    .reject-btn:hover {
+        background-color: #c82333 !important;
         transform: scale(1.05) !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
-    }
-
-    /* Efeito ao clicar */
-    div.stButton > button:first-child:active,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
-        background-color: #5e47b0 !important;
-        border-color: #7159c1 !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
-        transform: scale(0.98) !important;
-        color: white !important;
-    }
-
-    /* Remove qualquer contorno vermelho do tema */
-    div.stButton > button:first-child:focus-visible {
-        outline: none !important;
-        border: 2px solid #836fff !important;
-        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
     }
 </style>
 """

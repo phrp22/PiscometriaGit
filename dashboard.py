@@ -142,6 +142,10 @@ def render_patient_invitations(user):
 
     st.markdown("## 📩 Convites Pendentes")
 
+    # Aplica os estilos específicos para os botões de convite
+    st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
+    st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_profile(inv["professional_id"])
@@ -159,15 +163,12 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Renderiza os estilos externos para os botões
-            st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
-            st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
-
             # Define os botões lado a lado
             col1, col2 = st.columns(2)
 
             with col1:
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
+                st.markdown('<button class="accept-btn">✅ Aceitar</button>', unsafe_allow_html=True)
+                if st.button(" ", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
@@ -176,7 +177,8 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
+                st.markdown('<button class="reject-btn">❌ Recusar</button>', unsafe_allow_html=True)
+                if st.button("  ", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
