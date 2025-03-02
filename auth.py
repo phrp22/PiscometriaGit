@@ -56,31 +56,22 @@ def reset_password(email):
 
 
 def sign_out():
-    """Desconecta o usuário."""
+    """Desconecta o usuário corretamente."""
     supabase_client.auth.sign_out()
-    st.session_state.pop("user", None)
-    st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+    st.rerun()  # Apenas reinicia o app sem usar session_state
 
 
 def get_user():
-    """Obtém o usuário logado diretamente da autenticação do Supabase."""
-    if "user" in st.session_state and st.session_state["user"]:
-        return st.session_state["user"]
-
+    """Obtém o usuário logado diretamente do Supabase."""
     try:
-        user = supabase_client.auth.get_user()  # Obtém o usuário autenticado
+        user = supabase_client.auth.get_user()  # Obtém do Supabase
         if user and hasattr(user, "user") and user.user:
-            user_obj = user.user
-            user_data = {
-                "email": user_obj.email,
-                "id": user_obj.id,
-                "display_name": user_obj.user_metadata.get("display_name", "Usuário") 
-                               if hasattr(user_obj, "user_metadata") else "Usuário"
+            return {
+                "email": user.user.email,
+                "id": user.user.id,
+                "display_name": user.user.user_metadata.get("display_name", "Usuário")
             }
-            st.session_state["user"] = user_data  # Salva na sessão
-            return user_data
-
     except Exception as e:
-        st.error(f"Erro ao buscar usuário autenticado: {e}")
+        st.warning("⚠️ Sua sessão expirou. Faça login novamente.")
+        return None  # Retorna None se não encontrar um usuário logado
 
-    return None  # Retorna None se não encontrar um usuário logado
