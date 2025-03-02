@@ -1,5 +1,7 @@
 import streamlit as st
 from auth import supabase_client, sign_out
+from patient_link import create_patient_invitation  # Importe a função do seu novo módulo
+
 
 def is_professional_enabled(auth_user_id):
     """Verifica se a área profissional está habilitada para o usuário usando auth_user_id."""
@@ -43,13 +45,11 @@ def enable_professional_area(auth_user_id, email, display_name):
 
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
-
+    
     with st.sidebar:
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
         st.success("✅ Área do profissional habilitada!")
-
-        # 🔴 Botão de Logout estilizado
         if st.button("Logout 🚪"):
             sign_out()
             st.session_state.clear()
@@ -57,20 +57,35 @@ def render_professional_dashboard(user):
 
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📊 Painel de Controle Profissional")
-
-    st.subheader("Convidar Paciente")
-    patient_email = st.text_input("Email do Paciente")
-
-    if st.button("Enviar Convite"):
-        success, msg = create_patient_invitation(user["id"], patient_email)
-        if success:
-            st.success("Convite enviado com sucesso!")
-        else:
-            st.error(msg)
     
-    st.metric(label="📁 Pacientes cadastrados", value="42")
-    st.metric(label="📊 Avaliações realizadas", value="128")
-    st.metric(label="📆 Última atualização", value="Hoje")
-
+    # Seção de métricas
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Pacientes cadastrados", value="42")
+    with col2:
+        st.metric(label="Avaliações realizadas", value="128")
+    with col3:
+        st.metric(label="Última atualização", value="Hoje")
+    
     st.markdown("---")
     st.info("🔍 Novos recursos serão adicionados em breve!")
+    
+    # NOVA SEÇÃO: Convidar Pacientes
+    st.markdown("## Convidar Paciente")
+    st.write("Digite o email do paciente para enviar um convite de vinculação:")
+    patient_email = st.text_input("Email do Paciente", key="patient_email_input")
+    if st.button("Enviar Convite"):
+        if patient_email:
+            # professional_id é o auth_user_id do profissional, aqui usamos user["id"]
+            success, msg = create_patient_invitation(user["id"], patient_email)
+            if success:
+                st.success("Convite enviado com sucesso!")
+            else:
+                st.error(f"Erro: {msg}")
+        else:
+            st.warning("Por favor, insira o email do paciente.")
+    
+    # Opcional: listar convites enviados
+    # from patient_link import list_invitations_for_professional
+    # convites = list_invitations_for_professional(user["id"])
+    # st.write("Convites enviados:", convites)
