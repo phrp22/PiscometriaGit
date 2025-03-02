@@ -133,14 +133,18 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
+
 def render_patient_invitations(user):
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
-
     if not invitations:
         return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
+
+    # Aplica os estilos específicos para os botões de convite
+    st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
+    st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
 
     for inv in invitations:
         if inv["status"] == "pending":
@@ -159,27 +163,29 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Renderiza os estilos externos para os botões
-            st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
-            st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
-
-            # Define os botões lado a lado
+            # Colunas lado a lado
             col1, col2 = st.columns(2)
 
+            # Botão "Aceitar"
             with col1:
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
+                st.markdown('<div class="accept-container">', unsafe_allow_html=True)
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
                         st.rerun()
                     else:
                         st.error(msg)
+                st.markdown("</div>", unsafe_allow_html=True)
 
+            # Botão "Recusar"
             with col2:
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
+                st.markdown('<div class="reject-container">', unsafe_allow_html=True)
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
                         st.rerun()
                     else:
                         st.error(msg)
+                st.markdown("</div>", unsafe_allow_html=True)
