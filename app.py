@@ -3,7 +3,7 @@ from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard
 from professional import is_professional_enabled, render_professional_dashboard
-from profile import get_user_profile, render_onboarding_questionnaire
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 from styles import BUTTON_STYLE
 
 st.set_page_config(
