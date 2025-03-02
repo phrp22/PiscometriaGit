@@ -4,21 +4,20 @@ from professional import is_professional_enabled, render_professional_dashboard,
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending  # Importa a função para ajustar saudações
 
+import streamlit as st
+from auth import get_user, sign_out
+from professional import is_professional_enabled, enable_professional_area
+from profile import get_user_profile
+from gender_utils import adjust_gender_ending
+
 def render_sidebar(user):
-    """Renderiza a sidebar para usuários logados."""
+    # Inicializa o flag se ainda não estiver definido
+    if "show_prof_input" not in st.session_state:
+        st.session_state["show_prof_input"] = False
+
     with st.sidebar:
         st.title("🔑 Bem-vindo!")
-        # Busca o perfil para personalizar a saudação na sidebar
-        profile = get_user_profile(user["id"])
-        saudacao_base = "Bem-vindo"
-        if profile and profile.get("genero"):
-            # Usa a função para ajustar a saudação conforme o gênero
-            saudacao = adjust_gender_ending(saudacao_base, profile["genero"])
-        else:
-            saudacao = saudacao_base
-        
-        # Exibe a saudação personalizada junto ao nome
-        st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
+        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
 
         if st.button("Logout 🚪"):
@@ -27,16 +26,17 @@ def render_sidebar(user):
             st.rerun()
 
         st.markdown("---")
-        # Verifica se a área profissional está habilitada usando o auth_user_id (user["id"])
+        # Verifica se a área profissional está habilitada
         if not is_professional_enabled(user["id"]):
             st.write("Área do Profissional")
+            # Só altera o flag se o usuário clicar neste botão
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
-            if st.session_state.get("show_prof_input", True):
+            # Exibe o campo de texto apenas se o flag estiver True
+            if st.session_state.get("show_prof_input", False):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key:
                     if prof_key == "AUTOMATIZEJA":
-                        # Aqui, chamamos enable_professional_area() passando os dados do usuário
                         success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
                         if success:
                             st.session_state["refresh"] = True
