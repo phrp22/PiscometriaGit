@@ -3,11 +3,11 @@ import datetime
 from auth import supabase_client
 
 def user_has_profile(auth_user_id):
-    response = supabase_client.from_("user_profile").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
+    response = supabase_client.from_("user_profile").select("id").eq("auth_user_id", auth_user_id).execute()
     return bool(response.data) if response and hasattr(response, "data") else False
 
-def create_user_profile(auth_user_id, genero, data_nascimento):
-    """Cria um registro na tabela user_profile."""
+def create_user_profile(auth_user_id, email, genero, data_nascimento):
+    """Cria um registro na tabela user_profile, incluindo o email."""
     try:
         # Mapeia a escolha do usuário para M, F ou N
         genero_map = {
@@ -19,6 +19,7 @@ def create_user_profile(auth_user_id, genero, data_nascimento):
 
         data = {
             "auth_user_id": auth_user_id,
+            "email": email,  # Salva o email do usuário
             "genero": genero_abreviado,  # Salva M, F ou N
             "data_nascimento": data_nascimento.strftime("%Y-%m-%d") if data_nascimento else None
         }
@@ -36,16 +37,19 @@ def get_user_profile(auth_user_id):
         return response.data[0]
     return None
 
-def render_onboarding_questionnaire(user_id):
-    """Renderiza o questionário inicial para coletar gênero, data de nascimento, etc."""
+def render_onboarding_questionnaire(user_id, user_email):
+    """
+    Renderiza o questionário inicial para coletar gênero, data de nascimento, etc.
+    Recebe também o email do usuário (já temos do Supabase Auth), 
+    para salvar automaticamente sem perguntar novamente.
+    """
     st.title("Queremos saber um pouco mais sobre você!")
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
     genero = st.selectbox("Qual seu gênero?", ["Masculino", "Feminino", "Não-binário"])
 
-    # Define limites para a data de nascimento
-    max_date = datetime.date.today()  # O usuário não pode escolher datas futuras
-    min_date = datetime.date(1900, 1, 1)  # Permite qualquer data de nascimento razoável
+    max_date = datetime.date.today()
+    min_date = datetime.date(1900, 1, 1)
 
     data_nascimento = st.date_input(
         "Quando você nasceu?",
@@ -55,7 +59,7 @@ def render_onboarding_questionnaire(user_id):
     )
 
     if st.button("Salvar"):
-        success, msg = create_user_profile(user_id, genero, data_nascimento)
+        success, msg = create_user_profile(user_id, user_email, genero, data_nascimento)
         if success:
             st.session_state["refresh"] = True
             st.rerun()

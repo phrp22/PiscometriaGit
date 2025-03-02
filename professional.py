@@ -57,6 +57,16 @@ def render_professional_dashboard(user):
 
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📊 Painel de Controle Profissional")
+
+    st.subheader("Convidar Paciente")
+    patient_email = st.text_input("Email do Paciente")
+
+    if st.button("Enviar Convite"):
+        success, msg = create_patient_invitation(user["id"], patient_email)
+        if success:
+            st.success("Convite enviado com sucesso!")
+        else:
+            st.error(msg)
     
     st.metric(label="📁 Pacientes cadastrados", value="42")
     st.metric(label="📊 Avaliações realizadas", value="128")

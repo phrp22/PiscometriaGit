@@ -20,16 +20,13 @@ if "user" not in st.session_state:
     st.session_state["user"] = None
 
 def main():
-    user = get_user()
+    user = get_user()  # retorna algo como {"id": "...", "email": "..."}
     if user:
-        # Verifica se o usuário já completou o onboarding (perfil criado)
-        profile = get_user_profile(user["id"])
-        if not profile:
-            # Se não existir, exibe o questionário de onboarding
-            render_onboarding_questionnaire(user["id"])
-            return  # Após o onboarding, o app será recarregado (st.rerun())
+        # Verifica se o usuário já tem um perfil
+        if not user_has_profile(user["id"]):
+            # Passa também o email, pois não perguntaremos novamente
+            render_onboarding_questionnaire(user["id"], user["email"])
         else:
-            # Se o perfil existir, prossegue para a dashboard
             render_dashboard()
     else:
         render_main_layout()

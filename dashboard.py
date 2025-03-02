@@ -66,7 +66,29 @@ def render_dashboard():
         saudacao = saudacao_base
 
     st.title(f"🎉 {saudacao}, {user['display_name']}!")
-    st.markdown("### 📈 Estatísticas recentes")
+    st.markdown("### Dashboard 🌱")
+
+    st.subheader("Convites Pendentes")
+    invitations = list_invitations_for_patient(user["id"])
+
+    pending_invitations = [inv for inv in invitations if inv["status"] == "pending"]
+    for inv in pending_invitations:
+        st.write(f"Convite do profissional: {inv['professional_id']}")
+        if st.button(f"Aceitar Convite {inv['id']}"):
+            success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+            if success:
+                st.success("Convite aceito!")
+                st.rerun()
+            else:
+                st.error(msg)
+
+        if st.button(f"Recusar Convite {inv['id']}"):
+            success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+            if success:
+                st.success("Convite recusado!")
+                st.rerun()
+            else:
+                st.error(msg)
     
     # Exibe algumas métricas usando colunas
     col1, col2, col3 = st.columns(3)
