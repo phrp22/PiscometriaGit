@@ -134,7 +134,7 @@ def render_professional_dashboard(user):
 
 
 
-def render_patient_invitations(user):
+def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
@@ -142,9 +142,43 @@ def render_patient_invitations(user):
 
     st.markdown("## 📩 Convites Pendentes")
 
-    # Aplica os estilos específicos para os botões de convite
-    st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
-    st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+    # Estilos in-line específicos para os botões
+    st.markdown("""
+        <style>
+        div[data-testid="stButton"] > button {
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            padding: 10px 20px !important;
+            width: 100% !important;
+            text-align: center !important;
+            transition: 0.3s ease-in-out !important;
+        }
+
+        /* Botão Aceitar */
+        div[data-testid="stButton"] > button.accept-button {
+            background-color: #28a745 !important;
+            color: white !important;
+            border: 2px solid #218838 !important;
+        }
+        div[data-testid="stButton"] > button.accept-button:hover {
+            background-color: #218838 !important;
+            transform: scale(1.05) !important;
+        }
+
+        /* Botão Rejeitar */
+        div[data-testid="stButton"] > button.reject-button {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border: 2px solid #c82333 !important;
+        }
+        div[data-testid="stButton"] > button.reject-button:hover {
+            background-color: #c82333 !important;
+            transform: scale(1.05) !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     for inv in invitations:
         if inv["status"] == "pending":
@@ -168,24 +202,20 @@ def render_patient_invitations(user):
 
             # Botão "Aceitar"
             with col1:
-                st.markdown('<div class="accept-container">', unsafe_allow_html=True)
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
+                if st.markdown('<button class="accept-button">✅ Aceitar</button>', unsafe_allow_html=True) and st.button("", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
 
             # Botão "Recusar"
             with col2:
-                st.markdown('<div class="reject-container">', unsafe_allow_html=True)
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
+                if st.markdown('<button class="reject-button">❌ Recusar</button>', unsafe_allow_html=True) and st.button("", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
