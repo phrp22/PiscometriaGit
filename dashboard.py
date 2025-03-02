@@ -12,8 +12,7 @@ from gender_utils import adjust_gender_ending
 
 def render_sidebar(user):
     # Inicializa o flag se ainda não estiver definido
-    if "show_prof_input" not in st.session_state:
-        st.session_state["show_prof_input"] = False
+    st.session_state["show_prof_input"] = False
 
     with st.sidebar:
         st.title("🔑 Bem-vindo!")
