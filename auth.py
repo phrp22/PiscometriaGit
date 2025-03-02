@@ -1,13 +1,12 @@
 import streamlit as st
 import supabase
 
-@st.cache_resource
-def get_supabase_client():
-    SUPABASE_URL = st.secrets["SUPABASE_URL"]
-    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-    return supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
+# 🔑 Credenciais do Supabase
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-supabase_client = get_supabase_client()
+# 📡 Criando o cliente Supabase
+supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def sign_in(email, password):
     try:
@@ -21,7 +20,6 @@ def sign_in(email, password):
                 "display_name": user_obj.user_metadata.get("display_name", "Usuário") if hasattr(user_obj, "user_metadata") else "Usuário"
             }
             st.session_state["user"] = user_data
-            st.session_state["user_email"] = user_obj.email  # Armazena o email na sessão
             st.session_state["refresh"] = True
             return user_data, None
     except Exception as e:
@@ -56,22 +54,15 @@ def reset_password(email):
 
 
 def sign_out():
-    """Desconecta o usuário corretamente."""
+    """Desconecta o usuário."""
     supabase_client.auth.sign_out()
-    st.rerun()  # Apenas reinicia o app sem usar session_state
+    st.session_state.pop("user", None)
+    st.session_state["refresh"] = True  # 🚀 Marca para atualizar
 
 
 def get_user():
-    """Obtém o usuário logado diretamente do Supabase."""
-    try:
-        user = supabase_client.auth.get_user()  # Obtém do Supabase
-        if user and hasattr(user, "user") and user.user:
-            return {
-                "email": user.user.email,
-                "id": user.user.id,
-                "display_name": user.user.user_metadata.get("display_name", "Usuário")
-            }
-    except Exception as e:
-        st.warning("⚠️ Sua sessão expirou. Faça login novamente.")
-        return None  # Retorna None se não encontrar um usuário logado
+    return st.session_state.get("user")
+
+
+
 
