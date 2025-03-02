@@ -7,12 +7,15 @@ from patient_link import list_invitations_for_patient
 
 
 def render_sidebar(user):
-    # Inicializa o flag se ainda não estiver definido
-    st.session_state["show_prof_input"] = False
-
+    """Renderiza a sidebar única para todos os usuários logados."""
     with st.sidebar:
-        st.title("🔑 Bem-vindo!")
-        st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
+        
+        # Ajusta a saudação conforme o gênero
+        profile = get_user_profile(user["id"])
+        saudacao_base = "Bem-vindo"
+        saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
+
+        st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
 
         if st.button("Logout 🚪"):
@@ -21,27 +24,25 @@ def render_sidebar(user):
             st.rerun()
 
         st.markdown("---")
-        # Verifica se a área profissional está habilitada
+        
+        # Se o usuário não tem a área profissional habilitada, pode habilitar
         if not is_professional_enabled(user["id"]):
-            st.write("Área do Profissional")
-            # Só altera o flag se o usuário clicar neste botão
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
-            # Exibe o campo de texto apenas se o flag estiver True
             if st.session_state.get("show_prof_input", False):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
-                if prof_key:
-                    if prof_key == "AUTOMATIZEJA":
-                        success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
-                        if success:
-                            st.session_state["refresh"] = True
-                            st.rerun()
-                        else:
-                            st.error(msg)
+                if prof_key == "AUTOMATIZEJA":
+                    success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
+                    if success:
+                        st.session_state["refresh"] = True
+                        st.rerun()
                     else:
-                        st.error("❌ Chave incorreta!")
+                        st.error(msg)
+                else:
+                    st.error("❌ Chave incorreta!")
         else:
             st.success("✅ Área do profissional habilitada!")
+
 
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
