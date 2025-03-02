@@ -1,7 +1,7 @@
 import streamlit as st
 from auth import supabase_client, sign_out
 from patient_link import create_patient_invitation  # Importe a função do seu novo módulo
-
+from dashboard import render_sidebar
 
 def is_professional_enabled(auth_user_id):
     """Verifica se a área profissional está habilitada para o usuário usando auth_user_id."""

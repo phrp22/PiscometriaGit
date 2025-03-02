@@ -1,6 +1,6 @@
 import streamlit as st
 from auth import get_user, sign_out
-from professional import is_professional_enabled, render_professional_dashboard, enable_professional_area
+from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending  # Importa a função para ajustar saudações
 from patient_link import list_invitations_for_patient
