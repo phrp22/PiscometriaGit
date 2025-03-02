@@ -141,7 +141,7 @@ def render_patient_invitations(user):
         return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
-
+    
     # Aplica os estilos específicos para os botões de convite
     st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
     st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
@@ -152,8 +152,8 @@ def render_patient_invitations(user):
             if professional_profile:
                 profissional_nome = professional_profile.get("display_name", "Profissional")
                 genero_profissional = professional_profile.get("genero", "M")
-
-                # Define o título conforme o gênero
+                
+                # Define o título com base no gênero do profissional
                 if genero_profissional == "F":
                     titulo = "Dra."
                 elif genero_profissional == "N":
@@ -163,10 +163,9 @@ def render_patient_invitations(user):
 
                 st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Colunas lado a lado
+            # Cria duas colunas para os botões lado a lado
             col1, col2 = st.columns(2)
-
-            # Botão "Aceitar"
+            
             with col1:
                 st.markdown('<div class="accept-container">', unsafe_allow_html=True)
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
@@ -177,8 +176,7 @@ def render_patient_invitations(user):
                     else:
                         st.error(msg)
                 st.markdown("</div>", unsafe_allow_html=True)
-
-            # Botão "Recusar"
+            
             with col2:
                 st.markdown('<div class="reject-container">', unsafe_allow_html=True)
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
