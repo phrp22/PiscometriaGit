@@ -21,7 +21,7 @@ if "user" not in st.session_state:
 def main():
     user = get_user()
     if user:
-        if is_professional_enabled(user["auth_user_id"]):
+        if is_professional_enabled(user["id"]):
             render_professional_dashboard(user)  # ✅ Agora só existe essa função
         else:
             render_dashboard()
