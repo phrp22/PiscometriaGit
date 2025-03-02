@@ -1,90 +1,156 @@
-# styles.py
-
-# 🌑 Tema Escuro (Aplicado Globalmente)
-DARK_THEME_STYLE = """
+BUTTON_STYLE = """
 <style>
-/* Define o fundo escuro e cores de texto */
-:root {
-    --background-color: #0e1117;
-    --secondary-background-color: #161a1f;
-    --text-color: #ffffff;
-}
+    /* Aplica estilo para TODOS os botões, incluindo os da sidebar */
+    div.stButton > button:first-child,
+    section[data-testid="stSidebar"] div.stButton > button:first-child {
+        background-color: #7159c1 !important;
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        border: 2px solid #836fff !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: 0.3s ease-in-out !important;
+        width: 100% !important;
+        padding: 12px 24px !important;
+        text-align: center !important;
+        box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5) !important;
+        outline: none !important;
+    }
 
-/* Aplica fundo escuro e texto branco */
-html, body, [data-testid="stAppViewContainer"] {
-    background-color: var(--background-color) !important;
-    color: var(--text-color) !important;
-}
+    /* Remove borda vermelha após clique */
+    div.stButton > button:first-child:focus,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
+        outline: none !important;
+        border-color: #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
 
-/* Sidebar com cor secundária */
-section[data-testid="stSidebar"] {
-    background-color: var(--secondary-background-color) !important;
-}
+    /* Efeito hover */
+    div.stButton > button:first-child:hover,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
+        background-color: #5e47b0 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    }
+
+    /* Efeito ao clicar */
+    div.stButton > button:first-child:active,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+        background-color: #5e47b0 !important;
+        border-color: #7159c1 !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+        transform: scale(0.98) !important;
+        color: white !important;
+    }
+
+    /* Remove qualquer contorno vermelho do tema */
+    div.stButton > button:first-child:focus-visible {
+        outline: none !important;
+        border: 2px solid #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
+
 </style>
 """
 
-# ✅ Estilo para Botão "Aceitar"
+# Estilo específico para os botões de convite
 ACCEPT_BUTTON_STYLE = """
 <style>
-div[data-testid="stButton"].accept-container > button {
-    background-color: #28a745 !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    border: 2px solid #218838 !important;
-    border-radius: 8px !important;
-    padding: 10px 20px !important;
-    width: 100% !important;
-    cursor: pointer !important;
-    transition: 0.3s !important;
-}
-div[data-testid="stButton"].accept-container > button:hover {
-    background-color: #218838 !important;
-    transform: scale(1.05) !important;
-}
+    div[data-testid="stButton"] > button {
+        background-color: #28a745 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        border: 2px solid #218838 !important;
+        transition: 0.3s !important;
+        padding: 10px 20px !important;
+        text-align: center !important;
+    }
+    
+    /* Remove borda vermelha após clique */
+    div.stButton > button:first-child:focus,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
+        outline: none !important;
+        border-color: #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
+
+    /* Efeito hover */
+    div.stButton > button:first-child:hover,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
+        background-color: #5e47b0 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    }
+
+    /* Efeito ao clicar */
+    div.stButton > button:first-child:active,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+        background-color: #5e47b0 !important;
+        border-color: #7159c1 !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+        transform: scale(0.98) !important;
+        color: white !important;
+    }
+
+    /* Remove qualquer contorno vermelho do tema */
+    div.stButton > button:first-child:focus-visible {
+        outline: none !important;
+        border: 2px solid #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
+
+    
 </style>
 """
 
-# ❌ Estilo para Botão "Recusar"
 REJECT_BUTTON_STYLE = """
 <style>
-div[data-testid="stButton"].reject-container > button {
-    background-color: #dc3545 !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    border: 2px solid #c82333 !important;
-    border-radius: 8px !important;
-    padding: 10px 20px !important;
-    width: 100% !important;
-    cursor: pointer !important;
-    transition: 0.3s !important;
-}
-div[data-testid="stButton"].reject-container > button:hover {
-    background-color: #c82333 !important;
-    transform: scale(1.05) !important;
-}
-</style>
-"""
+    div[data-testid="stButton"] > button {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        border: 2px solid #c82333 !important;
+        transition: 0.3s !important;
+        padding: 10px 20px !important;
+        text-align: center !important;
+    }
+    
+    /* Remove borda vermelha após clique */
+    div.stButton > button:first-child:focus,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:focus {
+        outline: none !important;
+        border-color: #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
 
-# 🟣 Estilo para Botões Globais (Login, Cadastro, Logout)
-PURPLE_BUTTON_STYLE = """
-<style>
-div[data-testid="stButton"].purple-button > button {
-    background-color: #7159c1 !important;
-    color: white !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-    border: 2px solid #836fff !important;
-    border-radius: 8px !important;
-    padding: 12px 24px !important;
-    text-align: center !important;
-    cursor: pointer !important;
-    transition: 0.3s ease-in-out !important;
-}
-div[data-testid="stButton"].purple-button > button:hover {
-    background-color: #5e47b0 !important;
-    transform: scale(1.05) !important;
-}
+    /* Efeito hover */
+    div.stButton > button:first-child:hover,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:hover {
+        background-color: #5e47b0 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    }
+
+    /* Efeito ao clicar */
+    div.stButton > button:first-child:active,
+    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+        background-color: #5e47b0 !important;
+        border-color: #7159c1 !important;
+        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+        transform: scale(0.98) !important;
+        color: white !important;
+    }
+
+    /* Remove qualquer contorno vermelho do tema */
+    div.stButton > button:first-child:focus-visible {
+        outline: none !important;
+        border: 2px solid #836fff !important;
+        box-shadow: 0px 0px 15px rgba(113, 89, 193, 0.5) !important;
+    }
 </style>
 """

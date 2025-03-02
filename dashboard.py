@@ -49,13 +49,16 @@ def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
     if not user:
-        st.warning("⚠️ Você precisa estar logado para acessar esta página.")  # ⬅️ Certifique-se de que essa linha está indentada corretamente
-        return  # ⬅️ Retorna para evitar que o código continue executando
+    st.warning("⚠️ Você precisa estar logado para acessar esta página.")
+    return
 
     # Busca o perfil do usuário para personalizar a saudação
     profile = get_user_profile(user["id"])
     saudacao_base = "Bem-vindo"
-    saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
+    if profile and profile.get("genero"):
+        saudacao = adjust_gender_ending(saudacao_base, profile["genero"])
+    else:
+        saudacao = saudacao_base
 
     render_sidebar(user)
 
@@ -136,52 +139,50 @@ def render_professional_dashboard(user):
 def render_patient_invitations(user):
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
+
     if not invitations:
-        return
+        return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
 
-    # Aplica estilos aos botões de convite
-    st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
-    st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
-
     for inv in invitations:
         if inv["status"] == "pending":
-            prof = get_user_profile(inv["professional_id"])
-            if prof:
-                nome = prof.get("display_name", "Profissional")
-                genero = prof.get("genero", "M")
+            professional_profile = get_user_profile(inv["professional_id"])
+            if professional_profile:
+                profissional_nome = professional_profile.get("display_name", "Profissional")
+                genero_profissional = professional_profile.get("genero", "M")
 
-                if genero == "F":
+                # Define o título conforme o gênero
+                if genero_profissional == "F":
                     titulo = "Dra."
-                elif genero == "N":
+                elif genero_profissional == "N":
                     titulo = "Drx."
                 else:
                     titulo = "Dr."
 
-                st.markdown(f"### {titulo} {nome} deseja se vincular a você.")
+                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
+            # Renderiza os estilos externos para os botões
+            st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
+            st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+
+            # Define os botões lado a lado
             col1, col2 = st.columns(2)
 
             with col1:
-                st.markdown('<div class="accept-container">', unsafe_allow_html=True)
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite deste profissional"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
 
             with col2:
-                st.markdown('<div class="reject-container">', unsafe_allow_html=True)
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite deste profissional"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
-
