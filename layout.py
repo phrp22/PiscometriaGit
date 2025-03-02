@@ -1,7 +1,5 @@
 import streamlit as st
-from auth import sign_in, sign_up, reset_password
-from styles import BUTTON_STYLE  # Mantemos apenas os estilos necessários
-
+from auth import sign_in, sign_up, reset_password 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
