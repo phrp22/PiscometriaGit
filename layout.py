@@ -14,7 +14,7 @@ def render_main_layout():
     # Frase de destaque em laranja, alinhada à esquerda
     st.markdown(
         "<h2 style='text-align: left; color: #FFA500; font-size: 28px;'>"
-        "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais.</h2>",
+        "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
         unsafe_allow_html=True
     )
 
