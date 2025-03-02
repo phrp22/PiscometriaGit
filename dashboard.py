@@ -8,16 +8,16 @@ def render_sidebar(user):
         st.title("🔑 Bem-vindo!")
         st.markdown(f"**👤 Bem-vindo, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
-        
+
         if st.button("Logout 🚪"):
             sign_out()
             st.success("Você saiu com sucesso!")
             st.session_state["refresh"] = True
             st.rerun()
-        
+
         st.markdown("---")
-        # Verifica se a área profissional está habilitada
-        if not is_professional_enabled(user["email"]):
+        # Verifica se a área profissional está habilitada (usando o auth_user_id)
+        if not is_professional_enabled(user["id"]):  # ✅ Corrigido para usar auth_user_id
             st.write("Área do Profissional")
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
@@ -25,7 +25,7 @@ def render_sidebar(user):
                 prof_key = st.text_input("Digite a chave do profissional", key="prof_key_input")
                 if prof_key:
                     if prof_key == "automatizeja":
-                        success, msg = enable_professional_area(user["email"], user["display_name"])
+                        success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])  # ✅ Corrigido para usar auth_user_id
                         if success:
                             st.session_state["refresh"] = True
                             st.rerun()
@@ -34,7 +34,7 @@ def render_sidebar(user):
                     else:
                         st.error("Chave incorreta!")
         else:
-            st.info("Área do profissional habilitada!")
+            st.info("✅ Área do profissional habilitada!")
 
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
@@ -47,4 +47,4 @@ def render_dashboard():
     st.title(f"🎉 Bem-vindo, {user['display_name']}!")
     st.markdown("### 📈 Estatísticas recentes")
     st.metric(label="Pacientes cadastrados", value="42")
-    st.metric(label="Avaliações concluídas", value="120") 
+    st.metric(label="Avaliações concluídas", value="120")
