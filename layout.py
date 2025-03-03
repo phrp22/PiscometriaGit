@@ -47,25 +47,22 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Renderiza o botão estilizado pelo CSS (sem `st.button()`)
+    # Adiciona um identificador no session_state para controlar o clique no botão
+    if "auth_clicked" not in st.session_state:
+        st.session_state["auth_clicked"] = False
+    if "reset_clicked" not in st.session_state:
+        st.session_state["reset_clicked"] = False
+
+    # Renderiza o botão estilizado pelo CSS e ativa `session_state`
     st.html(f"""
     <div class="st-key-auth-action">
-        <button id="auth_button">{action_text}</button>
+        <button id="auth_button" onclick="fetch('/auth_action')">{action_text}</button>
     </div>
     """)
 
-    # Captura evento do botão via JavaScript
-    st.html("""
-    <script>
-        document.getElementById('auth_button').onclick = function() {
-            parent.window.streamlitRerun();
-        };
-    </script>
-    """)
-
-    # Lógica de login e cadastro
-    if "clicked_auth" in st.session_state and st.session_state["clicked_auth"]:
-        st.session_state["clicked_auth"] = False  # Reseta estado do botão
+    # Verifica se o botão foi clicado e processa a ação correta
+    if st.session_state["auth_clicked"]:
+        st.session_state["auth_clicked"] = False  # Reseta o estado
 
         if option == "Login":
             user, message = sign_in(email, password)
@@ -89,24 +86,25 @@ def render_main_layout():
         # Renderiza o botão de recuperação de senha estilizado
         st.html("""
         <div class="st-key-reset-password">
-            <button id="reset_password_button">🔓 Recuperar Senha</button>
+            <button id="reset_password_button" onclick="fetch('/reset_action')">🔓 Recuperar Senha</button>
         </div>
         """)
 
-        # Captura evento do botão de recuperação de senha via JavaScript
-        st.html("""
-        <script>
-            document.getElementById('reset_password_button').onclick = function() {
-                parent.window.streamlitRerun();
-            };
-        </script>
-        """)
-
-        # Lógica de recuperação de senha
-        if "clicked_reset" in st.session_state and st.session_state["clicked_reset"]:
-            st.session_state["clicked_reset"] = False  # Reseta estado do botão
+        # Verifica se o botão de reset foi clicado e processa a ação correta
+        if st.session_state["reset_clicked"]:
+            st.session_state["reset_clicked"] = False  # Reseta o estado
             if email:
                 message = reset_password(email)
                 st.info(message)
             else:
                 st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+
+    # Script para atualizar o estado do Streamlit via API interna
+    st.html("""
+    <script>
+        async function fetch(route) {
+            let response = await fetch(route, {method: "POST"});
+            window.parent.streamlitRerun();
+        }
+    </script>
+    """)
