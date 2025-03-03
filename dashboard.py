@@ -1,10 +1,11 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
-from gender_utils import adjust_gender_ending  # Importa a função para ajustar saudações
-from patient_link import list_invitations_for_patient, create_patient_invitation
-from styles import ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE  # Importa os estilos
+from gender_utils import adjust_gender_ending
+from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
+from styles import inject_css
 
 
 def render_sidebar(user):
@@ -129,9 +130,10 @@ def render_professional_dashboard(user):
 
 
 def render_patient_invitations(user):
+    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
-        return  
+        return
 
     st.markdown("## 📩 Convites Pendentes")
     inject_css()
@@ -145,30 +147,26 @@ def render_patient_invitations(user):
 
             col1, col2 = st.columns(2)
 
-            # Botão "Aceitar"
             with col1:
-                components.html(
-                    '<button class="accept-button" onclick="window.acceptInvite=true;">✅ Aceitar</button>',
-                    height=40
-                )
-                if st.session_state.get("acceptInvite", False):
-                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite aceito com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error(msg)
+                form_accept = f"accept_form_{inv['id']}"
+                with st.form(key=form_accept):
+                    st.form_submit_button("✅ Aceitar", use_container_width=True)
+                    if st.session_state.get(form_accept, False):
+                        success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                        if success:
+                            st.success("Convite aceito com sucesso!")
+                            st.rerun()
+                        else:
+                            st.error(msg)
 
-            # Botão "Rejeitar"
             with col2:
-                components.html(
-                    '<button class="reject-button" onclick="window.rejectInvite=true;">❌ Recusar</button>',
-                    height=40
-                )
-                if st.session_state.get("rejectInvite", False):
-                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite recusado.")
-                        st.rerun()
-                    else:
-                        st.error(msg)
+                form_reject = f"reject_form_{inv['id']}"
+                with st.form(key=form_reject):
+                    st.form_submit_button("❌ Recusar", use_container_width=True)
+                    if st.session_state.get(form_reject, False):
+                        success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                        if success:
+                            st.success("Convite recusado.")
+                            st.rerun()
+                        else:
+                            st.error(msg)
