@@ -27,7 +27,10 @@ def render_sidebar(user):
 
         # Opção para habilitar a área do profissional (botão roxo)
         if not is_professional_enabled(user["id"]):
-            st.session_state["show_prof_input"] = False
+            
+            if "show_prof_input" not in st.session_state:
+                st.session_state["show_prof_input"] = False
+
             if st.button("🔐 Habilitar área do profissional", key="professional"):
                 st.session_state["show_prof_input"] = True
 
