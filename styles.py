@@ -37,8 +37,8 @@ div.stButton > button:not(.accept-button):not(.reject-button):active {
 ACCEPT_BUTTON_STYLE = """
 <style>
 /* Botão "Aceitar" */
-.accept-container div.stButton > button {
-    background-color: #28a745 !important; /* verde */
+div.accept-container div.stButton > button {
+    background-color: #28a745 !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
@@ -51,8 +51,8 @@ ACCEPT_BUTTON_STYLE = """
     cursor: pointer !important;
 }
 
-/* Efeito de hover - Aumenta o botão ao passar o mouse */
-.accept-container div.stButton > button:hover {
+/* Efeito de hover */
+div.accept-container div.stButton > button:hover {
     background-color: #218838 !important;
     transform: scale(1.1) !important;
 }
@@ -62,8 +62,8 @@ ACCEPT_BUTTON_STYLE = """
 REJECT_BUTTON_STYLE = """
 <style>
 /* Botão "Rejeitar" */
-.reject-container div.stButton > button {
-    background-color: #dc3545 !important; /* vermelho */
+div.reject-container div.stButton > button {
+    background-color: #dc3545 !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
@@ -76,11 +76,10 @@ REJECT_BUTTON_STYLE = """
     cursor: pointer !important;
 }
 
-/* Efeito de hover - Aumenta o botão ao passar o mouse */
-.reject-container div.stButton > button:hover {
+/* Efeito de hover */
+div.reject-container div.stButton > button:hover {
     background-color: #c82333 !important;
     transform: scale(1.1) !important;
 }
 </style>
 """
-
