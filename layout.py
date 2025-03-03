@@ -11,8 +11,8 @@ def render_main_layout():
     # Texto laranja estilizado e aumentado para maior destaque
     st.markdown(
         """
-        <h1 style='color: #FFA500; font-size: 32px; font-weight: bold;'>
-        Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h1>
+        <h1 style='color: #FFA500; font-size: 28px; font-weight: bold;'>
+        Um sistema inteligente para profissionais e pacientes</h1>
         """,
         unsafe_allow_html=True
     )

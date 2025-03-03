@@ -23,7 +23,7 @@
 
 /* Efeito ao clicar "Aceitar" */
 .st-key-accept button:active {
-    background-color: #005E52 !important;
+    background-color: #1a7468 !important;
     border-color: #008F7A !important;
     box-shadow: 0px 0px 20px rgba(0, 143, 122, 0.9) !important;
     transform: scale(0.98) !important;
@@ -55,7 +55,7 @@
 
 /* Efeito ao clicar "Recusar" */
 .st-key-reject button:active {
-    background-color: #750021 !important;
+    background-color: #a72348 !important;
     border-color: #C70039 !important;
     box-shadow: 0px 0px 20px rgba(199, 0, 57, 0.9) !important;
     transform: scale(0.98) !important;
