@@ -10,7 +10,7 @@ from profile import get_user_profile, render_onboarding_questionnaire, user_has_
 # Configuração da página
 st.set_page_config(
     page_title="Abaeté",
-    page_icon="🌱",
+    page_icon="🧠",
     layout="centered",
     initial_sidebar_state="collapsed"
 )

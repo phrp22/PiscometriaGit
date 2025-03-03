@@ -155,7 +155,7 @@ def render_patient_invitations(user):
             col1, col2 = st.columns(2)
 
             with col1:
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
+                if st.button("✅ Aceitar", key="accept"):  # Chave para aplicar CSS
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
@@ -164,10 +164,11 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
+                if st.button("❌ Recusar", key="reject"):  # Chave para aplicar CSS
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
                         st.rerun()
                     else:
                         st.error(msg)
+
