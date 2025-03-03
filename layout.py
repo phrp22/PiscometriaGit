@@ -80,4 +80,27 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        # Renderiza o
+        # Renderiza o botão de recuperação de senha estilizado
+        st.html("""
+        <div class="st-key-reset-password">
+            <button id="reset_password_button">🔓 Recuperar Senha</button>
+        </div>
+        """)
+
+        # Captura evento do botão de recuperação de senha via JavaScript
+        st.html("""
+        <script>
+            document.getElementById('reset_password_button').onclick = function() {
+                parent.window.streamlitRerun();
+            };
+        </script>
+        """)
+
+        # Lógica de recuperação de senha
+        if "clicked_reset" in st.session_state and st.session_state["clicked_reset"]:
+            st.session_state["clicked_reset"] = False  # Reseta estado do botão
+            if email:
+                message = reset_password(email)
+                st.info(message)
+            else:
+                st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
