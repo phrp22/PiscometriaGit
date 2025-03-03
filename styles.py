@@ -1,4 +1,3 @@
-BUTTON_STYLE = """
 <style>
 /* Garante que os botões padrão fiquem roxos */
 div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]) {
@@ -29,8 +28,14 @@ div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recus
     box-shadow: 0px 2px 5px rgba(113, 89, 193, 0.5) !important;
 }
 
-/* Estiliza o botão "Aceitar" corretamente */
-button[aria-label="✅ Aceitar"], button[data-testid="stBaseButton-secondary"] {
+/* --- BOTÃO "ACEITAR" (VERDE) --- */
+div.accept-container div.stButton {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+div.accept-container div.stButton > button {
     background-color: #28a745 !important;
     color: white !important;
     font-size: 18px !important;
@@ -38,6 +43,7 @@ button[aria-label="✅ Aceitar"], button[data-testid="stBaseButton-secondary"] {
     border: 2px solid #218838 !important;
     border-radius: 8px !important;
     padding: 12px 24px !important;
+    width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
     transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out !important;
@@ -46,27 +52,26 @@ button[aria-label="✅ Aceitar"], button[data-testid="stBaseButton-secondary"] {
 }
 
 /* Hover do botão "Aceitar" */
-button[aria-label="✅ Aceitar"]:hover, button[data-testid="stBaseButton-secondary"]:hover {
+div.accept-container div.stButton > button:hover {
     background-color: #218838 !important;
     transform: scale(1.05) !important;
     box-shadow: 0px 8px 15px rgba(40, 167, 69, 0.7) !important;
 }
 
 /* Pressão do botão "Aceitar" */
-button[aria-label="✅ Aceitar"]:active, button[data-testid="stBaseButton-secondary"]:active {
+div.accept-container div.stButton > button:active {
     transform: scale(0.95) !important;
     box-shadow: 0px 2px 5px rgba(40, 167, 69, 0.5) !important;
 }
 
-/* Efeito de clique finalizado para "Aceitar" */
-button[aria-label="✅ Aceitar"].pressed {
-    background-color: #1e7e34 !important;
-    border-color: #155724 !important;
-    box-shadow: 0px 0px 15px rgba(40, 167, 69, 0.9) !important;
+/* --- BOTÃO "RECUSAR" (VERMELHO) --- */
+div.reject-container div.stButton {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
 }
 
-/* Estiliza o botão "Recusar" corretamente */
-button[aria-label="❌ Recusar"] {
+div.reject-container div.stButton > button {
     background-color: #dc3545 !important;
     color: white !important;
     font-size: 18px !important;
@@ -74,6 +79,7 @@ button[aria-label="❌ Recusar"] {
     border: 2px solid #c82333 !important;
     border-radius: 8px !important;
     padding: 12px 24px !important;
+    width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
     transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out !important;
@@ -82,23 +88,15 @@ button[aria-label="❌ Recusar"] {
 }
 
 /* Hover do botão "Recusar" */
-button[aria-label="❌ Recusar"]:hover {
+div.reject-container div.stButton > button:hover {
     background-color: #c82333 !important;
     transform: scale(1.05) !important;
     box-shadow: 0px 8px 15px rgba(220, 53, 69, 0.7) !important;
 }
 
 /* Pressão do botão "Recusar" */
-button[aria-label="❌ Recusar"]:active {
+div.reject-container div.stButton > button:active {
     transform: scale(0.95) !important;
     box-shadow: 0px 2px 5px rgba(220, 53, 69, 0.5) !important;
 }
-
-/* Efeito de clique finalizado para "Recusar" */
-button[aria-label="❌ Recusar"].pressed {
-    background-color: #a71d2a !important;
-    border-color: #721c24 !important;
-    box-shadow: 0px 0px 15px rgba(220, 53, 69, 0.9) !important;
-}
 </style>
-"""
