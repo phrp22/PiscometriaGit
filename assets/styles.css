@@ -1,10 +1,10 @@
-/* Botão "Aceitar" (Verde) */
+/* Botão "Aceitar" (Verde ajustado) */
 .st-key-accept button {
-    background-color: #28a745 !important;
+    background-color: #4CAF50 !important; /* Verde mais vibrante, combinando com o roxo */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #218838 !important;
+    border: 2px solid #3E8E41 !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
@@ -15,17 +15,17 @@
 
 /* Hover "Aceitar" */
 .st-key-accept button:hover {
-    background-color: #218838 !important;
+    background-color: #3E8E41 !important;
     transform: scale(1.1) !important;
 }
 
-/* Botão "Recusar" (Vermelho) */
+/* Botão "Recusar" (Vermelho ajustado) */
 .st-key-reject button {
-    background-color: #dc3545 !important;
+    background-color: #D63B47 !important; /* Vermelho menos saturado, para suavizar com o roxo */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #c82333 !important;
+    border: 2px solid #B12F3A !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
@@ -36,9 +36,10 @@
 
 /* Hover "Recusar" */
 .st-key-reject button:hover {
-    background-color: #c82333 !important;
+    background-color: #B12F3A !important;
     transform: scale(1.1) !important;
 }
+
 
 /* Botões Roxos (Login, Criar Conta, Logout, Habilitar Profissional, Recuperar Senha) */
 .st-key-logout button,
