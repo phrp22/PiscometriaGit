@@ -17,7 +17,7 @@ def render_sidebar(user):
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
 
-        # Botão de logout roxo
+        # Botão de logout
         if st.button("Logout 🚪", key="logout"):
             sign_out()
             st.session_state["refresh"] = True
@@ -25,10 +25,11 @@ def render_sidebar(user):
 
         st.markdown("---")
 
-        # Opção para habilitar a área do profissional (botão roxo)
+        # Inicializa o estado da variável se ainda não existir
         if "show_prof_input" not in st.session_state:
             st.session_state["show_prof_input"] = False
 
+        # Opção para habilitar a área do profissional
         if not is_professional_enabled(user["id"]):
             if not st.session_state["show_prof_input"]:
                 if st.button("🔐 Habilitar área do profissional", key="professional"):
