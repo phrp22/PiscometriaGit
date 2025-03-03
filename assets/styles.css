@@ -55,8 +55,8 @@
 
 /* Efeito ao clicar "Recusar" */
 .st-key-reject button:active {
-    background-color: #a72348 !important;
-    border-color: #C70039 !important;
+    background-color: #b82b53 !important;
+    border-color: #b91141 !important;
     box-shadow: 0px 0px 20px rgba(199, 0, 57, 0.9) !important;
     transform: scale(0.98) !important;
     color: white !important;
