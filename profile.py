@@ -7,9 +7,19 @@ def user_has_profile(auth_user_id):
     response = supabase_client.from_("user_profile").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
     return bool(response.data) if response and hasattr(response, "data") else False
 
+def get_display_name_from_auth(auth_user_id):
+    """Busca o display_name do usuário no Supabase Auth."""
+    response = supabase_client.auth.admin.list_users()
+    
+    if response and hasattr(response, "data") and "users" in response.data:
+        for user in response.data["users"]:
+            if user["id"] == auth_user_id:
+                return user.get("display_name", None)  # Pega o display_name se existir
+    
+    return None
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
-    """Cria um registro na tabela user_profile, incluindo o email."""
+    """Cria um registro na tabela user_profile, incluindo o email e display_name."""
     try:
         # Mapeia a escolha do usuário para M, F ou N
         genero_map = {
@@ -19,11 +29,15 @@ def create_user_profile(auth_user_id, email, genero, data_nascimento):
         }
         genero_abreviado = genero_map.get(genero, "M")  # Padrão "M" se não achar
 
+        # Buscar o display_name no Supabase Auth
+        display_name = get_display_name_from_auth(auth_user_id) or "Usuário"
+
         data = {
             "auth_user_id": auth_user_id,
             "email": email,  # Salva o email do usuário
             "genero": genero_abreviado,  # Salva M, F ou N
-            "data_nascimento": data_nascimento.strftime("%Y-%m-%d") if data_nascimento else None
+            "data_nascimento": data_nascimento.strftime("%Y-%m-%d") if data_nascimento else None,
+            "display_name": display_name  # Adiciona o nome do usuário do Supabase Auth
         }
         response = supabase_client.from_("user_profile").insert(data).execute()
         if hasattr(response, "error") and response.error:
