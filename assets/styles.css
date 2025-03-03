@@ -59,9 +59,18 @@
 
 /* Hover "Logout" */
 .st-key-logout button:hover {
-    background-color: #7159c1 !important;
+    background-color: #5e47b0 !important;
     transform: scale(1.1) !important;
 }
+
+ /* Efeito ao clicar */
+ .st-key-logout button:active {
+     background-color: #5e47b0 !important;
+     border-color: #7159c1 !important;
+     box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+     transform: scale(0.98) !important;
+     color: white !important;
+ }
 
 /* Botão "Habilitar Área do Profissional" (Roxo) */
 .st-key-professional button {
@@ -82,6 +91,15 @@
 
 /* Hover "Habilitar Área do Profissional" */
 .st-key-professional button:hover {
-    background-color: #7159c1 !important;
+    background-color: #5e47b0 !important;
     transform: scale(1.1) !important;
+}
+
+ /* Efeito ao clicar */
+ .st-key-professional button:active {
+    background-color: #5e47b0 !important;
+    border-color: #7159c1 !important;
+    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    transform: scale(0.98) !important;
+    color: white !important;
 }
