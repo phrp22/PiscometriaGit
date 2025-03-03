@@ -44,8 +44,14 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Renderiza o botão estilizado como na dashboard, garantindo a aplicação do CSS
-    if st.button(action_text, key="auth_action", use_container_width=True):
+    # Aplica a classe CSS ao botão
+    st.html(f"""
+    <div class="st-key-auth-action">
+        {st.button(action_text, key="auth_action", use_container_width=True)}
+    </div>
+    """)
+
+    if st.session_state.get("auth_action"):
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -65,11 +71,15 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        # Renderiza o botão de recuperação de senha corretamente, seguindo o mesmo padrão da dashboard
-        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
+        st.html(f"""
+        <div class="st-key-reset-password">
+            {st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True)}
+        </div>
+        """)
+
+        if st.session_state.get("reset_password"):
             if email:
                 message = reset_password(email)
                 st.info(message)
             else:
                 st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
-
