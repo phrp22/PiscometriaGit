@@ -6,15 +6,15 @@ from profile import get_user_profile
 from gender_utils import adjust_gender_ending
 from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
-# 🔹 Função para carregar CSS do arquivo externo
+# 🔹 Função para carregar CSS externo com `st.html()`
 def load_css():
-    css_path = pathlib.Path("assets/styles.css")  # Caminho do CSS
-    if css_path.exists():  # Verifica se o arquivo existe
+    css_path = pathlib.Path("assets/styles.css")
+    if css_path.exists():
         with open(css_path, "r") as f:
             css_content = f.read()
-            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+            st.html(f"<style>{css_content}</style>")  # 🔥 Agora usando `st.html()`
 
-# Aplica o CSS uma única vez
+# Aplicar CSS uma única vez
 load_css()
 
 def render_sidebar(user):
@@ -27,17 +27,19 @@ def render_sidebar(user):
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
 
-        if st.button("Logout 🚪"):
+        # 🔹 Botão de Logout estilizado
+        if st.button("🚪 Logout", key="logout"):
             sign_out()
             st.session_state["refresh"] = True
             st.rerun()
 
         st.markdown("---")
 
-        # Opção para habilitar a área do profissional
+        # 🔹 Habilitar área do profissional
         if not is_professional_enabled(user["id"]):
-            if st.button("🔐 Habilitar área do profissional"):
+            if st.button("🔐 Habilitar Área Profissional", key="primary-enable-professional"):
                 st.session_state["show_prof_input"] = True
+
             if st.session_state.get("show_prof_input", False):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key == "AUTOMATIZEJA":
@@ -52,6 +54,7 @@ def render_sidebar(user):
         else:
             st.success("✅ Área do profissional habilitada!")
 
+
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
@@ -62,8 +65,6 @@ def render_dashboard():
     profile = get_user_profile(user["id"])
     saudacao_base = "Bem-vindo"
     saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
-
-    render_sidebar(user)
 
     st.title(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📈 Estatísticas Recentes")
@@ -80,13 +81,16 @@ def render_dashboard():
 
     st.markdown("---")
     st.subheader("📌 Últimas Atividades")
-    st.write("Aqui você pode exibir logs, gráficos ou outras informações relevantes.")
 
-    data = {
-        "Pacientes": [10, 20, 30, 40, 50],
-        "Avaliações": [5, 15, 25, 35, 45]
-    }
-    st.line_chart(data)
+    # 🔹 Adicionando botões roxos personalizados
+    st.header("🎯 Ações")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.button("📊 Ver Relatórios", key="primary-report")  # Botão roxo
+
+    with col2:
+        st.button("⚙️ Configurações", key="primary-settings")  # Botão roxo
 
     st.markdown("---")
     st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
@@ -97,8 +101,6 @@ def render_professional_dashboard(user):
     profile = get_user_profile(user["id"])
     saudacao_base = "Bem-vindo"
     saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
-
-    render_sidebar(user)
 
     st.title(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📊 Painel de Controle Profissional")
@@ -114,11 +116,20 @@ def render_professional_dashboard(user):
     st.markdown("---")
     st.info("🔍 Novos recursos serão adicionados em breve!")
 
+    # 🔹 Botões roxos personalizados no painel profissional
+    st.header("📢 Ferramentas do Profissional")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.button("📂 Gerenciar Pacientes", key="primary-manage")  # Botão roxo
+
+    with col2:
+        st.button("📅 Agendar Consulta", key="primary-schedule")  # Botão roxo
+
     st.markdown("## Convidar Paciente")
-    st.write("Digite o email do paciente para enviar um convite de vinculação:")
     patient_email = st.text_input("Email do Paciente", key="patient_email_input")
-    
-    if st.button("Enviar Convite"):
+
+    if st.button("📩 Enviar Convite", key="primary-invite"):  # Botão roxo
         if patient_email:
             success, msg = create_patient_invitation(user["id"], patient_email)
             if success:
@@ -155,20 +166,7 @@ def render_patient_invitations(user):
             col1, col2 = st.columns(2)
 
             with col1:
-                if st.button("✅ Aceitar", key="accept"):  # Chave para aplicar CSS
-                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite aceito com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error(msg)
+                st.button("✅ Aceitar", key="accept")  # Botão verde
 
             with col2:
-                if st.button("❌ Recusar", key="reject"):  # Chave para aplicar CSS
-                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite recusado.")
-                        st.rerun()
-                    else:
-                        st.error(msg)
-
+                st.button("❌ Recusar", key="reject")  # Botão vermelho

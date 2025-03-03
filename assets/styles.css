@@ -1,10 +1,10 @@
-/* Botão "Aceitar" (Verde) */
-.st-key-accept button {
-    background-color: #28a745 !important;
+/* 🔹 Estilizando botões padrão (Roxo) */
+.st-key-primary button {
+    background-color: #7159c1 !important; /* Roxo */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #218838 !important;
+    border: 2px solid #836fff !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
@@ -13,29 +13,58 @@
     cursor: pointer !important;
 }
 
-/* Hover "Aceitar" */
-.st-key-accept button:hover {
-    background-color: #218838 !important;
-    transform: scale(1.1) !important;
+/* 🔹 Hover dos botões padrão */
+.st-key-primary button:hover {
+    background-color: #5e47b0 !important;
+    transform: scale(1.05) !important;
 }
 
-/* Botão "Recusar" (Vermelho) */
-.st-key-reject button {
-    background-color: #dc3545 !important;
+/* 🔹 Botão de Logout (Vermelho) */
+.st-key-logout button {
+    background-color: #ff4b4b !important;
     color: white !important;
-    font-size: 16px !important;
     font-weight: bold !important;
     border: 2px solid #c82333 !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
-    padding: 10px 20px !important;
-    width: 100% !important;
-    text-align: center !important;
-    cursor: pointer !important;
 }
 
-/* Hover "Recusar" */
-.st-key-reject button:hover {
+.st-key-logout button:hover {
     background-color: #c82333 !important;
-    transform: scale(1.1) !important;
+    transform: scale(1.05) !important;
+}
+
+/* 🔹 Botão de Login e Cadastro */
+.st-key-primary-auth button {
+    background-color: #6a11cb !important; /* Roxo forte */
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    border: 2px solid #7141a8 !important;
+    border-radius: 8px !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    padding: 12px 24px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    width: 100% !important;
+}
+
+/* 🔹 Hover no botão de Login/Cadastro */
+.st-key-primary-auth button:hover {
+    background-color: #4b0082 !important;
+    transform: scale(1.05) !important;
+}
+
+/* 🔹 Botão de Recuperar Senha */
+.st-key-primary-reset-password button {
+    background-color: #ff9800 !important; /* Laranja */
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    transition: transform 0.3s ease-in-out !important;
+}
+
+.st-key-primary-reset-password button:hover {
+    background-color: #e68900 !important;
+    transform: scale(1.05) !important;
 }
