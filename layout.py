@@ -2,6 +2,17 @@ import streamlit as st
 import pathlib
 from auth import sign_in, sign_up, reset_password
 
+def load_css():
+    """Carrega o CSS externo e aplica os estilos no Streamlit."""
+    css_path = pathlib.Path("assets/styles.css")
+    if css_path.exists():
+        with open(css_path, "r") as f:
+            css_content = f.read()
+            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+
+# Aplicar CSS na página de login
+load_css()
+
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
@@ -45,7 +56,7 @@ def render_main_layout():
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
-    action_text = "Entrar" if option == "Login" else "🧠 Criar Conta"
+    action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
     # Botão estilizado com a classe do CSS
     if st.button(action_text, key="auth_action", use_container_width=True):
@@ -68,7 +79,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        if st.button("🔒 Recuperar Senha", key="reset_password", use_container_width=True):
+        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
