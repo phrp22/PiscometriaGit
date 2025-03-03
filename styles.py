@@ -101,4 +101,4 @@ button[aria-label="❌ Recusar"].pressed {
     box-shadow: 0px 0px 15px rgba(220, 53, 69, 0.9) !important;
 }
 </style>
-
+"""
