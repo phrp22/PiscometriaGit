@@ -2,6 +2,16 @@ import streamlit as st
 import pathlib
 from auth import sign_in, sign_up, reset_password
 
+def load_css():
+    """Carrega o CSS externo e aplica os estilos no Streamlit."""
+    css_path = pathlib.Path("assets/styles.css")
+    if css_path.exists():
+        with open(css_path, "r") as f:
+            css_content = f.read()
+            st.html(f"<style>{css_content}</style>")  # Aplica o CSS corretamente
+
+# Aplicar CSS uma única vez
+load_css()
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
@@ -46,38 +56,35 @@ def render_main_layout():
     action_key = "login_button" if option == "Login" else "signup_button"
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    if option == "Cadastro" and st.session_state.get("account_created", False):
-        st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-    else:
-        st.markdown(
-            f'<div class="st-key-auth-action"><button onclick="window.location.reload();">{action_text}</button></div>',
-            unsafe_allow_html=True
-        )
-        if st.button(action_text, key=action_key, use_container_width=True):
-            if option == "Login":
-                user, message = sign_in(email, password)
-                if user:
-                    st.session_state["user"] = user
-                    st.session_state["refresh"] = True
-                    st.rerun()
-                else:
-                    st.error(message)
+    # Apenas um botão estilizado com CSS
+    if st.markdown(
+        f'<div class="st-key-auth-action"><button>{action_text}</button></div>',
+        unsafe_allow_html=True
+    ):
+        if option == "Login":
+            user, message = sign_in(email, password)
+            if user:
+                st.session_state["user"] = user
+                st.session_state["refresh"] = True
+                st.rerun()
             else:
-                user, message = sign_up(email, password, confirm_password, display_name)
-                if user:
-                    st.session_state["account_created"] = True
-                    st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-                    st.session_state["refresh"] = True
-                    st.rerun()
-                else:
-                    st.error(message)
+                st.error(message)
+        else:
+            user, message = sign_up(email, password, confirm_password, display_name)
+            if user:
+                st.session_state["account_created"] = True
+                st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
+                st.session_state["refresh"] = True
+                st.rerun()
+            else:
+                st.error(message)
 
     if option == "Login":
-        st.markdown(
-            '<div class="st-key-reset-password"><button onclick="window.location.reload();">🔓 Recuperar Senha</button></div>',
+        # Apenas um botão de recuperação de senha estilizado
+        if st.markdown(
+            '<div class="st-key-reset-password"><button>🔓 Recuperar Senha</button></div>',
             unsafe_allow_html=True
-        )
-        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
+        ):
             if email:
                 message = reset_password(email)
                 st.info(message)
