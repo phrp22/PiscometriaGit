@@ -15,7 +15,7 @@ def render_sidebar(user):
         saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
-        st.markdown(f"✉️ {user['email']}")
+        st.markdown(f"✉️ [{user['email']}](mailto:{user['email']})")
 
         # Botão de logout
         if st.button("Logout 🚪", key="logout"):
@@ -43,14 +43,22 @@ def render_sidebar(user):
                     if prof_key == "AUTOMATIZEJA":
                         success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
                         if success:
+                            # Reseta o estado para esconder o campo de texto depois da ativação
+                            st.session_state["show_prof_input"] = False
                             st.session_state["refresh"] = True
                             st.rerun()
                         else:
                             st.error(msg)
                     else:
                         st.error("❌ Chave incorreta!")
+
+                # Adiciona um botão para cancelar e esconder o campo
+                if st.button("❌ Cancelar", key="cancel_prof_input"):
+                    st.session_state["show_prof_input"] = False
+                    st.rerun()
         else:
             st.success("✅ Área do profissional habilitada!")
+
 
 
 def render_dashboard():
