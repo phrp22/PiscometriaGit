@@ -33,14 +33,14 @@ def render_sidebar(user):
             if st.session_state.get("show_prof_input", False):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                     if prof_key == "AUTOMATIZEJA":
-                        success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
-                        if success:
-                            st.session_state["refresh"] = True
-                            st.rerun()
-                        else:
-                            st.error(msg)
+                    success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
+                    if success:
+                        st.session_state["refresh"] = True
+                        st.rerun()
                     else:
-                        st.error("❌ Chave incorreta!")
+                        st.error(msg)
+                else:
+                    st.error("❌ Chave incorreta!")
         else:
             st.success("✅ Área do profissional habilitada!")
 
