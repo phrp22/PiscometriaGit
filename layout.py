@@ -4,17 +4,14 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
-    # Garante que o CSS carregado no app.py já foi aplicado
-    st.html("<div></div>")
-
     st.markdown("# Abaeté 🌱")
 
     # Texto laranja estilizado e aumentado para maior destaque
-    st.html("""
-    <h1 style="color: #FFA500; font-size: 32px; font-weight: bold;">
-        Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais
-    </h1>
-    """)
+    st.markdown(
+        "<h1 style='color: #FFA500; font-size: 32px; font-weight: bold;'>"
+        "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h1>",
+        unsafe_allow_html=True
+    )
 
     st.markdown("""
     ##### 💻 **Transforme a sua prática clínica com tecnologia avançada:**
@@ -47,23 +44,8 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Adiciona um identificador no session_state para controlar o clique no botão
-    if "auth_clicked" not in st.session_state:
-        st.session_state["auth_clicked"] = False
-    if "reset_clicked" not in st.session_state:
-        st.session_state["reset_clicked"] = False
-
-    # Renderiza o botão estilizado pelo CSS e ativa `session_state`
-    st.html(f"""
-    <div class="st-key-auth-action">
-        <button id="auth_button" onclick="fetch('/auth_action')">{action_text}</button>
-    </div>
-    """)
-
-    # Verifica se o botão foi clicado e processa a ação correta
-    if st.session_state["auth_clicked"]:
-        st.session_state["auth_clicked"] = False  # Reseta o estado
-
+    # Renderiza o botão estilizado como na dashboard, garantindo a aplicação do CSS
+    if st.button(action_text, key="auth_action", use_container_width=True):
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -83,28 +65,11 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        # Renderiza o botão de recuperação de senha estilizado
-        st.html("""
-        <div class="st-key-reset-password">
-            <button id="reset_password_button" onclick="fetch('/reset_action')">🔓 Recuperar Senha</button>
-        </div>
-        """)
-
-        # Verifica se o botão de reset foi clicado e processa a ação correta
-        if st.session_state["reset_clicked"]:
-            st.session_state["reset_clicked"] = False  # Reseta o estado
+        # Renderiza o botão de recuperação de senha corretamente, seguindo o mesmo padrão da dashboard
+        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
             else:
                 st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
 
-    # Script para atualizar o estado do Streamlit via API interna
-    st.html("""
-    <script>
-        async function fetch(route) {
-            let response = await fetch(route, {method: "POST"});
-            window.parent.streamlitRerun();
-        }
-    </script>
-    """)
