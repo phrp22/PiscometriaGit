@@ -142,10 +142,6 @@ def render_patient_invitations(user):
 
     st.markdown("## 📩 Convites Pendentes")
 
-    # Aplica os estilos específicos dos botões de convite
-    st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
-    st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
-
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_profile(inv["professional_id"])
@@ -168,7 +164,6 @@ def render_patient_invitations(user):
 
             # Botão "Aceitar"
             with col1:
-                st.markdown('<div class="accept-container">', unsafe_allow_html=True)
                 if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -176,11 +171,9 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
 
             # Botão "Recusar"
             with col2:
-                st.markdown('<div class="reject-container">', unsafe_allow_html=True)
                 if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
@@ -188,4 +181,3 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
-                st.markdown("</div>", unsafe_allow_html=True)
