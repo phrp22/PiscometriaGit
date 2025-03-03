@@ -1,24 +1,23 @@
 import streamlit as st
-from auth import sign_in, sign_up, reset_password  # Importa as funções de autenticação
-import pathlib
+from auth import sign_in, sign_up, reset_password  # Mantemos apenas os estilos necessários
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
-    # 🔹 Título principal alinhado à esquerda
+    # Título principal alinhado à esquerda
     st.markdown(
         "<h1 style='text-align: left; color: white;'>Abaeté 🌱</h1>",
         unsafe_allow_html=True
     )
 
-    # 🔹 Frase de destaque em laranja
+    # Frase de destaque em laranja, alinhada à esquerda
     st.markdown(
         "<h2 style='text-align: left; color: #FFA500; font-size: 28px;'>"
         "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
         unsafe_allow_html=True
     )
 
-    # 🔹 Descrição do sistema
+
     st.markdown(
         """
         ##### 💻 **Transforme a sua prática clínica com tecnologia avançada:**  
@@ -37,32 +36,31 @@ def render_main_layout():
 
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
-    # 🔹 Alternador entre Login e Cadastro
+    # Alternador entre Login e Cadastro
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
     
     email = st.text_input("Email", key="email_input")
     password = st.text_input("Senha", type="password", key="password_input")
     
-    # 🔹 Campos adicionais para Cadastro
+    # Se for Cadastro, exibe os campos adicionais para nome e confirmação de senha
     display_name = None
     confirm_password = None
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
     
-    # 🔹 Resetar flag se mudar para Login
+    # Se o usuário alterna para Login, reseta a flag de conta criada
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
     
-    # 🔹 Define o texto do botão conforme a opção
+    # Define o texto do botão conforme a opção
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
     
-    # 🔹 Mensagem de conta criada
+    # Se estiver em Cadastro e a conta já foi criada, exibe a mensagem de verificação
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
-        # 🔹 Botão de ação com estilo roxo (`st-key-primary`)
-        if st.button(action_text, key="primary-auth"):
+        if st.button(action_text, key="auth_action"):
             if option == "Login":
                 user, message = sign_in(email, password)
                 if user:
@@ -72,7 +70,7 @@ def render_main_layout():
                 else:
                     st.error(message)
             else:
-                # 🔹 Cadastro: cria a conta, mas NÃO loga automaticamente
+                # Cadastro: cria a conta, mas NÃO loga o usuário automaticamente
                 user, message = sign_up(email, password, confirm_password, display_name)
                 if user:
                     st.session_state["account_created"] = True
@@ -82,9 +80,9 @@ def render_main_layout():
                 else:
                     st.error(message)
     
-    # 🔹 Botão "Esqueci minha senha" aparece somente no Login
+    # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("🔓 Recuperar Senha", key="primary-reset-password"):
+        if st.button("🔓 Recuperar Senha"):
             if email:
                 message = reset_password(email)
                 st.info(message)

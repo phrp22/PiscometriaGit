@@ -1,108 +1,41 @@
-/* 🔹 Estilizando botões padrão (Roxo) */
-.st-key-primary button {
-    background-color: #7159c1 !important; /* Roxo */
+/* Botão "Aceitar" (Verde) */
+.st-key-accept button {
+    background-color: #28a745 !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #836fff !important;
+    border: 2px solid #218838 !important;
     border-radius: 8px !important;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
     width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
 }
 
-/* 🔹 Hover dos botões padrão */
-.st-key-primary button:hover {
-    background-color: #5e47b0 !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5) !important;
+/* Hover "Aceitar" */
+.st-key-accept button:hover {
+    background-color: #218838 !important;
+    transform: scale(1.1) !important;
 }
 
-/* 🔹 Pressão ao clicar */
-.st-key-primary button:active {
-    background-color: #4b0082 !important;
-    transform: scale(0.97) !important;
-    box-shadow: 0px 0px 5px rgba(113, 89, 193, 0.7) inset !important;
-}
-
-/* 🔹 Botão de Logout (Vermelho) */
-.st-key-logout button {
-    background-color: #ff4b4b !important;
+/* Botão "Recusar" (Vermelho) */
+.st-key-reject button {
+    background-color: #dc3545 !important;
     color: white !important;
+    font-size: 16px !important;
     font-weight: bold !important;
     border: 2px solid #c82333 !important;
     border-radius: 8px !important;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-}
-
-.st-key-logout button:hover {
-    background-color: #c82333 !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0px 0px 10px rgba(255, 75, 75, 0.5) !important;
-}
-
-.st-key-logout button:active {
-    background-color: #b92b2b !important;
-    transform: scale(0.97) !important;
-    box-shadow: 0px 0px 5px rgba(255, 75, 75, 0.7) inset !important;
-}
-
-/* 🔹 Botão de Login e Cadastro */
-.st-key-primary-auth button {
-    background-color: #6a11cb !important; /* Roxo forte */
-    color: white !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-    border: 2px solid #7141a8 !important;
-    border-radius: 8px !important;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-    padding: 12px 24px !important;
-    text-align: center !important;
-    cursor: pointer !important;
-    width: 100% !important;
-}
-
-/* 🔹 Hover no botão de Login/Cadastro */
-.st-key-primary-auth button:hover {
-    background-color: #4b0082 !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0px 0px 10px rgba(106, 17, 203, 0.5) !important;
-}
-
-/* 🔹 Pressão ao clicar */
-.st-key-primary-auth button:active {
-    background-color: #3a0070 !important;
-    transform: scale(0.97) !important;
-    box-shadow: 0px 0px 5px rgba(106, 17, 203, 0.7) inset !important;
-}
-
-/* 🔹 Botão de Recuperar Senha (AGORA ROXO) */
-.st-key-primary-reset-password button {
-    background-color: #7159c1 !important; /* Roxo */
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    border: 2px solid #836fff !important;
-    border-radius: 8px !important;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
     width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
 }
 
-/* 🔹 Hover no botão de Recuperar Senha */
-.st-key-primary-reset-password button:hover {
-    background-color: #5e47b0 !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5) !important;
-}
-
-/* 🔹 Pressão ao clicar */
-.st-key-primary-reset-password button:active {
-    background-color: #4b0082 !important;
-    transform: scale(0.97) !important;
-    box-shadow: 0px 0px 5px rgba(113, 89, 193, 0.7) inset !important;
+/* Hover "Recusar" */
+.st-key-reject button:hover {
+    background-color: #c82333 !important;
+    transform: scale(1.1) !important;
 }
