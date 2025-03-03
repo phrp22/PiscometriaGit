@@ -49,7 +49,7 @@ def render_main_layout():
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
     # Botão estilizado com a classe do CSS
-    if st.button(action_text, key="purple", use_container_width=True):
+    if st.button(action_text, key="authaction", use_container_width=True):
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -69,7 +69,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        if st.button("🔓 Recuperar Senha", key="purple", use_container_width=True):
+        if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
