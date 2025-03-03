@@ -40,11 +40,8 @@
     transform: scale(1.1) !important;
 }
 
-/* Botões Roxos (Login, Criar Conta, Logout, Habilitar Profissional, Recuperar Senha) */
-.st-key-logout button,
-.st-key-professional button,
-.st-key-auth-action button,
-.st-key-reset-password button {
+/* Botões Roxos */
+.st-key-purple button {
     background-color: #7159c1 !important;
     color: white !important;
     font-size: 16px !important;
@@ -61,17 +58,13 @@
 }
 
 /* Hover Roxo */
-.st-key-logout button:hover,
-.st-key-professional button:hover,
-.st-key-auth-action button:hover,
-.st-key-reset-password button:hover {
+.st-key-purple button:hover {
     background-color: #5e47b0 !important;
     transform: scale(1.1) !important;
 }
 
 /* Efeito ao clicar */
-.st-key-logout button:active,
-.st-key-professional button:active {
+.st-key-purple button:active {
     background-color: #5e47b0 !important;
     border-color: #7159c1 !important;
     box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
