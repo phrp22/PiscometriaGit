@@ -15,9 +15,9 @@ from profile import get_user_profile, render_onboarding_questionnaire, user_has_
 from styles import BUTTON_STYLE, ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE
 
 # Aplica os estilos globais uma única vez
-st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
 st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
 
 if "user" not in st.session_state:
