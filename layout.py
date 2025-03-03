@@ -79,7 +79,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
+        if st.button("🔓 Recuperar Senha", key="professional", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
