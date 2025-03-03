@@ -40,10 +40,10 @@ def render_sidebar(user):
                             st.rerun()
                         else:
                             st.error(msg)
-                    else:
-                        st.error("❌ Chave incorreta!")
-            else:
-                st.success("✅ Área do profissional habilitada!")
+                else:
+                    st.error("❌ Chave incorreta!")
+        else:
+            st.success("✅ Área do profissional habilitada!")
 
 
 def render_dashboard():
