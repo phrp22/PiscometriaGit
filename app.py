@@ -14,7 +14,8 @@ from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 from styles import BUTTON_STYLE
 
-st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
+# Injetar estilos personalizados
+inject_css()
 
 
 if "user" not in st.session_state:
