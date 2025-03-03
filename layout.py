@@ -8,9 +8,7 @@ def render_main_layout():
     st.html("<div></div>")  # Garante que o CSS já foi carregado
 
     st.markdown("# Abaeté 🌱")
-    st.markdown(
-        "## 🌟 Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais"
-    )
+    st.markdown("## 🌟 Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais")
 
     st.markdown("""
     ##### 💻 **Transforme a sua prática clínica com tecnologia avançada:**
@@ -43,14 +41,26 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Usa `st.html()` para criar o botão corretamente estilizado pelo CSS carregado
+    # Renderiza o botão estilizado pelo CSS (sem `st.button()`)
     st.html(f"""
     <div class="st-key-auth-action">
-        <button onclick="window.parent.streamlitRerun()">{action_text}</button>
+        <button id="auth_button">{action_text}</button>
     </div>
     """)
 
-    if st.button(action_text, key="auth_action", use_container_width=True):
+    # Captura evento do botão via JavaScript
+    st.html("""
+    <script>
+        document.getElementById('auth_button').onclick = function() {
+            parent.window.streamlitRerun();
+        };
+    </script>
+    """)
+
+    # Lógica de login e cadastro
+    if "clicked_auth" in st.session_state and st.session_state["clicked_auth"]:
+        st.session_state["clicked_auth"] = False  # Reseta estado do botão
+
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -70,15 +80,4 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        st.html("""
-        <div class="st-key-reset-password">
-            <button onclick="window.parent.streamlitRerun()">🔓 Recuperar Senha</button>
-        </div>
-        """)
-
-        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
-            if email:
-                message = reset_password(email)
-                st.info(message)
-            else:
-                st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+        # Renderiza o
