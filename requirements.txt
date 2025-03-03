@@ -1,3 +1,4 @@
 streamlit
 bcrypt
 supabase
+streamlit-extras
