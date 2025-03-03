@@ -1,4 +1,5 @@
 import streamlit as st
+import pathlib
 from auth import sign_in, sign_up, reset_password
 
 def render_main_layout():
@@ -67,7 +68,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        if st.button("🔒 Recuperar Senha", key="reset_password"):
+        if st.button("🔒 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
