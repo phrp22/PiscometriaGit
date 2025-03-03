@@ -23,16 +23,21 @@
 
 /* Efeito ao clicar "Aceitar" */
 .st-key-accept button:active {
-    background-color: #1a7468 !important;
+    background-color: #005E52 !important;
     border-color: #008F7A !important;
     box-shadow: 0px 0px 20px rgba(0, 143, 122, 0.9) !important;
     transform: scale(0.98) !important;
     color: white !important;
 }
 
+/* Efeito pós-clique "Aceitar" */
+.st-key-accept button:focus {
+    animation: postClickGlow 0.5s ease-in-out;
+}
+
 /* Botão "Recusar" (Vermelho Rubi Encantado) */
 .st-key-reject button {
-    background-color: #b91141 !important; /* Vermelho intenso e místico */
+    background-color: #C70039 !important; /* Vermelho intenso e místico */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
@@ -55,11 +60,16 @@
 
 /* Efeito ao clicar "Recusar" */
 .st-key-reject button:active {
-    background-color: #b82b53 !important;
-    border-color: #b91141 !important;
+    background-color: #750021 !important;
+    border-color: #C70039 !important;
     box-shadow: 0px 0px 20px rgba(199, 0, 57, 0.9) !important;
     transform: scale(0.98) !important;
     color: white !important;
+}
+
+/* Efeito pós-clique "Aceitar" */
+.st-key-accept button:focus {
+    animation: postClickGlow 0.5s ease-in-out;
 }
 
 /* Botões Roxos (Login, Criar Conta, Logout, Habilitar Profissional, Recuperar Senha) */
@@ -101,4 +111,12 @@
     box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
     transform: scale(0.98) !important;
     color: white !important;
+}
+
+/* Efeito pós-clique "Aceitar" */
+.st-key-logout button:active,
+.st-key-professional button:active,
+.st-key-authaction button:active,
+.st-key-resetpassword button:active {
+    animation: postClickGlow 0.5s ease-in-out;
 }
