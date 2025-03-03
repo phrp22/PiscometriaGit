@@ -1,16 +1,6 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
 
-# 🔹 Função para carregar CSS do arquivo externo
-def load_css():
-    css_path = pathlib.Path("assets/styles.css")  # Caminho do CSS
-    if css_path.exists():  # Verifica se o arquivo existe
-        with open(css_path, "r") as f:
-            css_content = f.read()
-            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-
-# Aplica o CSS uma única vez
-load_css()
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
