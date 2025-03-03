@@ -15,9 +15,9 @@ def render_sidebar(user):
         saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
-        st.markdown(f"✉️ [{user['email']}](mailto:{user['email']})")
+        st.markdown(f"✉️ {user['email']}")
 
-        # Botão de logout
+        # Botão de logout roxo
         if st.button("Logout 🚪", key="logout"):
             sign_out()
             st.session_state["refresh"] = True
@@ -25,41 +25,25 @@ def render_sidebar(user):
 
         st.markdown("---")
 
-        # Inicializa os estados se ainda não existirem
-        if "show_prof_input" not in st.session_state:
-            st.session_state["show_prof_input"] = False
-        if "prof_key" not in st.session_state:
-            st.session_state["prof_key"] = ""
-
-        # Opção para habilitar a área do profissional
+        # Opção para habilitar a área do profissional (botão roxo)
         if not is_professional_enabled(user["id"]):
             if st.button("🔐 Habilitar área do profissional", key="professional"):
-                st.session_state["show_prof_input"] = not st.session_state["show_prof_input"]
-                st.rerun()  # Atualiza a interface
+                st.session_state["show_prof_input"] = True
 
-            if st.session_state["show_prof_input"]:
-                st.session_state["prof_key"] = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
-
-                if st.button("✅ Confirmar", key="confirm_professional"):
-                    if st.session_state["prof_key"] == "AUTOMATIZEJA":
+            if st.session_state.get("show_prof_input", False):
+                prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
+                if prof_key:
+                    if prof_key == "AUTOMATIZEJA":
                         success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
                         if success:
-                            st.session_state["show_prof_input"] = False
                             st.session_state["refresh"] = True
                             st.rerun()
                         else:
                             st.error(msg)
                     else:
                         st.error("❌ Chave incorreta!")
-
-                # Botão para cancelar e esconder o campo
-                if st.button("❌ Cancelar", key="cancel_prof_input"):
-                    st.session_state["show_prof_input"] = False
-                    st.session_state["prof_key"] = ""
-                    st.rerun()
         else:
             st.success("✅ Área do profissional habilitada!")
-
 
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
