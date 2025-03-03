@@ -71,9 +71,7 @@
 
 /* Efeito ao clicar */
 .st-key-logout button:active,
-.st-key-professional button:active,
-.st-key-auth-action button:active,
-.st-key-reset-password button:active {
+.st-key-professional button:active {
     background-color: #5e47b0 !important;
     border-color: #7159c1 !important;
     box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
