@@ -30,7 +30,10 @@ def render_sidebar(user):
 
             st.session_state["show_prof_input"] = None
 
-            if st.button("🔐 Habilitar área do profissional", key="professional"):
+            with st.form(key="show_prof_input"):
+                submit = st.form_submit_button("🔐 Habilitar área do profissional", key="professional")
+
+            if submit
                 st.session_state["show_prof_input"] = True
 
             if st.session_state.get("show_prof_input", True):
