@@ -2,17 +2,6 @@ import streamlit as st
 from auth import sign_in, sign_up, reset_password  # Importa as funções de autenticação
 import pathlib
 
-# 🔹 Função para carregar CSS externo com `st.html()`
-def load_css():
-    css_path = pathlib.Path("assets/styles.css")
-    if css_path.exists():
-        with open(css_path, "r") as f:
-            css_content = f.read()
-            st.html(f"<style>{css_content}</style>")  # 🔥 Agora usando `st.html()`
-
-# Aplica CSS uma única vez
-load_css()
-
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
