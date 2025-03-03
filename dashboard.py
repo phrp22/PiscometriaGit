@@ -7,47 +7,6 @@ from patient_link import list_invitations_for_patient, create_patient_invitation
 from styles import ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE  # Importa os estilos
 
 
-st.markdown("""
-    <style>
-    div[data-testid="stButton"] > button {
-        background-color: #7159c1 !important;
-        color: white !important;
-        font-size: 16px !important;
-        font-weight: bold !important;
-        border: 2px solid #836fff !important;
-        border-radius: 8px !important;
-        cursor: pointer !important;
-        transition: 0.3s ease-in-out !important;
-        padding: 10px 20px !important;
-        width: 100%;
-        text-align: center !important;
-    }
-    div[data-testid="stButton"] > button:hover {
-        filter: brightness(90%);
-        transform: scale(1.05);
-    }
-
-    /* Botão Aceitar - Verde */
-    div[data-testid="stButton"][aria-label="✅ Aceitar"] > button {
-        background-color: #28a745 !important;
-        border: 2px solid #218838 !important;
-    }
-    div[data-testid="stButton"][aria-label="✅ Aceitar"] > button:hover {
-        background-color: #218838 !important;
-    }
-
-    /* Botão Recusar - Vermelho */
-    div[data-testid="stButton"][aria-label="❌ Recusar"] > button {
-        background-color: #dc3545 !important;
-        border: 2px solid #c82333 !important;
-    }
-    div[data-testid="stButton"][aria-label="❌ Recusar"] > button:hover {
-        background-color: #c82333 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
 def render_sidebar(user):
     """Renderiza a sidebar única para todos os usuários logados."""
     with st.sidebar:
