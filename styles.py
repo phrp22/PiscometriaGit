@@ -1,6 +1,6 @@
 BUTTON_STYLE = """
 <style>
-/* Garante que os botões padrão fiquem roxos */
+/* --- BOTÕES PADRÃO (ROXO) --- */
 div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]) {
     background-color: #7159c1 !important;
     color: white !important;
@@ -23,16 +23,20 @@ div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recus
     box-shadow: 0px 8px 15px rgba(113, 89, 193, 0.7) !important;
 }
 
-/* Efeito ao pressionar os botões padrão */
+/* Pressão dos botões padrão */
 div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]):active {
     transform: scale(0.95) !important;
     box-shadow: 0px 2px 5px rgba(113, 89, 193, 0.5) !important;
 }
 
 /* --- BOTÃO "ACEITAR" (VERDE) --- */
-div.accept-container div.stButton {
+div.accept-container {
     display: flex !important;
     justify-content: center !important;
+    width: 100% !important;
+}
+
+div.accept-container div.stButton {
     width: 100% !important;
 }
 
@@ -66,9 +70,13 @@ div.accept-container div.stButton > button:active {
 }
 
 /* --- BOTÃO "RECUSAR" (VERMELHO) --- */
-div.reject-container div.stButton {
+div.reject-container {
     display: flex !important;
     justify-content: center !important;
+    width: 100% !important;
+}
+
+div.reject-container div.stButton {
     width: 100% !important;
 }
 
@@ -101,4 +109,5 @@ div.reject-container div.stButton > button:active {
     box-shadow: 0px 2px 5px rgba(220, 53, 69, 0.5) !important;
 }
 </style>
+
 """
