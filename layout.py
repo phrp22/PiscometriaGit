@@ -11,7 +11,7 @@ def render_main_layout():
 
     # Texto laranja estilizado e aumentado para maior destaque
     st.html("""
-    <h1 style="color: #FFA500; font-size: 36px; font-weight: bold; text-align: center;">
+    <h1 style="color: #FFA500; font-size: 32px; font-weight: bold;">
         Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais
     </h1>
     """)
