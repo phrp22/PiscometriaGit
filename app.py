@@ -16,6 +16,9 @@ from styles import BUTTON_STYLE
 
 # Aplica os estilos globais uma única vez
 st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
+st.markdown(ACCEPT_BUTTON_STYLE, unsafe_allow_html=True)
+st.markdown(REJECT_BUTTON_STYLE, unsafe_allow_html=True)
+
 
 if "user" not in st.session_state:
     st.session_state["user"] = None

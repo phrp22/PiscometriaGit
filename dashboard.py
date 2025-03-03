@@ -170,10 +170,10 @@ def render_patient_invitations(user):
             # Botão "Aceitar"
             with col1:
                 st.markdown('<div class="accept-container">', unsafe_allow_html=True)
-                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}", help="Aceitar convite"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
-                        st.success("Convite aceito com sucesso!")
+                        st.success("Convite aceito com sucesso! ✅")
                         st.rerun()
                     else:
                         st.error(msg)
@@ -182,10 +182,10 @@ def render_patient_invitations(user):
             # Botão "Recusar"
             with col2:
                 st.markdown('<div class="reject-container">', unsafe_allow_html=True)
-                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}", help="Recusar convite"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
-                        st.success("Convite recusado.")
+                        st.success("Convite recusado. ❌")
                         st.rerun()
                     else:
                         st.error(msg)
