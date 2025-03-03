@@ -18,6 +18,7 @@ def render_sidebar(user):
 
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
+        st.session_state["show_prof_input"] = False
 
         if st.button("Logout 🚪"):
             sign_out()
