@@ -1,3 +1,4 @@
+BUTTON_STYLE = """
 <style>
 /* Garante que os botões padrão fiquem roxos */
 div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]) {
@@ -100,3 +101,4 @@ div.reject-container div.stButton > button:active {
     box-shadow: 0px 2px 5px rgba(220, 53, 69, 0.5) !important;
 }
 </style>
+"""
