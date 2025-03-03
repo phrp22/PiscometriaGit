@@ -6,16 +6,6 @@ from profile import get_user_profile
 from gender_utils import adjust_gender_ending
 from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
-# 🔹 Função para carregar CSS do arquivo externo
-def load_css():
-    css_path = pathlib.Path("assets/styles.css")  # Caminho do CSS
-    if css_path.exists():  # Verifica se o arquivo existe
-        with open(css_path, "r") as f:
-            css_content = f.read()
-            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-
-# Aplica o CSS uma única vez
-load_css()
 
 def render_sidebar(user):
     """Renderiza a sidebar para todos os usuários logados."""
