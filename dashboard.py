@@ -4,7 +4,7 @@ from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
-from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
+from patient_link import render_patient_invitations, list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
 
 def render_sidebar(user):
@@ -119,47 +119,3 @@ def render_professional_dashboard(user):
                 st.error(f"Erro: {msg}")
         else:
             st.warning("Por favor, insira o email do paciente.")
-
-def render_patient_invitations(user): 
-    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
-    invitations = list_invitations_for_patient(user["id"])
-    if not invitations:
-        return 
-
-    st.markdown("## 📩 Convites Pendentes")
-
-    for inv in invitations:
-        if inv["status"] == "pending":
-            professional_profile = get_user_profile(inv["professional_id"])
-            if professional_profile:
-                profissional_nome = professional_profile.get("display_name", "Profissional")
-                genero_profissional = professional_profile.get("genero", "M")
-
-                if genero_profissional == "F":
-                    titulo = "Dra."
-                elif genero_profissional == "N":
-                    titulo = "Drx."
-                else:
-                    titulo = "Dr."
-
-                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                if st.button("✅ Aceitar", key="accept"):  # Chave para aplicar CSS
-                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite aceito com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error(msg)
-
-            with col2:
-                if st.button("❌ Recusar", key="reject"):  # Chave para aplicar CSS
-                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite recusado.")
-                        st.rerun()
-                    else:
-                        st.error(msg)

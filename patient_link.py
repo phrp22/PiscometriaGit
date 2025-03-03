@@ -122,3 +122,47 @@ def _get_auth_user_id_by_email(email: str) -> str:
     if response and hasattr(response, "data") and len(response.data) > 0:
         return response.data[0]["auth_user_id"]
     return None
+
+def render_patient_invitations(user): 
+    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
+    invitations = list_invitations_for_patient(user["id"])
+    if not invitations:
+        return 
+
+    st.markdown("## 📩 Convites Pendentes")
+
+    for inv in invitations:
+        if inv["status"] == "pending":
+            professional_profile = get_user_profile(inv["professional_id"])
+            if professional_profile:
+                profissional_nome = professional_profile.get("display_name", "Profissional")
+                genero_profissional = professional_profile.get("genero", "M")
+
+                if genero_profissional == "F":
+                    titulo = "Dra."
+                elif genero_profissional == "N":
+                    titulo = "Drx."
+                else:
+                    titulo = "Dr."
+
+                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if st.button("Aceitar", key="accept"):  # Chave para aplicar CSS
+                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite aceito com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+
+            with col2:
+                if st.button("Recusar", key="reject"):  # Chave para aplicar CSS
+                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
