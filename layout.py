@@ -9,7 +9,9 @@ def render_main_layout():
 
     st.markdown("# Abaeté 🌱")
     st.html("""
-    <h2 style="color: green;">Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>
+    <h1 style="color: #FFA500; font-size: 36px; font-weight: bold; text-align: center;">
+        Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais
+    </h1>
     """)
 
     st.markdown("""
