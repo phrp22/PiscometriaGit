@@ -16,14 +16,14 @@
 /* Hover "Aceitar" */
 .st-key-accept button:hover {
     background-color: #3E8E41 !important;
-    transform: scale(0.5) !important;
+    transform: scale(1.05) !important;
 }
 
 /* Efeito ao clicar "Aceitar" */
 .st-key-accept button:active {
     background-color: #3E8E41 !important;
     border-color: #4CAF50 !important;
-    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    box-shadow: 0px 0px 15px rgba(36, 163, 57, 0.7) !important;
     transform: scale(0.98) !important;
     color: white !important;
 }
@@ -46,14 +46,14 @@
 /* Hover "Recusar" */
 .st-key-reject button:hover {
     background-color: #B12F3A !important;
-    transform: scale(0.5) !important;
+    transform: scale(1.05) !important;
 }
 
 /* Efeito ao clicar "Aceitar" */
 .st-key-accept button:active {
     background-color: #B12F3A !important;
     border-color: #D63B47 !important;
-    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    box-shadow: 0px 0px 15px rgba(184, 42, 42, 0.7) !important;
     transform: scale(0.98) !important;
     color: white !important;
 }
