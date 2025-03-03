@@ -2,16 +2,6 @@ import streamlit as st
 import pathlib
 from auth import sign_in, sign_up, reset_password
 
-def load_css():
-    """Carrega o CSS externo e aplica os estilos no Streamlit."""
-    css_path = pathlib.Path("assets/styles.css")
-    if css_path.exists():
-        with open(css_path, "r") as f:
-            css_content = f.read()
-            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-
-# Aplicar CSS na página de login
-load_css()
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
