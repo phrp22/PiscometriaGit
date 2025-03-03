@@ -142,6 +142,9 @@ def render_patient_invitations(user):
 
     st.markdown("## 📩 Convites Pendentes")
 
+    # Aplica os estilos antes de renderizar os botões
+    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
+
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_profile(inv["professional_id"])
