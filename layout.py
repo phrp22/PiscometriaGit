@@ -8,8 +8,10 @@ def render_main_layout():
 
     # Texto laranja estilizado e aumentado para maior destaque
     st.markdown(
-        "<h1 style='color: #FFA500; font-size: 32px; font-weight: bold;'>"
-        "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h1>",
+        """
+        <h1 style='color: #FFA500; font-size: 32px; font-weight: bold;'>
+        Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h1>
+        """,
         unsafe_allow_html=True
     )
 
@@ -42,16 +44,10 @@ def render_main_layout():
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
-    action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
+    action_text = "Entrar" if option == "Login" else "🧠 Criar Conta"
 
-    # Aplica a classe CSS ao botão
-    st.html(f"""
-    <div class="st-key-auth-action">
-        {st.button(action_text, key="auth_action", use_container_width=True)}
-    </div>
-    """)
-
-    if st.session_state.get("auth_action"):
+    # Botão estilizado com a classe do CSS
+    if st.button(action_text, key="auth_action", use_container_width=True):
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -71,13 +67,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        st.html(f"""
-        <div class="st-key-reset-password">
-            {st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True)}
-        </div>
-        """)
-
-        if st.session_state.get("reset_password"):
+        if st.button("🔒 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
