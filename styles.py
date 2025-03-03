@@ -1,5 +1,6 @@
 BUTTON_STYLE = """
 <style>
+/* --- ESTILIZAÇÃO GLOBAL --- */
 /* Garante que os botões padrão fiquem roxos */
 div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]) {
     background-color: #7159c1 !important;
@@ -17,22 +18,14 @@ div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recus
     outline: none !important;
 }
 
-/* Hover dos botões padrão */
-div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]):hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0px 8px 15px rgba(113, 89, 193, 0.7) !important;
-}
-
-/* Efeito ao pressionar os botões padrão */
-div.stButton > button:not([aria-label="✅ Aceitar"]):not([aria-label="❌ Recusar"]):active {
-    transform: scale(0.95) !important;
-    box-shadow: 0px 2px 5px rgba(113, 89, 193, 0.5) !important;
-}
-
 /* --- BOTÃO "ACEITAR" (VERDE) --- */
-div.accept-container div.stButton {
+div.accept-container {
     display: flex !important;
     justify-content: center !important;
+    width: 100% !important;
+}
+
+div.accept-container div.stButton {
     width: 100% !important;
 }
 
@@ -66,9 +59,13 @@ div.accept-container div.stButton > button:active {
 }
 
 /* --- BOTÃO "RECUSAR" (VERMELHO) --- */
-div.reject-container div.stButton {
+div.reject-container {
     display: flex !important;
     justify-content: center !important;
+    width: 100% !important;
+}
+
+div.reject-container div.stButton {
     width: 100% !important;
 }
 

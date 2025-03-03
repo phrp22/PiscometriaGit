@@ -133,6 +133,7 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
+
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
