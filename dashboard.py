@@ -1,19 +1,18 @@
 import streamlit as st
-from streamlit_extras.st_html import st_html
+import pathlib
 from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
-from patient_link import list_invitations_for_patient, create_patient_invitation
-from styles import BUTTON_STYLE, ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE
+from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
-# 🔹 Função para carregar CSS utilizando a extensão
+# 🔹 Função para carregar CSS do arquivo externo
 def load_css():
-    if "css_loaded" not in st.session_state:
-        st_html(BUTTON_STYLE)
-        st_html(ACCEPT_BUTTON_STYLE)
-        st_html(REJECT_BUTTON_STYLE)
-        st.session_state["css_loaded"] = True  # Flag para evitar múltiplos carregamentos
+    css_path = pathlib.Path("assets/styles.css")  # Caminho do CSS
+    if css_path.exists():  # Verifica se o arquivo existe
+        with open(css_path, "r") as f:
+            css_content = f.read()
+            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
 # Aplica o CSS uma única vez
 load_css()
