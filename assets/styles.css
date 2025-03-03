@@ -1,0 +1,28 @@
+/* Estilizando botões no Streamlit */
+.st-key-green button {
+    background-color: green !important;
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    border: 2px solid darkgreen !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+}
+
+/* Efeito de hover */
+.st-key-green button:hover {
+    background-color: darkgreen !important;
+    transform: scale(1.05) !important;
+}
+
+/* Efeito de animação */
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+}
+
+.st-key-pulse button {
+    animation: pulse 1.5s infinite;
+}

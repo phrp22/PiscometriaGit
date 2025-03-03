@@ -1,11 +1,11 @@
 import streamlit as st
-from streamlit_extras.st_html import st_html
+import pathlib
+
 from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-from styles import BUTTON_STYLE, ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE
 
 # Configuração da página
 st.set_page_config(
@@ -15,15 +15,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Função para carregar o CSS utilizando a extensão
+# 🔹 Função para carregar CSS do arquivo externo
 def load_css():
-    if "css_loaded" not in st.session_state:
-        st_html(BUTTON_STYLE)
-        st_html(ACCEPT_BUTTON_STYLE)
-        st_html(REJECT_BUTTON_STYLE)
-        st.session_state["css_loaded"] = True  # Define flag para evitar múltiplos carregamentos
+    css_path = pathlib.Path("assets/styles.css")  # Caminho do CSS
+    if css_path.exists():  # Verifica se o arquivo existe
+        with open(css_path, "r") as f:
+            css_content = f.read()
+            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
-# Executa o carregamento do CSS
+# Executa o carregamento do CSS externo
 load_css()
 
 # Inicializa a sessão do usuário, se ainda não estiver definida
