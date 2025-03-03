@@ -4,12 +4,12 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
-    st.markdown("<h1>Abaeté 🌱</h1>", unsafe_allow_html=True)
+    # Força a aplicação do CSS carregado no app.py
+    st.html("<div></div>")  # Garante que o CSS já foi carregado
 
+    st.markdown("# Abaeté 🌱")
     st.markdown(
-        "<h2 style='color: #FFA500; font-size: 28px;'>"
-        "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
-        unsafe_allow_html=True
+        "## 🌟 Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais"
     )
 
     st.markdown("""
@@ -25,7 +25,7 @@ def render_main_layout():
     🔍 **Eleve sua prática profissional e ofereça um acompanhamento mais eficaz e personalizado.**  
     """)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.divider()
 
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
@@ -43,7 +43,13 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Renderiza apenas um botão roxo funcional
+    # Usa `st.html()` para criar o botão corretamente estilizado pelo CSS carregado
+    st.html(f"""
+    <div class="st-key-auth-action">
+        <button onclick="window.parent.streamlitRerun()">{action_text}</button>
+    </div>
+    """)
+
     if st.button(action_text, key="auth_action", use_container_width=True):
         if option == "Login":
             user, message = sign_in(email, password)
@@ -64,6 +70,12 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
+        st.html("""
+        <div class="st-key-reset-password">
+            <button onclick="window.parent.streamlitRerun()">🔓 Recuperar Senha</button>
+        </div>
+        """)
+
         if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
