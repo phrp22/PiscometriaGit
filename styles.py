@@ -1,6 +1,5 @@
 BUTTON_STYLE = """
 <style>
-/* Estilo global para botões */
 div.stButton > button {
     background-color: #7159c1 !important;
     color: white !important;
@@ -16,31 +15,24 @@ div.stButton > button {
     box-shadow: 0px 0px 10px rgba(113, 89, 193, 0.5) !important;
     outline: none !important;
 }
-
-/* Efeito de hover - Aumenta o botão ao passar o mouse */
 div.stButton > button:hover {
     transform: scale(1.05) !important;
 }
-
-/* Efeito ao clicar */
-    div.stButton > button:first-child:active,
-    section[data-testid="stSidebar"] div.stButton > button:first-child:active {
-        background-color: #5e47b0 !important;
-        border-color: #7159c1 !important;
-        box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
-        transform: scale(0.98) !important;
-        color: white !important;
-    }
+div.stButton > button:first-child:active,
+section[data-testid="stSidebar"] div.stButton > button:first-child:active {
+    background-color: #5e47b0 !important;
+    border-color: #7159c1 !important;
+    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    transform: scale(0.98) !important;
+    color: white !important;
+}
 </style>
 """
 
-
-
 ACCEPT_BUTTON_STYLE = """
 <style>
-/* Botão "Aceitar" */
 .accept-container div.stButton > button {
-    background-color: #28a745 !important; /* verde */
+    background-color: #28a745 !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
@@ -52,8 +44,6 @@ ACCEPT_BUTTON_STYLE = """
     text-align: center !important;
     cursor: pointer !important;
 }
-
-/* Efeito de hover - Aumenta o botão ao passar o mouse */
 .accept-container div.stButton > button:hover {
     background-color: #218838 !important;
     transform: scale(1.1) !important;
@@ -63,9 +53,8 @@ ACCEPT_BUTTON_STYLE = """
 
 REJECT_BUTTON_STYLE = """
 <style>
-/* Botão "Rejeitar" */
 .reject-container div.stButton > button {
-    background-color: #dc3545 !important; /* vermelho */
+    background-color: #dc3545 !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
@@ -77,8 +66,6 @@ REJECT_BUTTON_STYLE = """
     text-align: center !important;
     cursor: pointer !important;
 }
-
-/* Efeito de hover - Aumenta o botão ao passar o mouse */
 .reject-container div.stButton > button:hover {
     background-color: #c82333 !important;
     transform: scale(1.1) !important;
