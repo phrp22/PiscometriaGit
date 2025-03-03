@@ -4,10 +4,12 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
-    # Força a aplicação do CSS carregado no app.py
-    st.html("<div></div>")  # Garante que o CSS já foi carregado
+    # Garante que o CSS carregado no app.py já foi aplicado
+    st.html("<div></div>")
 
     st.markdown("# Abaeté 🌱")
+
+    # Texto laranja estilizado e aumentado para maior destaque
     st.html("""
     <h1 style="color: #FFA500; font-size: 36px; font-weight: bold; text-align: center;">
         Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais
