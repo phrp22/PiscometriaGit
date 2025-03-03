@@ -8,7 +8,9 @@ def render_main_layout():
     st.html("<div></div>")  # Garante que o CSS já foi carregado
 
     st.markdown("# Abaeté 🌱")
-    st.markdown("## 🌟 Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais")
+    st.html("""
+    <h2 style="color: green;">Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>
+    """)
 
     st.markdown("""
     ##### 💻 **Transforme a sua prática clínica com tecnologia avançada:**
