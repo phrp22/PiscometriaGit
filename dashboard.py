@@ -133,12 +133,6 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
-
-import streamlit as st
-from auth import get_user_profile
-from patient_link import list_invitations_for_patient, accept_invitation, reject_invitation
-from styles import BUTTON_STYLE  # Importa os estilos corrigidos
-
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
