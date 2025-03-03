@@ -134,6 +134,35 @@ def render_professional_dashboard(user):
 
 
 
+import streamlit as st
+
+def styled_button(label, color, key):
+    """Renderiza um botão estilizado"""
+    button_html = f"""
+    <style>
+        .custom-button-{key} {{
+            background-color: {color} !important;
+            color: white !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid {color} !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            transition: 0.3s ease-in-out !important;
+            padding: 10px 20px !important;
+            width: 100%;
+            text-align: center !important;
+            display: inline-block;
+        }}
+        .custom-button-{key}:hover {{
+            filter: brightness(90%);
+            transform: scale(1.05);
+        }}
+    </style>
+    <button class="custom-button-{key}" onclick="window.location.reload()">{label}</button>
+    """
+    return st.markdown(button_html, unsafe_allow_html=True)
+
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
@@ -141,44 +170,6 @@ def render_patient_invitations(user):
         return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
-
-    # Estilos in-line específicos para os botões
-    st.markdown("""
-        <style>
-        div[data-testid="stButton"] > button {
-            font-size: 16px !important;
-            font-weight: bold !important;
-            border-radius: 8px !important;
-            cursor: pointer !important;
-            padding: 10px 20px !important;
-            width: 100% !important;
-            text-align: center !important;
-            transition: 0.3s ease-in-out !important;
-        }
-
-        /* Botão Aceitar */
-        div[data-testid="stButton"] > button.accept-button {
-            background-color: #28a745 !important;
-            color: white !important;
-            border: 2px solid #218838 !important;
-        }
-        div[data-testid="stButton"] > button.accept-button:hover {
-            background-color: #218838 !important;
-            transform: scale(1.05) !important;
-        }
-
-        /* Botão Rejeitar */
-        div[data-testid="stButton"] > button.reject-button {
-            background-color: #dc3545 !important;
-            color: white !important;
-            border: 2px solid #c82333 !important;
-        }
-        div[data-testid="stButton"] > button.reject-button:hover {
-            background-color: #c82333 !important;
-            transform: scale(1.05) !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
 
     for inv in invitations:
         if inv["status"] == "pending":
@@ -202,20 +193,22 @@ def render_patient_invitations(user):
 
             # Botão "Aceitar"
             with col1:
-                if st.markdown('<button class="accept-button">✅ Aceitar</button>', unsafe_allow_html=True) and st.button("", key=f"accept_{inv['id']}"):
+                if st.button("✅ Aceitar", key=f"accept_{inv['id']}"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
                         st.rerun()
                     else:
                         st.error(msg)
+                styled_button("✅ Aceitar", "#28a745", f"accept_{inv['id']}")  # Verde
 
             # Botão "Recusar"
             with col2:
-                if st.markdown('<button class="reject-button">❌ Recusar</button>', unsafe_allow_html=True) and st.button("", key=f"reject_{inv['id']}"):
+                if st.button("❌ Recusar", key=f"reject_{inv['id']}"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
                         st.rerun()
                     else:
                         st.error(msg)
+                styled_button("❌ Recusar", "#dc3545", f"reject_{inv['id']}")  # Vermelho
