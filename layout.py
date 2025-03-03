@@ -1,7 +1,5 @@
 import streamlit as st
-import pathlib
 from auth import sign_in, sign_up, reset_password
-
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
@@ -43,14 +41,10 @@ def render_main_layout():
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
-    action_key = "login_button" if option == "Login" else "signup_button"
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Apenas um botão estilizado com CSS
-    if st.markdown(
-        f'<div class="st-key-auth-action"><button>{action_text}</button></div>',
-        unsafe_allow_html=True
-    ):
+    # Renderiza apenas um botão roxo funcional
+    if st.button(action_text, key="auth_action", use_container_width=True):
         if option == "Login":
             user, message = sign_in(email, password)
             if user:
@@ -58,7 +52,7 @@ def render_main_layout():
                 st.session_state["refresh"] = True
                 st.rerun()
             else:
-                st.error(message)
+                st.error(f"❌ Erro ao logar: {message}")
         else:
             user, message = sign_up(email, password, confirm_password, display_name)
             if user:
@@ -70,11 +64,7 @@ def render_main_layout():
                 st.error(message)
 
     if option == "Login":
-        # Apenas um botão de recuperação de senha estilizado
-        if st.markdown(
-            '<div class="st-key-reset-password"><button>🔓 Recuperar Senha</button></div>',
-            unsafe_allow_html=True
-        ):
+        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
