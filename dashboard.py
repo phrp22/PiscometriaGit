@@ -27,23 +27,24 @@ def render_sidebar(user):
 
         # Opção para habilitar a área do profissional (botão roxo)
         if not is_professional_enabled(user["id"]):
-            st.session_state.setdefault("show_prof_input", None)
-            st.session_state.setdefault("prof_key", "")
-            
-            if st.session_state["prof_key"] == "AUTOMATIZEJA":
-                if st.button("🔐 Habilitar área do profissional", key="professional", use_container_width=True):
-                    success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
-                    if success:
-                        st.session_state["refresh"] = True
-                        st.rerun()
-                    else:
-                        st.error(msg)
-            else:
+
+            st.session_state["show_prof_input"] = None
+
+            if st.button("🔐 Habilitar área do profissional", key="professional"):
                 st.session_state["show_prof_input"] = True
+
+            if st.session_state.get("show_prof_input", True):
                 prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key:
-                    st.session_state["prof_key"] = prof_key
-                    st.rerun()
+                    if prof_key == "AUTOMATIZEJA":
+                        success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
+                        if success:
+                            st.session_state["refresh"] = True
+                            st.rerun()
+                        else:
+                            st.error(msg)
+                    else:
+                        st.error("❌ Chave incorreta!")
         else:
             st.success("✅ Área do profissional habilitada!")
 
