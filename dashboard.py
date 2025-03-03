@@ -136,32 +136,46 @@ def render_professional_dashboard(user):
 
 import streamlit as st
 
-def styled_button(label, color, key):
-    """Renderiza um botão estilizado"""
-    button_html = f"""
+st.markdown("""
     <style>
-        .custom-button-{key} {{
-            background-color: {color} !important;
-            color: white !important;
-            font-size: 16px !important;
-            font-weight: bold !important;
-            border: 2px solid {color} !important;
-            border-radius: 8px !important;
-            cursor: pointer !important;
-            transition: 0.3s ease-in-out !important;
-            padding: 10px 20px !important;
-            width: 100%;
-            text-align: center !important;
-            display: inline-block;
-        }}
-        .custom-button-{key}:hover {{
-            filter: brightness(90%);
-            transform: scale(1.05);
-        }}
+    div[data-testid="stButton"] > button {
+        background-color: #7159c1 !important;
+        color: white !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        border: 2px solid #836fff !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: 0.3s ease-in-out !important;
+        padding: 10px 20px !important;
+        width: 100%;
+        text-align: center !important;
+    }
+    div[data-testid="stButton"] > button:hover {
+        filter: brightness(90%);
+        transform: scale(1.05);
+    }
+
+    /* Botão Aceitar - Verde */
+    div[data-testid="stButton"][aria-label="✅ Aceitar"] > button {
+        background-color: #28a745 !important;
+        border: 2px solid #218838 !important;
+    }
+    div[data-testid="stButton"][aria-label="✅ Aceitar"] > button:hover {
+        background-color: #218838 !important;
+    }
+
+    /* Botão Recusar - Vermelho */
+    div[data-testid="stButton"][aria-label="❌ Recusar"] > button {
+        background-color: #dc3545 !important;
+        border: 2px solid #c82333 !important;
+    }
+    div[data-testid="stButton"][aria-label="❌ Recusar"] > button:hover {
+        background-color: #c82333 !important;
+    }
     </style>
-    <button class="custom-button-{key}" onclick="window.location.reload()">{label}</button>
-    """
-    return st.markdown(button_html, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
@@ -200,7 +214,6 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
-                styled_button("✅ Aceitar", "#28a745", f"accept_{inv['id']}")  # Verde
 
             # Botão "Recusar"
             with col2:
@@ -211,4 +224,3 @@ def render_patient_invitations(user):
                         st.rerun()
                     else:
                         st.error(msg)
-                styled_button("❌ Recusar", "#dc3545", f"reject_{inv['id']}")  # Vermelho
