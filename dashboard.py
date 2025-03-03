@@ -133,6 +133,17 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
+def inject_css():
+    """Função para injetar CSS após a renderização do Streamlit."""
+    css = """
+    <style>
+    button {
+        all: unset !important;
+    }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
+
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
@@ -141,8 +152,8 @@ def render_patient_invitations(user):
 
     st.markdown("## 📩 Convites Pendentes")
 
-    # Aplica os estilos **DEPOIS** do Streamlit renderizar os botões
-    st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
+    # Garante que o CSS seja injetado após renderizar os botões
+    inject_css()
 
     for inv in invitations:
         if inv["status"] == "pending":
@@ -187,3 +198,4 @@ def render_patient_invitations(user):
                     else:
                         st.error(msg)
                 st.markdown("</div>", unsafe_allow_html=True)
+
