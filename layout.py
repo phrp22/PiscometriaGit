@@ -2,12 +2,22 @@ import streamlit as st
 import pathlib
 from auth import sign_in, sign_up, reset_password
 
+def load_css():
+    """Carrega o CSS externo e aplica os estilos no Streamlit."""
+    css_path = pathlib.Path("assets/styles.css")
+    if css_path.exists():
+        with open(css_path, "r") as f:
+            css_content = f.read()
+            st.html(f"<style>{css_content}</style>")  # Aplica o CSS corretamente
+
+# Aplicar CSS uma única vez
+load_css()
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
     st.markdown("<h1>Abaeté 🌱</h1>", unsafe_allow_html=True)
-    
+
     st.markdown(
         "<h2 style='color: #FFA500; font-size: 28px;'>"
         "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
@@ -49,7 +59,7 @@ def render_main_layout():
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
-        if st.button(action_text, key=auth_action, help="Clique para autenticar", use_container_width=True):
+        if st.button(action_text, key=action_key, help="Clique para autenticar", use_container_width=True):
             if option == "Login":
                 user, message = sign_in(email, password)
                 if user:
