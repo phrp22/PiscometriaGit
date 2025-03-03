@@ -1,10 +1,10 @@
-/* Botão "Aceitar" (Verde Adaptado) */
+/* Botão "Aceitar" (Verde ajustado) */
 .st-key-accept button {
-    background-color: #3ca374 !important; /* Verde mais equilibrado */
+    background-color: #4CAF50 !important; /* Verde mais vibrante, combinando com o roxo */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #318a60 !important; /* Tom mais escuro para contraste */
+    border: 2px solid #3E8E41 !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
@@ -15,17 +15,26 @@
 
 /* Hover "Aceitar" */
 .st-key-accept button:hover {
-    background-color: #318a60 !important;
+    background-color: #3E8E41 !important;
     transform: scale(1.1) !important;
 }
 
-/* Botão "Recusar" (Vermelho Adaptado) */
+/* Efeito ao clicar "Aceitar" */
+.st-key-accept button:active {
+    background-color: #3E8E41 !important;
+    border-color: #4CAF50 !important;
+    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    transform: scale(0.98) !important;
+    color: white !important;
+}
+
+/* Botão "Recusar" (Vermelho ajustado) */
 .st-key-reject button {
-    background-color: #c7465c !important; /* Vermelho suavizado */
+    background-color: #D63B47 !important; /* Vermelho menos saturado, para suavizar com o roxo */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #a93a4d !important; /* Tom mais escuro para harmonia */
+    border: 2px solid #B12F3A !important;
     border-radius: 8px !important;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     padding: 10px 20px !important;
@@ -36,11 +45,18 @@
 
 /* Hover "Recusar" */
 .st-key-reject button:hover {
-    background-color: #a93a4d !important;
+    background-color: #B12F3A !important;
     transform: scale(1.1) !important;
 }
 
-
+/* Efeito ao clicar "Aceitar" */
+.st-key-accept button:active {
+    background-color: #B12F3A !important;
+    border-color: #D63B47 !important;
+    box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
+    transform: scale(0.98) !important;
+    color: white !important;
+}
 
 /* Botões Roxos (Login, Criar Conta, Logout, Habilitar Profissional, Recuperar Senha) */
 .st-key-logout button,
