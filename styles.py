@@ -1,33 +1,33 @@
 BUTTON_STYLE = """
 <style>
-/* --- BOTÕES PADRÃO (ROXO) --- */
-:where(div.stButton) > button:not([data-testid="stBaseButton-secondary"]) {
+/* --- RESET STREAMLIT PADRÃO --- */
+button {
     all: unset !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-    padding: 14px 28px !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    text-align: center !important;
-    transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.2s ease-in-out !important;
+}
+
+/* --- BOTÕES PADRÃO (ROXO) --- */
+button:not([data-testid="stBaseButton-secondary"]) {
     background-color: #7159c1 !important;
     color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
     border: 2px solid #836fff !important;
-    animation: pulse 2s infinite !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    padding: 12px 24px !important;
+    text-align: center !important;
+    box-shadow: 0px 5px 10px rgba(113, 89, 193, 0.5) !important;
+    transition: transform 0.2s, background-color 0.3s, box-shadow 0.2s !important;
 }
 
 /* Hover dos botões roxos */
-:where(div.stButton) > button:not([data-testid="stBaseButton-secondary"]):hover {
+button:not([data-testid="stBaseButton-secondary"]):hover {
     transform: scale(1.05) !important;
     box-shadow: 0px 8px 15px rgba(113, 89, 193, 0.7) !important;
 }
 
 /* Pressão dos botões roxos */
-:where(div.stButton) > button:not([data-testid="stBaseButton-secondary"]):active {
+button:not([data-testid="stBaseButton-secondary"]):active {
     transform: scale(0.95) !important;
     box-shadow: 0px 2px 5px rgba(113, 89, 193, 0.5) !important;
 }
