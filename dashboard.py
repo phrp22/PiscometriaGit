@@ -6,6 +6,11 @@ from gender_utils import adjust_gender_ending  # Importa a função para ajustar
 from patient_link import list_invitations_for_patient, create_patient_invitation
 from styles import ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE  # Importa os estilos
 
+st.set_page_config(
+    page_title="Dashboard",
+    page_icon="🧠",
+    layout="wide"
+)
 
 def render_sidebar(user):
     """Renderiza a sidebar única para todos os usuários logados."""
