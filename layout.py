@@ -49,7 +49,7 @@ def render_main_layout():
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
-        if st.button(action_text, key=action_key, help="Clique para autenticar", use_container_width=True):
+        if st.button(action_text, key=auth_action, help="Clique para autenticar", use_container_width=True):
             if option == "Login":
                 user, message = sign_in(email, password)
                 if user:
@@ -69,7 +69,7 @@ def render_main_layout():
                     st.error(message)
 
     if option == "Login":
-        if st.button("🔓 Recuperar Senha", key="reset_password_button", use_container_width=True):
+        if st.button("🔓 Recuperar Senha", key="reset_password", use_container_width=True):
             if email:
                 message = reset_password(email)
                 st.info(message)
