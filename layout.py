@@ -1,5 +1,5 @@
 import streamlit as st
-from auth import sign_in, sign_up, reset_password  # Mantemos apenas os estilos necessários
+from auth import sign_in, sign_up, reset_password
 
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
@@ -16,7 +16,6 @@ def render_main_layout():
         "Sistema inteligente e adaptado ao novo paradigma dimensional dos transtornos mentais</h2>",
         unsafe_allow_html=True
     )
-
 
     st.markdown(
         """
@@ -60,7 +59,7 @@ def render_main_layout():
     if option == "Cadastro" and st.session_state.get("account_created", False):
         st.info("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
     else:
-        if st.button(action_text, key="auth_action"):
+        if st.button(action_text, key="auth_action"):  # Aplicando estilo roxo
             if option == "Login":
                 user, message = sign_in(email, password)
                 if user:
@@ -82,7 +81,7 @@ def render_main_layout():
     
     # Botão "Esqueci minha senha" aparece somente no Login
     if option == "Login":
-        if st.button("🔓 Recuperar Senha"):
+        if st.button("🔓 Recuperar Senha", key="reset_password"):  # Aplicando estilo roxo
             if email:
                 message = reset_password(email)
                 st.info(message)
