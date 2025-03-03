@@ -1,4 +1,10 @@
 import streamlit as st
+from auth import get_user
+from layout import render_main_layout
+from dashboard import render_dashboard, render_professional_dashboard
+from professional import is_professional_enabled
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
+from styles import BUTTON_STYLE
 
 st.set_page_config(
     page_title="PsyTrack",
@@ -7,16 +13,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-from auth import get_user
-from layout import render_main_layout
-from dashboard import render_dashboard, render_professional_dashboard
-from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-from styles import inject_css
-
-# Injetar estilos personalizados
-inject_css()
-
+# Aplica os estilos globais uma única vez
+st.markdown(BUTTON_STYLE, unsafe_allow_html=True)
 
 if "user" not in st.session_state:
     st.session_state["user"] = None

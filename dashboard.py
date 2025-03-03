@@ -1,17 +1,20 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
-from gender_utils import adjust_gender_ending
-from patient_link import list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
-from styles import inject_css
+from gender_utils import adjust_gender_ending  # Importa a função para ajustar saudações
+from patient_link import list_invitations_for_patient, create_patient_invitation
+from styles import ACCEPT_BUTTON_STYLE, REJECT_BUTTON_STYLE  # Importa os estilos
 
 
 def render_sidebar(user):
+    """Renderiza a sidebar única para todos os usuários logados."""
     with st.sidebar:
+        
+        # Ajusta a saudação conforme o gênero
         profile = get_user_profile(user["id"])
-        saudacao = adjust_gender_ending("Bem-vindo", profile["genero"]) if profile else "Bem-vindo"
+        saudacao_base = "Bem-vindo"
+        saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")
@@ -22,7 +25,8 @@ def render_sidebar(user):
             st.rerun()
 
         st.markdown("---")
-
+        
+        # Se o usuário não tem a área profissional habilitada, pode habilitar
         if not is_professional_enabled(user["id"]):
             if st.button("🔐 Habilitar área do profissional"):
                 st.session_state["show_prof_input"] = True
@@ -129,44 +133,89 @@ def render_professional_dashboard(user):
             st.warning("Por favor, insira o email do paciente.")
 
 
-def render_patient_invitations(user):
+
+def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
-        return
+        return  # Se não houver convites, não mostra nada
 
     st.markdown("## 📩 Convites Pendentes")
-    inject_css()
+
+    # Estilos in-line específicos para os botões
+    st.markdown("""
+        <style>
+        div[data-testid="stButton"] > button {
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            padding: 10px 20px !important;
+            width: 100% !important;
+            text-align: center !important;
+            transition: 0.3s ease-in-out !important;
+        }
+
+        /* Botão Aceitar */
+        div[data-testid="stButton"] > button.accept-button {
+            background-color: #28a745 !important;
+            color: white !important;
+            border: 2px solid #218838 !important;
+        }
+        div[data-testid="stButton"] > button.accept-button:hover {
+            background-color: #218838 !important;
+            transform: scale(1.05) !important;
+        }
+
+        /* Botão Rejeitar */
+        div[data-testid="stButton"] > button.reject-button {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border: 2px solid #c82333 !important;
+        }
+        div[data-testid="stButton"] > button.reject-button:hover {
+            background-color: #c82333 !important;
+            transform: scale(1.05) !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_profile(inv["professional_id"])
-            profissional_nome = professional_profile.get("display_name", "Profissional") if professional_profile else "Profissional"
+            if professional_profile:
+                profissional_nome = professional_profile.get("display_name", "Profissional")
+                genero_profissional = professional_profile.get("genero", "M")
 
-            st.markdown(f"### {profissional_nome} deseja se vincular a você.")
+                # Define o título conforme o gênero
+                if genero_profissional == "F":
+                    titulo = "Dra."
+                elif genero_profissional == "N":
+                    titulo = "Drx."
+                else:
+                    titulo = "Dr."
 
+                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+
+            # Colunas lado a lado
             col1, col2 = st.columns(2)
 
+            # Botão "Aceitar"
             with col1:
-                form_accept = f"accept_form_{inv['id']}"
-                with st.form(key=form_accept):
-                    st.form_submit_button("✅ Aceitar", use_container_width=True)
-                    if st.session_state.get(form_accept, False):
-                        success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                        if success:
-                            st.success("Convite aceito com sucesso!")
-                            st.rerun()
-                        else:
-                            st.error(msg)
+                if st.markdown('<button class="accept-button">✅ Aceitar</button>', unsafe_allow_html=True) and st.button("", key=f"accept_{inv['id']}"):
+                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite aceito com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
+            # Botão "Recusar"
             with col2:
-                form_reject = f"reject_form_{inv['id']}"
-                with st.form(key=form_reject):
-                    st.form_submit_button("❌ Recusar", use_container_width=True)
-                    if st.session_state.get(form_reject, False):
-                        success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                        if success:
-                            st.success("Convite recusado.")
-                            st.rerun()
-                        else:
-                            st.error(msg)
+                if st.markdown('<button class="reject-button">❌ Recusar</button>', unsafe_allow_html=True) and st.button("", key=f"reject_{inv['id']}"):
+                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
