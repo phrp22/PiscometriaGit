@@ -135,14 +135,8 @@ def render_professional_dashboard(user):
 
 def inject_css():
     """Função para injetar CSS após a renderização do Streamlit."""
-    css = """
-    <style>
-    button {
-        all: unset !important;
-    }
-    </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)
+    with open("styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 def render_patient_invitations(user): 
     """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
