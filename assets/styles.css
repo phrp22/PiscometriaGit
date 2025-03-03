@@ -39,3 +39,45 @@
     background-color: #c82333 !important;
     transform: scale(1.1) !important;
 }
+
+/* Botão "Logout" (Roxo) */
+.st-key-logout button {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border: 2px solid #5936a2 !important;
+    border-radius: 8px !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    padding: 10px 20px !important;
+    width: 100% !important;
+    text-align: center !important;
+    cursor: pointer !important;
+}
+
+/* Hover "Logout" */
+.st-key-logout button:hover {
+    background-color: #5936a2 !important;
+    transform: scale(1.1) !important;
+}
+
+/* Botão "Habilitar Área do Profissional" (Roxo) */
+.st-key-professional button {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border: 2px solid #5936a2 !important;
+    border-radius: 8px !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    padding: 10px 20px !important;
+    width: 100% !important;
+    text-align: center !important;
+    cursor: pointer !important;
+}
+
+/* Hover "Habilitar Área do Profissional" */
+.st-key-professional button:hover {
+    background-color: #5936a2 !important;
+    transform: scale(1.1) !important;
+}
