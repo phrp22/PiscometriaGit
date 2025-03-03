@@ -1,59 +1,63 @@
-/* Botão "Aceitar" (Verde ajustado) */
+/* Botão "Aceitar" (Verde Esmeralda Místico) */
 .st-key-accept button {
-    background-color: #4CAF50 !important; /* Verde mais vibrante, combinando com o roxo */
+    background-color: #008F7A !important; /* Verde profundo e tecnológico */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #3E8E41 !important;
+    border: 2px solid #007366 !important;
     border-radius: 8px !important;
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
     padding: 10px 20px !important;
     width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
+    box-shadow: 0px 0px 10px rgba(0, 143, 122, 0.6) !important;
 }
 
 /* Hover "Aceitar" */
 .st-key-accept button:hover {
-    background-color: #3E8E41 !important;
+    background-color: #007366 !important;
     transform: scale(1.05) !important;
+    box-shadow: 0px 0px 15px rgba(0, 115, 102, 0.8) !important;
 }
 
 /* Efeito ao clicar "Aceitar" */
 .st-key-accept button:active {
-    background-color: #3E8E41 !important;
-    border-color: #4CAF50 !important;
-    box-shadow: 0px 0px 15px rgba(36, 163, 57, 0.7) !important;
+    background-color: #005E52 !important;
+    border-color: #008F7A !important;
+    box-shadow: 0px 0px 20px rgba(0, 143, 122, 0.9) !important;
     transform: scale(0.98) !important;
     color: white !important;
 }
 
-/* Botão "Recusar" (Vermelho ajustado) */
+/* Botão "Recusar" (Vermelho Rubi Encantado) */
 .st-key-reject button {
-    background-color: #D63B47 !important; /* Vermelho menos saturado, para suavizar com o roxo */
+    background-color: #C70039 !important; /* Vermelho intenso e místico */
     color: white !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    border: 2px solid #B12F3A !important;
+    border: 2px solid #9B002F !important;
     border-radius: 8px !important;
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
     padding: 10px 20px !important;
     width: 100% !important;
     text-align: center !important;
     cursor: pointer !important;
+    box-shadow: 0px 0px 10px rgba(199, 0, 57, 0.6) !important;
 }
 
 /* Hover "Recusar" */
 .st-key-reject button:hover {
-    background-color: #B12F3A !important;
+    background-color: #9B002F !important;
     transform: scale(1.05) !important;
+    box-shadow: 0px 0px 15px rgba(155, 0, 47, 0.8) !important;
 }
 
-/* Efeito ao clicar "Aceitar" */
-.st-key-accept button:active {
-    background-color: #B12F3A !important;
-    border-color: #D63B47 !important;
-    box-shadow: 0px 0px 15px rgba(184, 42, 42, 0.7) !important;
+/* Efeito ao clicar "Recusar" */
+.st-key-reject button:active {
+    background-color: #750021 !important;
+    border-color: #C70039 !important;
+    box-shadow: 0px 0px 20px rgba(199, 0, 57, 0.9) !important;
     transform: scale(0.98) !important;
     color: white !important;
 }
