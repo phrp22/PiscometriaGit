@@ -116,7 +116,7 @@ def render_professional_dashboard(user):
         if patient_email:
             success, msg = create_patient_invitation(user["id"], patient_email)
             if success:
-                st.success("Convite enviado com sucesso!")
+                st.success("✅ Convite enviado com sucesso!")
             else:
                 st.error(f"Erro: {msg}")
         else:

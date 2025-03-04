@@ -14,7 +14,6 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         st.error(f"🚨 Paciente {patient_email} não encontrado no banco.")
         return False, "Paciente não encontrado."
 
-    st.write(f"✅ Paciente encontrado!")
 
     # Verificar se o paciente já tem um perfil
     patient_profile = get_user_profile(patient_auth_id)
@@ -42,7 +41,6 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         "status": "pending"
     }
 
-    st.write(f"📤 Tentando inserir convite no banco.")
 
     response = supabase_client.from_("professional_patient_link").insert(data).execute()
 
@@ -50,8 +48,6 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         st.error(f"❌ Erro ao criar convite: {response.error.message}")
         return False, f"Erro ao criar convite: {response.error.message}"
 
-    # Mensagem de sucesso única
-    st.success(f"✅ Convite enviado com sucesso!")
     return True, None
 
 
@@ -209,5 +205,5 @@ def render_pending_invitations(professional_id):
     for invitation in pending_invitations:
         st.write(f"📌 Convite ID: {invitation['id']}")
         st.write(f"📅 Data de Envio: {invitation['created_at']}")
-        st.write(f"🔗 Paciente ID: {invitation['patient_id']}")
+        st.write(f"🔗 Paciente ID: {invitation['patient_email']}")
         st.markdown("---")
