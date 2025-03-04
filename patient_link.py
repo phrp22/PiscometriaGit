@@ -4,20 +4,22 @@ from auth import supabase_client
 from profile import get_user_profile
 
 def create_patient_invitation(professional_id: str, patient_email: str):
-    """
-    Cria um convite de vinculação entre um profissional e um paciente.
-    - `professional_id`: auth_user_id do profissional (UUID).
-    - `patient_email`: email do paciente (vamos buscar o auth_user_id dele).
-    """
+    """Cria um convite de vinculação entre um profissional e um paciente."""
+    
+    st.write(f"🔍 Buscando paciente com email: {patient_email}")
 
     # Obter o auth_user_id do paciente via email
     patient_auth_id = _get_auth_user_id_by_email(patient_email)
     if not patient_auth_id:
+        st.error(f"🚨 Paciente {patient_email} não encontrado no banco.")
         return False, "Paciente não encontrado."
+
+    st.write(f"✅ Paciente encontrado! UUID: {patient_auth_id}")
 
     # Verificar se o paciente já tem um perfil
     patient_profile = get_user_profile(patient_auth_id)
     if not patient_profile:
+        st.error(f"⚠️ Paciente {patient_auth_id} não completou o cadastro.")
         return False, "Paciente não completou o cadastro."
 
     # Verificar se já existe um convite pendente
@@ -28,21 +30,27 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         .execute()
 
     if existing_link and existing_link.data:
+        st.warning("📩 Convite já foi enviado.")
         return False, "Convite já enviado."
 
     # Criar um novo convite
+    invitation_id = str(uuid.uuid4())
     data = {
-        "id": str(uuid.uuid4()),  # Criar um UUID único
+        "id": invitation_id,
         "professional_id": professional_id,
         "patient_id": patient_auth_id,
         "status": "pending"
     }
 
+    st.write(f"📤 Tentando inserir convite no banco: {data}")
+
     response = supabase_client.from_("professional_patient_link").insert(data).execute()
 
     if hasattr(response, "error") and response.error:
+        st.error(f"❌ Erro ao criar convite: {response.error.message}")
         return False, f"Erro ao criar convite: {response.error.message}"
 
+    st.success(f"✅ Convite enviado com sucesso! ID: {invitation_id}")
     return True, None
 
 def accept_invitation(professional_id: str, patient_id: str):
