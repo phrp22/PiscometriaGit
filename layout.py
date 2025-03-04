@@ -17,7 +17,7 @@ def render_main_layout():
         unsafe_allow_html=True
     )
 
-    st.markdown("""
+    st.markdown(""" 
     ##### 💻 **Transforme a sua prática clínica com tecnologia avançada:**
     
     - **Crie uma conta profissional** e acesse um ambiente especializado para profissionais da saúde mental.
@@ -34,8 +34,14 @@ def render_main_layout():
 
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
-    email = st.text_input("Email", key="email_input")
-    password = st.text_input("Senha", type="password", key="password_input")
+    # Garante que a sessão armazene os valores do email e senha corretamente
+    if "email" not in st.session_state:
+        st.session_state.email = ""
+    if "password" not in st.session_state:
+        st.session_state.password = ""
+
+    email = st.text_input("Email", key="email_input", value=st.session_state.email, on_change=lambda: st.session_state.update(email=st.session_state["email_input"]))
+    password = st.text_input("Senha", type="password", key="password_input", value=st.session_state.password, on_change=lambda: st.session_state.update(password=st.session_state["password_input"]))
 
     display_name = None
     confirm_password = None
@@ -50,23 +56,26 @@ def render_main_layout():
 
     # Botão estilizado com a classe do CSS
     if st.button(action_text, key="authaction", use_container_width=True):
-        if option == "Login":
-            user, message = sign_in(email, password)
-            if user:
-                st.session_state["user"] = user
-                st.session_state["refresh"] = True
-                st.rerun()
-            else:
-                st.error(f"❌ Erro ao logar: {message}")
+        if not email or not password:
+            st.warning("⚠️ Por favor, preencha todos os campos antes de continuar.")
         else:
-            user, message = sign_up(email, password, confirm_password, display_name)
-            if user:
-                st.session_state["account_created"] = True
-                st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-                st.session_state["refresh"] = True
-                st.rerun()
+            if option == "Login":
+                user, message = sign_in(email, password)
+                if user:
+                    st.session_state["user"] = user
+                    st.session_state["refresh"] = True
+                    st.rerun()
+                else:
+                    st.error(f"❌ Erro ao logar: {message}")
             else:
-                st.error(message)
+                user, message = sign_up(email, password, confirm_password, display_name)
+                if user:
+                    st.session_state["account_created"] = True
+                    st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
+                    st.session_state["refresh"] = True
+                    st.rerun()
+                else:
+                    st.error(message)
 
     if option == "Login":
         if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
