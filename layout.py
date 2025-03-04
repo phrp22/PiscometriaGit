@@ -40,8 +40,8 @@ def render_main_layout():
     confirm_password = None
 
     if option == "Cadastro":
-        display_name = st.text_input("Nome", key="display_name_input")
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
+        display_name = st.text_input("Nome de usuário", key="display_name_input")
 
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
