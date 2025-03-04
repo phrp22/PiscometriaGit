@@ -1,14 +1,17 @@
 import streamlit as st
 import supabase
 
+# 🛑 Esconde a sidebar para evitar navegação
+st.set_page_config(page_title="Redefinir Senha", page_icon="🔑", layout="centered", initial_sidebar_state="collapsed")
+
 # 🔑 Conectar ao Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 🎯 Captura o token que o Supabase enviou no email
+# 🎯 Captura o token do Supabase
 query_params = st.query_params
-access_token = query_params.get("access_token", None)
+access_token = query_params.get("access_token") or query_params.get("token")
 
 st.title("🔑 Redefinir Senha")
 
@@ -19,7 +22,7 @@ if access_token:
     if st.button("Atualizar Senha"):
         if new_password == confirm_password:
             try:
-                # Atualiza a senha usando o token do email
+                # Atualiza a senha no Supabase
                 supabase_client.auth.update_user(
                     {"password": new_password},
                     access_token=access_token  # 🔹 Necessário para autenticar a mudança de senha
