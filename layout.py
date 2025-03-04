@@ -34,14 +34,24 @@ def render_main_layout():
 
     option = st.radio("Escolha uma opção:", ["Login", "Cadastro"], horizontal=True)
 
-    # Garante que a sessão armazene os valores do email e senha corretamente
+    # Inicializando valores na sessão
     if "email" not in st.session_state:
         st.session_state.email = ""
     if "password" not in st.session_state:
         st.session_state.password = ""
 
-    email = st.text_input("Email", key="email_input", value=st.session_state.email, on_change=lambda: st.session_state.update(email=st.session_state["email_input"]))
-    password = st.text_input("Senha", type="password", key="password_input", value=st.session_state.password, on_change=lambda: st.session_state.update(password=st.session_state["password_input"]))
+    # Campos de entrada
+    email = st.text_input("Email", key="email_input", value=st.session_state.email)
+    password = st.text_input("Senha", type="password", key="password_input", value=st.session_state.password)
+
+    # 🔥 Detecta o preenchimento automático e força uma atualização
+    if email and st.session_state.email != email:
+        st.session_state.email = email
+        st.rerun()
+
+    if password and st.session_state.password != password:
+        st.session_state.password = password
+        st.rerun()
 
     display_name = None
     confirm_password = None
