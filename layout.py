@@ -41,12 +41,17 @@ def render_main_layout():
 
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
-        display_name = st.text_input("Seu Primeiro Nome", key="display_name_input")
+        display_name = st.text_input("Primeiro Nome", key="display_name_input")
 
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
+
+    # Exibe mensagem de sucesso se um e-mail foi enviado
+    if "confirmation_message" in st.session_state:
+        st.success(st.session_state["confirmation_message"])
+        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
 
     # Botão para Login/Cadastro
     if st.button(action_text, key="authaction", use_container_width=True):
@@ -64,15 +69,14 @@ def render_main_layout():
             else:
                 # Validação de Cadastro
                 if not display_name or not confirm_password:
-                    st.warning("⚠️ Todos os campos são obrigatórios. Preencha todos antes de continuar.")
+                    st.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
                 elif password != confirm_password:
                     st.error("❌ As senhas não coincidem. Tente novamente.")
                 else:
                     user, message = sign_up(email, password, confirm_password, display_name)
                     if user:
                         st.session_state["account_created"] = True
-                        st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-                        st.session_state["refresh"] = True
+                        st.session_state["confirmation_message"] = "📩 Um e-mail de verificação foi enviado para a sua caixa de entrada."
                         st.rerun()
                     else:
                         st.error(message)
@@ -82,6 +86,7 @@ def render_main_layout():
         if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
             if email:
                 message = reset_password(email)
-                st.info(message)
+                st.session_state["confirmation_message"] = message
+                st.rerun()
             else:
                 st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
