@@ -4,7 +4,7 @@ from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
-from patient_link import render_patient_invitations, list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
+from patient_link import render_pending_invitations, render_patient_invitations, list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
 
 def render_sidebar(user):
@@ -121,3 +121,5 @@ def render_professional_dashboard(user):
                 st.error(f"Erro: {msg}")
         else:
             st.warning("Por favor, insira o email do paciente.")
+
+    render_pending_invitations(user["id"]) 
