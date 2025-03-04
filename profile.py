@@ -9,24 +9,24 @@ def user_has_profile(auth_user_id):
 
 def get_display_name_from_auth():
     """Busca o display_name do usuário autenticado no Supabase Auth."""
-    user = supabase_client.auth.get_user()
+    user_response = supabase_client.auth.get_user()
 
-    if not user:
+    if not user_response or not user_response.user:
         return "Usuário"
 
-    user_metadata = user.get("user_metadata", {})
+    user_metadata = user_response.user.user_metadata if user_response.user.user_metadata else {}
     return user_metadata.get("display_name", "Usuário")
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
     """Cria um perfil do usuário no Supabase."""
     try:
-        # Verifica se o usuário está autenticado
-        user = supabase_client.auth.get_user()
-        if not user:
+        # Verifica se o usuário está autenticado corretamente
+        user_response = supabase_client.auth.get_user()
+        if not user_response or not user_response.user:
             return False, "Erro: Usuário não autenticado."
 
-        # Obtém metadata do usuário, garantindo que user não seja None
-        user_metadata = user.get("user_metadata", {})
+        # Obtém metadata do usuário
+        user_metadata = user_response.user.user_metadata if user_response.user.user_metadata else {}
         display_name = user_metadata.get("display_name", "Usuário")
 
         # Mapeamento de gênero
