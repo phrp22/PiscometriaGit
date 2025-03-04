@@ -1,17 +1,20 @@
 import streamlit as st
 import supabase
 
-# 🛑 Esconde a sidebar para evitar navegação
-st.set_page_config(page_title="Redefinir Senha", page_icon="🔑", layout="centered", initial_sidebar_state="collapsed")
+# 🔒 Esconde a sidebar
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] {display: none;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# 🔑 Conectar ao Supabase
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# 🎯 Captura o token do Supabase
+# 🎯 Captura os parâmetros da URL
 query_params = st.query_params
-access_token = query_params.get("access_token") or query_params.get("token")
+error_code = query_params.get("error_code")
+error_description = query_params.get("error_description")
 
 st.title("🔑 Redefinir Senha")
 
@@ -33,4 +36,4 @@ if access_token:
         else:
             st.error("❌ As senhas não coincidem!")
 else:
-    st.error("⚠️ Token inválido ou ausente. Verifique seu email e tente novamente.")
+    st.error("⚠️ O link expirou ou já foi utilizado, tente novamente.")
