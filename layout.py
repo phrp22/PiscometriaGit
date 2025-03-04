@@ -47,21 +47,22 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    message_placeholder = st.empty()  # Criando um espaço vazio para mensagens
+    message_placeholder = st.empty()  # Espaço reservado para mensagens
 
-    # Verifica e exibe mensagens de erro/sucesso armazenadas antes de processar novas
+    # **Exibe mensagens armazenadas antes de interações do usuário**
     if "error_message" in st.session_state:
         message_placeholder.error(st.session_state["error_message"])
-        del st.session_state["error_message"]  # Remove para evitar duplicação
+        del st.session_state["error_message"]  # Remove erro para evitar duplicação
 
     if "confirmation_message" in st.session_state:
         message_placeholder.success(st.session_state["confirmation_message"])
-        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
+        del st.session_state["confirmation_message"]  # Remove sucesso para evitar repetição
 
-    # Botão para Login/Cadastro
+    # **Botão para Login/Cadastro**
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
-            message_placeholder.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
+            st.session_state["error_message"] = "⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Preencha todos os campos antes de continuar."
+            st.rerun()
         else:
             if option == "Login":
                 user, message = sign_in(email, password)
@@ -70,13 +71,17 @@ def render_main_layout():
                     st.session_state["refresh"] = True
                     st.rerun()
                 else:
-                    st.session_state["error_message"] = f"❌ Erro ao logar: {message}"
+                    # **Se um erro já existe, evita sobrescrever**
+                    if "error_message" not in st.session_state:
+                        st.session_state["error_message"] = f"❌ Erro ao logar: {message}"
                     st.rerun()
             else:
                 if not display_name or not confirm_password:
-                    message_placeholder.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
+                    st.session_state["error_message"] = "⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar."
+                    st.rerun()
                 elif password != confirm_password:
-                    message_placeholder.error("❌ As senhas não coincidem. Tente novamente.")
+                    st.session_state["error_message"] = "❌ As senhas não coincidem. Tente novamente."
+                    st.rerun()
                 else:
                     user, message = sign_up(email, password, confirm_password, display_name)
                     if user:
@@ -87,7 +92,7 @@ def render_main_layout():
                         st.session_state["error_message"] = message
                         st.rerun()
 
-    # Botão para recuperação de senha
+    # **Botão para recuperação de senha**
     if option == "Login":
         if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
             if email:
@@ -95,4 +100,5 @@ def render_main_layout():
                 st.session_state["confirmation_message"] = message
                 st.rerun()
             else:
-                message_placeholder.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+                st.session_state["error_message"] = "⚠️ Por favor, insira seu email antes de redefinir a senha."
+                st.rerun()
