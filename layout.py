@@ -52,7 +52,7 @@ def render_main_layout():
     # Botão para Login/Cadastro
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
-            message_placeholder.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
+            message_placeholder.warning("⚠️ Por favor, preencha todos os campos antes de continuar. Caso esteja utilizando o preenchimento automático, informamos que este recurso foi desabilitado por motivos de segurança.")
         else:
             if option == "Login":
                 user, message = sign_in(email, password)
@@ -64,7 +64,7 @@ def render_main_layout():
                     message_placeholder.error(f"{message}")
             else:
                 if not display_name or not confirm_password:
-                    message_placeholder.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
+                    message_placeholder.warning("⚠️ Por favor, preencha todos os campos antes de continuar. Caso esteja utilizando o preenchimento automático, informamos que este recurso foi desabilitado por motivos de segurança.")
                 elif password != confirm_password:
                     message_placeholder.error("❌ As senhas não coincidem. Tente novamente.")
                 else:
