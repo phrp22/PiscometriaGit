@@ -7,9 +7,6 @@ from gender_utils import adjust_gender_ending
 from patient_link import render_patient_invitations, list_invitations_for_patient, create_patient_invitation, accept_invitation, reject_invitation
 
 
-def do_nothing():
-    pass
-
 def render_sidebar(user):
     """Renderiza a sidebar para todos os usuários logados."""
     with st.sidebar:
@@ -30,14 +27,12 @@ def render_sidebar(user):
 
         # Opção para habilitar a área do profissional (botão roxo)
         if not is_professional_enabled(user["id"]):
-
-            st.session_state["show_prof_input"] = None
             
             if st.button("🔐 Habilitar área do profissional", key="professional"):
                 st.session_state["show_prof_input"] = True
 
             if st.session_state.get("show_prof_input", True):
-                prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input", on_change = do_nothing)
+                prof_key = st.text_input("Digite 'AUTOMATIZEJA' para confirmar:", key="prof_key_input")
                 if prof_key:
                     if prof_key == "AUTOMATIZEJA":
                         success, msg = enable_professional_area(user["id"], user["email"], user["display_name"])
