@@ -49,6 +49,15 @@ def render_main_layout():
 
     message_placeholder = st.empty()  # Criando um espaço vazio para mensagens
 
+    # Verifica e exibe mensagens de erro/sucesso armazenadas antes de processar novas
+    if "error_message" in st.session_state:
+        message_placeholder.error(st.session_state["error_message"])
+        del st.session_state["error_message"]  # Remove para evitar duplicação
+
+    if "confirmation_message" in st.session_state:
+        message_placeholder.success(st.session_state["confirmation_message"])
+        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
+
     # Botão para Login/Cadastro
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
@@ -61,7 +70,8 @@ def render_main_layout():
                     st.session_state["refresh"] = True
                     st.rerun()
                 else:
-                    message_placeholder.error(f"❌ Erro ao logar: {message}")
+                    st.session_state["error_message"] = f"❌ Erro ao logar: {message}"
+                    st.rerun()
             else:
                 if not display_name or not confirm_password:
                     message_placeholder.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
@@ -74,7 +84,8 @@ def render_main_layout():
                         st.session_state["confirmation_message"] = "📩 Um e-mail de verificação foi enviado para a sua caixa de entrada."
                         st.rerun()
                     else:
-                        message_placeholder.error(message)
+                        st.session_state["error_message"] = message
+                        st.rerun()
 
     # Botão para recuperação de senha
     if option == "Login":
@@ -85,8 +96,3 @@ def render_main_layout():
                 st.rerun()
             else:
                 message_placeholder.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
-
-    # Exibir mensagens de sucesso abaixo dos botões, no mesmo local das mensagens de erro
-    if "confirmation_message" in st.session_state:
-        message_placeholder.success(st.session_state["confirmation_message"])
-        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
