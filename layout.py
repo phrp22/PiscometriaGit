@@ -2,7 +2,6 @@ import streamlit as st
 import pathlib
 from auth import sign_in, sign_up, reset_password
 
-
 def render_main_layout():
     """Renderiza a interface principal com opções de Login e Cadastro."""
 
@@ -39,16 +38,17 @@ def render_main_layout():
 
     display_name = None
     confirm_password = None
+
     if option == "Cadastro":
-        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
+        confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
 
     if option == "Login" and "account_created" in st.session_state:
         del st.session_state["account_created"]
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Botão estilizado com a classe do CSS
+    # Botão para Login/Cadastro
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
             st.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
@@ -62,15 +62,22 @@ def render_main_layout():
                 else:
                     st.error(f"❌ Erro ao logar: {message}")
             else:
-                user, message = sign_up(email, password, confirm_password, display_name)
-                if user:
-                    st.session_state["account_created"] = True
-                    st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-                    st.session_state["refresh"] = True
-                    st.rerun()
+                # Validação de Cadastro
+                if not display_name or not confirm_password:
+                    st.warning("⚠️ Todos os campos são obrigatórios. Preencha todos antes de continuar.")
+                elif password != confirm_password:
+                    st.error("❌ As senhas não coincidem. Tente novamente.")
                 else:
-                    st.error(message)
+                    user, message = sign_up(email, password, confirm_password, display_name)
+                    if user:
+                        st.session_state["account_created"] = True
+                        st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
+                        st.session_state["refresh"] = True
+                        st.rerun()
+                    else:
+                        st.error(message)
 
+    # Botão para recuperação de senha
     if option == "Login":
         if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
             if email:
