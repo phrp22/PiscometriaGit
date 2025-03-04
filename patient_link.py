@@ -14,12 +14,12 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         st.error(f"🚨 Paciente {patient_email} não encontrado no banco.")
         return False, "Paciente não encontrado."
 
-    st.write(f"✅ Paciente encontrado! UUID: {patient_auth_id}")
+    st.write(f"✅ Paciente encontrado!")
 
     # Verificar se o paciente já tem um perfil
     patient_profile = get_user_profile(patient_auth_id)
     if not patient_profile:
-        st.error(f"⚠️ Paciente {patient_auth_id} não completou o cadastro.")
+        st.error(f"⚠️ Paciente {patient_email} não completou o cadastro.")
         return False, "Paciente não completou o cadastro."
 
     # Verificar se já existe um convite pendente
@@ -53,6 +53,7 @@ def create_patient_invitation(professional_id: str, patient_email: str):
     # Mensagem de sucesso única
     st.success(f"✅ Convite enviado com sucesso!")
     return True, None
+
 
 
 def list_pending_invitations(professional_id: str):
