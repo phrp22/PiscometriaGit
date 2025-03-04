@@ -45,9 +45,12 @@ def sign_up(email, password, confirm_password, display_name):
 
 
 def reset_password(email):
-    """Envia um email para redefinição de senha."""
+    """Envia um email para redefinição de senha com redirecionamento correto."""
     try:
-        supabase_client.auth.reset_password_for_email(email)
+        supabase_client.auth.reset_password_for_email(
+            email,
+            options={"redirect_to": "https://abaete.com/reset-password"}  # 🔹 Define o redirecionamento!
+        )
         return f"📩 Um email de recuperação foi enviado para {email}. Verifique sua caixa de entrada."
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
