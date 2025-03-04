@@ -30,7 +30,8 @@ def create_user_profile(auth_user_id, email, genero, data_nascimento):
         genero_abreviado = genero_map.get(genero, "M")  # Padrão "M" se não achar
 
         # Buscar o display_name no Supabase Auth
-        display_name = get_display_name_from_auth(auth_user_id) or "Usuário"
+        display_name = supabase_client.auth.get_user().get("user_metadata", {}).get("display_name", "Usuário")
+
 
         data = {
             "auth_user_id": auth_user_id,
