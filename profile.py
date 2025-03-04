@@ -76,7 +76,19 @@ def render_onboarding_questionnaire(user_id, user_email):
         format="DD/MM/YYYY"
     )
 
-    if st.button("Salvar"):
+    # Criando botão estilizado
+    st.markdown(
+        """
+        <style>
+            div.stButton > button {
+                width: 100%;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button("Salvar", key="profile-save", use_container_width=True):
         # Verifica se o usuário está autenticado antes de salvar
         if not user_id:
             st.error("Erro: usuário não autenticado. Faça login novamente.")
