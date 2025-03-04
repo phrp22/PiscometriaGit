@@ -7,7 +7,6 @@ def render_main_layout():
 
     st.markdown("# Abaeté 🌱")
 
-    # Texto laranja estilizado e aumentado para maior destaque
     st.markdown(
         """
         <h1 style='color: #FFA500; font-size: 28px; font-weight: bold;'>
@@ -48,15 +47,12 @@ def render_main_layout():
 
     action_text = "Entrar" if option == "Login" else "🪄 Criar Conta"
 
-    # Exibe mensagem de sucesso se um e-mail foi enviado
-    if "confirmation_message" in st.session_state:
-        st.success(st.session_state["confirmation_message"])
-        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
+    message_placeholder = st.empty()  # Criando um espaço vazio para mensagens
 
     # Botão para Login/Cadastro
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
-            st.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
+            message_placeholder.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
         else:
             if option == "Login":
                 user, message = sign_in(email, password)
@@ -65,13 +61,12 @@ def render_main_layout():
                     st.session_state["refresh"] = True
                     st.rerun()
                 else:
-                    st.error(f"❌ Erro ao logar: {message}")
+                    message_placeholder.error(f"❌ Erro ao logar: {message}")
             else:
-                # Validação de Cadastro
                 if not display_name or not confirm_password:
-                    st.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
+                    message_placeholder.warning("⚠️ Todos os campos são obrigatórios. Preencha corretamente antes de continuar.")
                 elif password != confirm_password:
-                    st.error("❌ As senhas não coincidem. Tente novamente.")
+                    message_placeholder.error("❌ As senhas não coincidem. Tente novamente.")
                 else:
                     user, message = sign_up(email, password, confirm_password, display_name)
                     if user:
@@ -79,7 +74,7 @@ def render_main_layout():
                         st.session_state["confirmation_message"] = "📩 Um e-mail de verificação foi enviado para a sua caixa de entrada."
                         st.rerun()
                     else:
-                        st.error(message)
+                        message_placeholder.error(message)
 
     # Botão para recuperação de senha
     if option == "Login":
@@ -89,4 +84,9 @@ def render_main_layout():
                 st.session_state["confirmation_message"] = message
                 st.rerun()
             else:
-                st.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+                message_placeholder.warning("⚠️ Por favor, insira seu email antes de redefinir a senha.")
+
+    # Exibir mensagens de sucesso abaixo dos botões, no mesmo local das mensagens de erro
+    if "confirmation_message" in st.session_state:
+        message_placeholder.success(st.session_state["confirmation_message"])
+        del st.session_state["confirmation_message"]  # Remove para não reaparecer sempre
