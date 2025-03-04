@@ -1,8 +1,5 @@
-import streamlit as st  # Importamos a biblioteca principal,
-# Para criar uma interface funcional e profissional.
-
-import pathlib  # Para lidar com caminhos de arquivos locais
-from auth import sign_in, sign_up, reset_password  # Funções de autenticação, um ponto focal
+import streamlit as st
+from auth import sign_in, sign_up, reset_password
 
 # 🏗️ Função principal do layout
 def render_main_layout():
@@ -14,7 +11,7 @@ def render_main_layout():
     st.markdown(
         """
         <h1 style='color: #FFA500; font-size: 28px; font-weight: bold;'>
-        Um sistema inteligente que cuida de você!</h1>
+        O sistema inteligente que cuida de você!</h1>
         """,
         unsafe_allow_html=True
     )
