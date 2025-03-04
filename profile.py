@@ -3,9 +3,19 @@ import datetime
 from auth import supabase_client
 
 def user_has_profile(auth_user_id):
-    """Verifica se o usuário já tem um perfil cadastrado no Supabase."""
+    """Verifica se o usuário já tem um perfil no Supabase."""
     response = supabase_client.from_("user_profile").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
     return bool(response.data) if response and hasattr(response, "data") else False
+
+def get_display_name_from_auth():
+    """Busca o display_name do usuário autenticado no Supabase Auth."""
+    user = supabase_client.auth.get_user()
+
+    if not user:
+        return "Usuário"
+
+    user_metadata = user.get("user_metadata", {})
+    return user_metadata.get("display_name", "Usuário")
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
     """Cria um perfil do usuário no Supabase."""
@@ -42,8 +52,15 @@ def create_user_profile(auth_user_id, email, genero, data_nascimento):
     except Exception as e:
         return False, str(e)
 
+def get_user_profile(auth_user_id):
+    """Retorna o perfil do usuário (ou None se não existir)."""
+    response = supabase_client.from_("user_profile").select("*").eq("auth_user_id", auth_user_id).execute()
+    if response and hasattr(response, "data") and len(response.data) > 0:
+        return response.data[0]
+    return None
+
 def render_onboarding_questionnaire(user_id, user_email):
-    """Renderiza o formulário de onboarding do usuário."""
+    """Renderiza o questionário inicial do usuário."""
     st.title("Queremos saber um pouco mais sobre você!")
     st.markdown("<hr style='border:1px solid gray; margin: 30px 0;'>", unsafe_allow_html=True)
 
@@ -71,4 +88,3 @@ def render_onboarding_questionnaire(user_id, user_email):
             st.rerun()
         else:
             st.error(f"Ocorreu um erro: {msg}")
-
