@@ -59,7 +59,7 @@ def render_dashboard():
 
     render_sidebar(user)
 
-    st.title(f"{saudacao}, {user['display_name']}! 🎉")
+    st.header(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📈 Estatísticas Recentes")
 
     render_patient_invitations(user)
@@ -94,8 +94,8 @@ def render_professional_dashboard(user):
 
     render_sidebar(user)
 
-    st.title(f"{saudacao}, {user['display_name']}! 🎉")
-    st.markdown("### 📊 Painel de Controle Profissional")
+    st.header(f"{saudacao}, {user['display_name']}! 🎉")
+    st.markdown("### 📊 Área do Profissional")
 
     col1, col2, col3 = st.columns(3)
     with col1:

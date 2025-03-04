@@ -74,6 +74,7 @@ def render_main_layout():
 
     display_name = None
     confirm_password = None
+
     if option == "Cadastro":
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
         display_name = st.text_input("Nome", key="display_name_input")
@@ -82,25 +83,33 @@ def render_main_layout():
 
     if st.button(action_text, key="authaction", use_container_width=True):
         if not email or not password:
-            st.warning("⚠️ Por favor, preencha todos os campos antes de continuar.")
+            st.warning("⚠️ O preenchimento automático foi desabilitado por motivos de segurança. Por favor, preencha todos os campos antes de continuar.")
         else:
-            if option == "Login":
-                user, message = sign_in(email, password)
-                if user:
-                    st.session_state["user"] = user
-                    st.session_state["refresh"] = True
-                    st.rerun()
+            # Evita que a ação ocorra mais de uma vez por clique
+            if "login_attempt" not in st.session_state:
+                st.session_state["login_attempt"] = True
+
+                if option == "Login":
+                    user, message = sign_in(email, password)
+                    if user:
+                        st.session_state["user"] = user
+                        st.session_state["refresh"] = True
+                        st.rerun()
+                    else:
+                        st.error(f"❌ Erro ao logar: {message}")
                 else:
-                    st.error(f"❌ Erro ao logar: {message}")
-            else:
-                user, message = sign_up(email, password, confirm_password, display_name)
-                if user:
-                    st.session_state["account_created"] = True
-                    st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
-                    st.session_state["refresh"] = True
-                    st.rerun()
-                else:
-                    st.error(message)
+                    user, message = sign_up(email, password, confirm_password, display_name)
+                    if user:
+                        st.session_state["account_created"] = True
+                        st.success("📩 Um e-mail de verificação foi enviado para a sua caixa de entrada.")
+                        st.session_state["refresh"] = True
+                        st.rerun()
+                    else:
+                        st.error(message)
+
+            # Remove a flag para evitar bloqueios na próxima tentativa
+            st.session_state.pop("login_attempt", None)
+
 
     if option == "Login":
         if st.button("🔓 Recuperar Senha", key="resetpassword", use_container_width=True):
