@@ -5,8 +5,7 @@ from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-from st_supabase_connection import connector
-
+from st_supabase_connection import SupabaseConnection
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
@@ -17,7 +16,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-supabase = connector()
+
+# Initialize connection.
+conn = st.connection("supabase", type=SupabaseConnection)
+
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -44,7 +46,7 @@ def main():
     load_css()
 
     query_params = st.query_params
-    if "type" in query_params and query_params["type"][0] == "recovery":
+    if query_params.get("type", [""])[0] == "recovery":
         new_password = st.text_input("Enter your new password", type="password")
         confirm_password = st.text_input("Confirm your new password", type="password")
         if st.button("Update Password"):
@@ -52,6 +54,7 @@ def main():
                 update_password(new_password)
             else:
                 st.error("Passwords do not match.")
+
     else:
         user = get_user()  # Obtém os dados do usuário autenticado.
 
