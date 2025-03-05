@@ -20,13 +20,6 @@ st.set_page_config(
 # Initialize connection.
 conn = st.connection("supabase", type=SupabaseConnection)
 
-# Captura os parâmetros da URL
-query_params = st.query_params
-recovery_mode = query_params.get("type", [""])[0] == "recovery"
-
-# Para depuração: Exibir parâmetros da URL capturados
-st.write("Query Params Capturados:", query_params)
-
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -48,6 +41,14 @@ def initialize_session_state():
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
+
+    # Captura os parâmetros da URL
+    query_params = st.query_params
+    recovery_mode = query_params.get("type", [""])[0] == "recovery"
+
+    # Para depuração: Exibir parâmetros da URL capturados
+    st.write("Query Params Capturados:", query_params)
+    
     if recovery_mode:
         st.info("🔐 Você está no fluxo de recuperação de senha.")
         
@@ -68,7 +69,6 @@ def main():
     # Caso não esteja no fluxo de recuperação, carrega o restante da página normalmente
     initialize_session_state()
     load_css()
-    
     user = get_user()  # Obtém os dados do usuário autenticado.
 
     # Se temos um usuário logado na sessão...
