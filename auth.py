@@ -49,7 +49,7 @@ def reset_password(email):
     try:
         supabase_client.auth.reset_password_for_email(
             email,
-            options={"redirect_to": "https://abaete.streamlit.app"} # 🔹 Define o redirecionamento!
+            options={"redirect_to": "https://abaete.streamlit.app/?type=recovery"}
         )
         return f"📩 Um email de recuperação foi enviado para {email}."
     except Exception as e:
