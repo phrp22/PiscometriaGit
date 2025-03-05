@@ -38,12 +38,12 @@ def initialize_session_state():
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
-    initialize_session_state()  # Inicializamos a sessão antes de tudo.
-    load_css()  # Aplicamos o CSS para manter o visual bonito.
+    initialize_session_state()
+    load_css()  # Mantém o st.html inalterado
 
     # Verifica se a URL contém parâmetros para reset de senha
     if st.query_params.get("type") == "recovery":
-        from reset_password import render_reset_password  # Importe a função de reset
+        from reset_password import render_reset_password  # Importa a função de reset
         render_reset_password()
         return  # Interrompe o fluxo normal do app
 

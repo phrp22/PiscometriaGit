@@ -4,9 +4,9 @@ from auth import update_password_with_token  # Função customizada a ser implem
 def render_reset_password():
     st.markdown("# Redefinir Senha")
     
-    # Extraindo o token de acesso usando st.query_params.
-    # Pode vir com o nome "access_token" e opcionalmente um parâmetro "type" igual a "recovery"
-    access_token = st.query_params.get("access_token") or st.query_params.access_token
+    # Converte os query parameters para um dicionário e tenta extrair "access_token"
+    query_params = st.query_params.to_dict()
+    access_token = query_params.get("access_token")
     if not access_token:
         st.error("Token de acesso não encontrado na URL. Verifique se você utilizou o link correto.")
         return
@@ -21,16 +21,16 @@ def render_reset_password():
         elif new_password != confirm_password:
             st.error("As senhas não coincidem.")
         else:
-            # A função update_password_with_token deve realizar a requisição ao endpoint de atualização do Supabase,
-            # utilizando o token extraído para autorizar a operação.
+            # Chama a função para atualizar a senha utilizando o token
             success, message = update_password_with_token(access_token, new_password)
             if success:
                 st.success("Senha redefinida com sucesso!")
-                # Limpa os query parameters para evitar reuso do token
-                st.query_params.clear()
-                st.rerun()  # Atualiza a página para refletir as alterações
+                # Limpa os query parameters e reinicia o app para atualizar a interface
+                st.query_params.from_dict({})
+                st.rerun()
             else:
                 st.error(message)
 
-# Chama a função para renderizar o formulário
-render_reset_password()
+# Apenas se o arquivo for executado diretamente (não ao ser importado)
+if __name__ == "__main__":
+    render_reset_password()
