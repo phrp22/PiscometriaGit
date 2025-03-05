@@ -7,17 +7,6 @@ SUPABASE_URL = st.secrets["supabase_url"]
 SUPABASE_KEY = st.secrets["supabase_key"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 📌 Injetamos JavaScript para capturar o token quando ele vier após `#`
-st.markdown("""
-    <script>
-        if (window.location.hash.includes("token=")) {
-            let newUrl = window.location.href.replace("#", "?");
-            window.history.replaceState({}, document.title, newUrl);
-            location.reload(); // Recarrega a página com a URL corrigida
-        }
-    </script>
-""", unsafe_allow_html=True)
-
 # 📩 Captura o token da URL corretamente
 query_params = st.query_params
 token = query_params.get("token")
@@ -65,4 +54,4 @@ else:
                 st.error("Erro ao enviar e-mail. Verifique se o e-mail está correto.")
             else:
                 st.success("E-mail enviado com sucesso! 📩")
-                st.info("Verifique sua
+                st.info("Verifique sua caixa de entrada para redefinir a senha.")
