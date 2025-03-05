@@ -8,7 +8,7 @@ def reset_password_page():
         layout="centered"
     )
 
-    # 🔑 Conectar ao Supabase com verificação de credenciais
+    # Conectar ao Supabase
     try:
         SUPABASE_URL = st.secrets["SUPABASE_URL"]
         SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
@@ -17,15 +17,15 @@ def reset_password_page():
         st.error("🚨 Erro: Configurações do Supabase não foram encontradas.")
         st.stop()
 
-    # 🎯 Captura o token da URL corretamente
+    # Captura o token da URL corretamente
     query_params = st.query_params
     access_token = query_params.get("access_token") or query_params.get("token")
 
-    st.title("🔑 Redefinir Senha")
-
     if not access_token:
         st.error("⚠️ Nenhum token encontrado na URL. Verifique o email ou tente novamente.")
-        return
+        st.stop()
+
+    st.title("🔑 Redefinir Senha")
 
     new_password = st.text_input("Digite sua nova senha", type="password")
     confirm_password = st.text_input("Confirme sua nova senha", type="password")
@@ -47,3 +47,6 @@ def reset_password_page():
                 st.error("⚠️ Erro ao redefinir a senha. Tente novamente.")
         except Exception as e:
             st.error(f"⚠️ Erro ao redefinir senha: {str(e)}")
+
+# Chamando a função para exibir a página
+reset_password_page()
