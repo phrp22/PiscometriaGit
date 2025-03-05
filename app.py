@@ -28,16 +28,18 @@ def move_hash_to_query():
     st.components.v1.html(
         """
         <script>
-        // Se houver hash na URL e não houver parâmetros na query, move o hash para a query string.
+        // Se houver hash na URL e não houver parâmetros na query, move o hash para a query string e recarrega.
         if (window.location.hash && !window.location.search) {
             const hash = window.location.hash.substring(1);
             const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + hash;
             window.history.replaceState(null, null, newUrl);
+            window.location.reload();
         }
         </script>
         """,
         height=0
     )
+
 
 # Inicializa a sessão para evitar erros de navegação.
 def initialize_session_state():
