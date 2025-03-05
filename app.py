@@ -43,7 +43,7 @@ def main():
     user = get_user()  # Obtém os dados do usuário autenticado.
 
     # Se temos um usuário logado na sessão...
-    if user and "id" in user:
+    if user and isinstance(user, dict) and "id" in user:
         user_id = user["id"]  # Guardamos o ID para evitar reuso desnecessário.
 
         # Buscamos as informações do perfil **apenas uma vez**!
