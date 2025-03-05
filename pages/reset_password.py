@@ -30,7 +30,7 @@ if token and token_type == "recovery":
             st.error("A senha deve ter pelo menos 6 caracteres.")
         else:
             # 🔥 Atualiza a senha no Supabase
-            response = supabase.auth.api.update_user(token, {"password": new_password})
+            response = supabase.auth.reset_password_for_email(email, redirect_to=redirect_url)
 
             if response and response.get("error"):
                 st.error("Erro ao redefinir a senha. O token pode estar expirado ou inválido.")
@@ -50,7 +50,7 @@ else:
             st.warning("Por favor, informe um e-mail válido.")
         else:
             redirect_url = "https://abaete.streamlit.app/pages/reset_password"
-            response = supabase.auth.api.reset_password_for_email(email, redirect_to=redirect_url)
+            response = supabase.auth.reset_password_for_email(email, redirect_to=redirect_url)
 
             if response and response.get("error"):
                 st.error("Erro ao enviar e-mail. Verifique se o e-mail está correto.")
