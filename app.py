@@ -1,10 +1,4 @@
-import streamlit as st
-import pathlib
-from auth import get_user
-from layout import render_main_layout
-from dashboard import render_dashboard, render_professional_dashboard
-from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
+import streamlit as st 
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
@@ -14,6 +8,14 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+
+import pathlib
+from auth import get_user
+from layout import render_main_layout
+from dashboard import render_dashboard, render_professional_dashboard
+from professional import is_professional_enabled
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
+
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -35,8 +37,8 @@ def initialize_session_state():
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
-    initialize_session_state()
-    load_css()  # Mantém o st.html inalterado
+    initialize_session_state()  # Inicializamos a sessão antes de tudo.
+    load_css()  # Aplicamos o CSS para manter o visual bonito.
 
     user = get_user()  # Obtém os dados do usuário autenticado.
 
