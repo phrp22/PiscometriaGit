@@ -91,12 +91,10 @@ def reset_password(email):
 
 def sign_out():
     """Desconecta o usuário."""
-    def sign_out():
     supabase_client.auth.sign_out()
     st.session_state.pop("user", None)
     st.session_state["refresh"] = True  # Marca para atualizar
     st.rerun()  # Força a reexecução do script para atualizar a interface
-
 
 
 def get_user():
