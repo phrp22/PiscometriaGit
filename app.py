@@ -14,6 +14,32 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+
+# Script para mover os parâmetros do fragmento (#) para a query string
+st.markdown(
+    """
+    <script>
+    (function() {
+        var hash = window.location.hash;
+        if (hash && hash.length > 1) {
+            hash = hash.substring(1); // remove o "#"
+            var currentQuery = window.location.search;
+            if (currentQuery) {
+                // Combina os parâmetros existentes com os do fragmento
+                currentQuery = currentQuery + '&' + hash;
+            } else {
+                currentQuery = '?' + hash;
+            }
+            var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + currentQuery;
+            window.history.replaceState(null, null, newUrl);
+        }
+    })();
+    </script>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Função para carregar o CSS customizado (NÃO ALTERAR)
 def load_css():
     css_path = pathlib.Path("assets/styles.css")
@@ -30,34 +56,30 @@ def initialize_session_state():
 # Função para tratar o fluxo de redefinição de senha
 def handle_password_reset():
     """Verifica a URL por parâmetros de redefinição de senha e exibe um formulário."""
-    query_params = st.query_params  # ✅ Correção aqui!
-    token = query_params.get("token", None)
-    recovery_type = query_params.get("type", None)
-
-    # Se há um token de recuperação na URL, mostra a interface de redefinição de senha
+    query_params = st.query_params
+    # Tenta obter 'token' ou 'access_token'
+    token = query_params.get("token") or query_params.get("access_token")
+    recovery_type = query_params.get("type")
+    
     if token and recovery_type == "recovery":
         st.header("Redefinição de Senha")
         st.write("Por favor, insira sua nova senha abaixo.")
-
-        # Campos para nova senha e confirmação, com inputs do tipo password para segurança
+        
         new_password = st.text_input("Nova senha", type="password")
         confirm_password = st.text_input("Confirme a nova senha", type="password")
-
-        # Ao clicar no botão, valida os campos
+        
         if st.button("Atualizar Senha"):
             if not new_password or not confirm_password:
                 st.error("Preencha ambos os campos de senha.")
             elif new_password != confirm_password:
                 st.error("As senhas não conferem. Tente novamente.")
             else:
-                # Correção: chamando a função correta do `auth.py`
                 response = update_user_password(new_password)
                 if response.get("error"):
                     st.error(f"Erro ao atualizar a senha: {response['error']}")
                 else:
                     st.success("Senha atualizada com sucesso! Você já pode fazer login com a nova senha.")
-
-        st.stop()  # Interrompe a execução do restante do código enquanto o usuário redefine a senha.
+        st.stop()
 
 
 # Fluxo principal do app
