@@ -27,6 +27,12 @@ recovery_mode = query_params.get("type", [""])[0] == "recovery"
 # Para depuração: Exibir parâmetros da URL capturados
 st.write("Query Params Capturados:", query_params)
 
+# **Força um reload se a URL não estiver sendo reconhecida corretamente**
+if "rerun" not in st.session_state:
+    st.session_state["rerun"] = True
+    st.rerun()
+
+
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
     css_path = pathlib.Path("assets/styles.css") # Caminho do código de estilo.
@@ -44,7 +50,6 @@ def initialize_session_state():
         st.session_state["user"] = None  # Define o usuário como não autenticado.
 
 
-
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
@@ -53,6 +58,9 @@ def main():
 
     if recovery_mode:
         st.info("🔐 Você está no fluxo de recuperação de senha.")
+        
+        # Debug: Confirmação de que estamos no modo de recuperação
+        st.write("✅ Modo de recuperação ativado!")
 
         new_password = st.text_input("Digite sua nova senha", type="password")
         confirm_password = st.text_input("Confirme sua nova senha", type="password")
