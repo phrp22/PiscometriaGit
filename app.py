@@ -1,12 +1,10 @@
 import streamlit as st
 import pathlib
-from auth import get_user
+from auth import sign_in, sign_up, reset_password, update_user_password, sign_out, get_user
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-# Importa o cliente Supabase configurado (supondo que exista em um módulo separado)
-import supabase_client  # Este módulo deve conter a função update_user_password()
+from profile import get_user_profile, render_onboarding_questionnaire
 
 # Configuração da página para um visual legal.
 st.set_page_config(
