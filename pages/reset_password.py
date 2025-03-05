@@ -1,28 +1,36 @@
 import streamlit as st
 from supabase import create_client
 import os
-from urllib.parse import urlparse, parse_qs
 
-# 🔑 Conexão com o Supabase (credenciais do st.secrets)
+# 🔑 Conexão com Supabase
 SUPABASE_URL = st.secrets["supabase_url"]
 SUPABASE_KEY = st.secrets["supabase_key"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 📩 Captura da URL atual para extrair o token de redefinição
+# 📌 Injetamos JavaScript para capturar o token quando ele vier após `#`
+st.markdown("""
+    <script>
+        if (window.location.hash.includes("token=")) {
+            let newUrl = window.location.href.replace("#", "?");
+            window.history.replaceState({}, document.title, newUrl);
+            location.reload(); // Recarrega a página com a URL corrigida
+        }
+    </script>
+""", unsafe_allow_html=True)
+
+# 📩 Captura o token da URL corretamente
 query_params = st.query_params
 token = query_params.get("token")
 token_type = query_params.get("type")
 
-# 🎯 Se há um token, permite redefinir a senha
+# 🎯 Se há um token de recuperação, pede nova senha
 if token and token_type == "recovery":
     st.title("🔒 Redefinição de Senha")
-    st.write("Insira sua nova senha abaixo.")
+    st.write("Digite sua nova senha abaixo.")
 
-    # 📌 Campos de entrada para a nova senha
     new_password = st.text_input("Nova Senha", type="password")
     confirm_password = st.text_input("Confirme a Nova Senha", type="password")
 
-    # 🔄 Botão para alterar a senha
     if st.button("Alterar Senha"):
         if new_password != confirm_password:
             st.error("As senhas não coincidem! 🚨")
@@ -31,17 +39,17 @@ if token and token_type == "recovery":
         else:
             # 🔥 Atualiza a senha no Supabase
             response = supabase.auth.api.update_user(token, {"password": new_password})
-
+            
             if response.get("error"):
                 st.error("Erro ao redefinir a senha. O token pode estar expirado.")
             else:
                 st.success("Senha redefinida com sucesso! ✅")
                 st.info("Agora você pode fazer login com sua nova senha.")
 
-# 📧 Se não houver token, exibe a opção de enviar o e-mail
+# 📧 Se não houver token, mostra o formulário para enviar e-mail
 else:
     st.title("🔑 Esqueci minha senha")
-    st.write("Informe seu e-mail para receber um link de redefinição de senha.")
+    st.write("Informe seu e-mail para receber um link de redefinição.")
 
     email = st.text_input("E-mail", placeholder="Digite seu e-mail")
 
@@ -57,4 +65,4 @@ else:
                 st.error("Erro ao enviar e-mail. Verifique se o e-mail está correto.")
             else:
                 st.success("E-mail enviado com sucesso! 📩")
-                st.info("Verifique sua caixa de entrada para redefinir a senha.")
+                st.info("Verifique sua
