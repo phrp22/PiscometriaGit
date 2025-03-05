@@ -1,5 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import pathlib
+from auth import get_user
+from layout import render_main_layout
+from dashboard import render_dashboard, render_professional_dashboard
+from professional import is_professional_enabled
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
@@ -9,35 +14,6 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
-
-# Script para mover o hash para a query string, se necessário.
-components.html(
-    """
-    <script>
-    // Se a URL tiver um hash com "access_token" e não estiver nos parâmetros de consulta...
-    if (window.location.hash.includes("access_token") && !window.location.search.includes("access_token")) {
-      // Extrai o hash (removendo o #)
-      const hash = window.location.hash.substring(1);
-      // Adiciona o hash à query string
-      const newSearch = window.location.search ? window.location.search + "&" + hash : "?" + hash;
-      const newUrl = window.location.origin + window.location.pathname + newSearch;
-      // Atualiza a URL sem recarregar a página
-      window.history.replaceState(null, "", newUrl);
-      // Opcional: recarrega a página para que Streamlit capte os novos query parameters
-      window.location.reload();
-    }
-    </script>
-    """,
-    height=0
-)
-
-import pathlib
-from auth import get_user
-from layout import render_main_layout
-from dashboard import render_dashboard, render_professional_dashboard
-from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -61,12 +37,6 @@ def initialize_session_state():
 def main():
     initialize_session_state()
     load_css()  # Mantém o st.html inalterado
-
-    # Verifica se a URL contém parâmetros para reset de senha
-    if st.query_params.get("type") == "recovery":
-        from reset_password import render_reset_password  # Importa a função de reset
-        render_reset_password()
-        return  # Interrompe o fluxo normal do app
 
     user = get_user()  # Obtém os dados do usuário autenticado.
 
