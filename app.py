@@ -21,7 +21,7 @@ def initialize_session_state():
 
 # Página para redefinição de senha
 def reset_password_page():
-    query_params = st.experimental_get_query_params()
+    query_params = st.query_params  # Usando st.query_params no lugar de experimental_get_query_params
     # Verifica se o token de recuperação está presente na URL
     if "access_token" in query_params:
         token = query_params["access_token"][0]
@@ -32,7 +32,6 @@ def reset_password_page():
         if st.button("Atualizar Senha"):
             if new_password and new_password == confirm_password:
                 # Atualiza o usuário com a nova senha.
-                # É importante que a configuração do Supabase permita atualizar a senha via token de recuperação.
                 response = supabase.auth.updateUser({
                     "password": new_password
                 })
@@ -50,8 +49,8 @@ def main():
     initialize_session_state()
     load_css()
 
-    # Se a URL conter o token de recuperação, exibe a página de redefinição de senha
-    query_params = st.experimental_get_query_params()
+    # Se a URL contiver o token de recuperação, exibe a página de redefinição de senha
+    query_params = st.query_params
     if "access_token" in query_params:
         reset_password_page()
     else:
