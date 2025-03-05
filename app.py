@@ -17,19 +17,13 @@ from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 
-# 📌 Captura parâmetros da URL
+# 📌 Captura os parâmetros da URL corretamente
 query_params = st.query_params
 route = query_params.get("route")
 
-# 🔄 Corrige URLs antigas do Supabase e redireciona corretamente
-if st.query_params.get("reset-password") is not None:
-    st.query_params.clear()
-    st.markdown('<meta http-equiv="refresh" content="0; URL=/?route=reset-password">', unsafe_allow_html=True)
-    st.stop()
-
 # 🔄 Se a URL for /reset-password, carrega a página correta
-if route == "reset-password":
-    from reset_password import reset_password_page
+if route == "resetpassword":
+    from resetpassword import reset_password_page
     reset_password_page()
     st.stop()
 
