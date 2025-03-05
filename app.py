@@ -1,6 +1,6 @@
 import streamlit as st
 import pathlib
-import supabase
+from auth import supabase_client as supabase
 from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
@@ -8,7 +8,6 @@ from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire
 
 # Configuração da página para um visual legal.
-# Definimos título, ícone e layout central.
 st.set_page_config(
     page_title="Abaeté",
     page_icon="🧠",
@@ -16,8 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
-# Função para carregar o CSS e melhorar o visual
+# Função para carregar o CSS e melhorar o visual.
 def load_css():
     css_path = pathlib.Path("assets/styles.css")
     if css_path.exists():
@@ -25,15 +23,31 @@ def load_css():
             css_content = f.read()
             st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
-# Inicializa a sessão para evitar erros de navegação
+# Função para mover parâmetros do hash para a query string.
+def move_hash_to_query():
+    st.components.v1.html(
+        """
+        <script>
+        // Se houver hash na URL e não houver parâmetros na query, move o hash para a query string.
+        if (window.location.hash && !window.location.search) {
+            const hash = window.location.hash.substring(1);
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + hash;
+            window.history.replaceState(null, null, newUrl);
+        }
+        </script>
+        """,
+        height=0
+    )
+
+# Inicializa a sessão para evitar erros de navegação.
 def initialize_session_state():
     if "user" not in st.session_state:
         st.session_state["user"] = None
 
-# Página para redefinição de senha
+# Página para redefinição de senha.
 def reset_password_page():
-    query_params = st.query_params  # Usando st.query_params no lugar de experimental_get_query_params
-    # Verifica se o token de recuperação está presente na URL
+    query_params = st.query_params  # Agora usando st.query_params
+    # Verifica se o token de recuperação está presente na URL.
     if "access_token" in query_params:
         token = query_params["access_token"][0]
         st.write("Token de recuperação detectado. Por favor, defina sua nova senha.")
@@ -55,17 +69,17 @@ def reset_password_page():
     else:
         st.info("Nenhum token de recuperação encontrado na URL.")
 
-# Função principal do app
+# Função principal do app.
 def main():
     initialize_session_state()
     load_css()
-
-    # Se a URL contiver o token de recuperação, exibe a página de redefinição de senha
+    move_hash_to_query()  # Move os parâmetros do hash para a query string.
+    
     query_params = st.query_params
     if "access_token" in query_params:
         reset_password_page()
     else:
-        # Se o usuário estiver logado, segue com o fluxo normal
+        # Se o usuário estiver logado, segue com o fluxo normal.
         user = get_user()
         if user and isinstance(user, dict) and "id" in user:
             user_id = user["id"]
@@ -79,7 +93,7 @@ def main():
                 else:
                     render_dashboard()
         else:
-            # Tela principal (já configurada para conter o botão que envia o e-mail de recuperação)
+            # Tela principal (já configurada para conter o botão que envia o e-mail de recuperação).
             render_main_layout()
 
 if __name__ == "__main__":
