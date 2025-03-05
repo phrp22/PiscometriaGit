@@ -58,6 +58,7 @@ def sign_out():
     supabase_client.auth.sign_out()
     st.session_state.pop("user", None)
     st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+    st.session_state["processing"] = False
     st.rerun()
 
 def get_user():

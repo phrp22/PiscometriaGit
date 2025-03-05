@@ -32,7 +32,8 @@ def initialize_session_state():
     # Se a sessão ainda não estiver definida...
     if "user" not in st.session_state:
         st.session_state["user"] = None  # Define o usuário como não autenticado.
-
+    if "processing" not in st.session_state:
+        st.session_state["processing"] = False
 
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
