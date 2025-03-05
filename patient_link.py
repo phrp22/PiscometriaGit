@@ -193,9 +193,9 @@ def render_patient_invitations(user):
                         st.error(msg)
 
 
-"""
+
 def render_pending_invitations(professional_id):
-    
+    """Renderiza os convites pendentes do profissional."""
     st.subheader("📩 Convites Pendentes")
 
     pending_invitations = list_pending_invitations(professional_id)
@@ -207,6 +207,5 @@ def render_pending_invitations(professional_id):
     for invitation in pending_invitations:
         st.write(f"📌 Convite ID: {invitation['id']}")
         st.write(f"📅 Data de Envio: {invitation['created_at']}")
-        st.write(f"🔗 Paciente ID: {invitation['patient_email']}")
+        st.write(f"🔗 Paciente ID: {invitation['patient_id']}")
         st.markdown("---")
-"""
