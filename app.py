@@ -27,11 +27,6 @@ recovery_mode = query_params.get("type", [""])[0] == "recovery"
 # Para depuração: Exibir parâmetros da URL capturados
 st.write("Query Params Capturados:", query_params)
 
-# **Força um reload se a URL não estiver sendo reconhecida corretamente**
-if "rerun" not in st.session_state:
-    st.session_state["rerun"] = True
-    st.rerun()
-
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -53,9 +48,6 @@ def initialize_session_state():
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
-    initialize_session_state()
-    load_css()
-
     if recovery_mode:
         st.info("🔐 Você está no fluxo de recuperação de senha.")
         
@@ -71,34 +63,37 @@ def main():
                 st.success("✅ Sua senha foi atualizada. Agora você pode fazer login novamente.")
             else:
                 st.error("As senhas não coincidem.")
-    else:
-        user = get_user()  # Obtém os dados do usuário autenticado.
+        return  # **Evita que o resto do código seja executado**
+    
+    # Caso não esteja no fluxo de recuperação, carrega o restante da página normalmente
+    initialize_session_state()
+    load_css()
+    
+    user = get_user()  # Obtém os dados do usuário autenticado.
 
+    # Se temos um usuário logado na sessão...
+    if user and "id" in user:
+        user_id = user["id"]  # Guardamos o ID para evitar reuso desnecessário.
 
-        # Se temos um usuário logado na sessão...
-        if user and "id" in user:
-            user_id = user["id"]  # Guardamos o ID para evitar reuso desnecessário.
+        # Buscamos as informações do perfil **apenas uma vez**!
+        user_profile = get_user_profile(user_id)
+        is_professional = is_professional_enabled(user_id)
 
-            # Buscamos as informações do perfil **apenas uma vez**!
-            user_profile = get_user_profile(user_id)
-            is_professional = is_professional_enabled(user_id)
-
-            # Se o questionário inicial ainda não foi preenchido...
-            if not user_profile:
-                render_onboarding_questionnaire(user_id, user["email"])  # Coletamos dados para configurar o painel.
-            else:
-                # Se é profissional, exibir o dashboard especial.
-                if is_professional:
-                    render_professional_dashboard(user)
-                else:
-                    render_dashboard()  # Caso contrário, o dashboard normal!
-
-        # Mas se ninguém está logado...
+        # Se o questionário inicial ainda não foi preenchido...
+        if not user_profile:
+            render_onboarding_questionnaire(user_id, user["email"])  # Coletamos dados para configurar o painel.
         else:
-            render_main_layout()  # A tela inicial será mostrada.
+            # Se é profissional, exibir o dashboard especial.
+            if is_professional:
+                render_professional_dashboard(user)
+            else:
+                render_dashboard()  # Caso contrário, o dashboard normal!
+
+    # Mas se ninguém está logado...
+    else:
+        render_main_layout()  # A tela inicial será mostrada.
 
 
-# Executa o código, sem mais demora,
-# Chamando main() e começando a história!
+# Executa a aplicação
 if __name__ == "__main__":
     main()
