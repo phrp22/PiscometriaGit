@@ -1,6 +1,7 @@
 import streamlit as st
 import pathlib
-from auth import get_user, supabase
+import supabase
+from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
@@ -15,13 +16,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-import streamlit as st
-import pathlib
-from auth import get_user, supabase
-from layout import render_main_layout
-from dashboard import render_dashboard, render_professional_dashboard
-from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire
 
 # Função para carregar o CSS e melhorar o visual
 def load_css():
