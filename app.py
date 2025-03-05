@@ -2,7 +2,6 @@ import streamlit as st
 import pathlib
 
 # Configuração da página para um visual legal.
-# Definimos título, ícone e layout central.
 st.set_page_config(
     page_title="Abaeté",
     page_icon="🧠",
@@ -63,26 +62,27 @@ def render_password_recovery(token):
             else:
                 st.success("Senha atualizada com sucesso! Faça login com sua nova senha.")
 
-# Função principal que tudo controla.
+# Função principal que controla o fluxo do app.
 def main():
-    initialize_session_state()  # Inicializamos a sessão.
-    load_css()  # Aplicamos o CSS.
+    initialize_session_state()
+    load_css()
     
-    # Verifica se há parâmetros de query para recuperação de senha.
-    query_params = st.get_query_params()  # Atualizado: st.get_query_params() no lugar de st.experimental_get_query_params()
+    # Tenta utilizar st.get_query_params(); se não existir, utiliza st.experimental_get_query_params()
+    try:
+        query_params = st.get_query_params()
+    except AttributeError:
+        query_params = st.experimental_get_query_params()
+    
     if "token" in query_params and query_params.get("type", [""])[0] == "recovery":
          token = query_params["token"][0]
          render_password_recovery(token)
          return  # Interrompe a execução para não renderizar outras páginas
 
-    user = get_user()  # Obtém os dados do usuário autenticado.
-
-    # Se temos um usuário logado...
+    user = get_user()
     if user and isinstance(user, dict) and "id" in user:
         user_id = user["id"]
         user_profile = get_user_profile(user_id)
         is_professional = is_professional_enabled(user_id)
-
         if not user_profile:
             render_onboarding_questionnaire(user_id, user["email"])
         else:
