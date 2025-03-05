@@ -5,7 +5,6 @@ from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire
-import streamlit.components.v1 as components
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
@@ -16,34 +15,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Injetando JavaScript para extrair o token do fragmento da URL e redirecionar com query params
-js_code = """
-<script>
-  (function() {
-    // Verifica se há fragmento na URL
-    const hash = window.location.hash;
-    if (hash) {
-      // Remove o '#' e cria um objeto URLSearchParams
-      const params = new URLSearchParams(hash.substring(1));
-      // Verifica se existe o token e se o tipo é 'recovery'
-      if (params.has('token') && params.get('type') === 'recovery') {
-        const token = params.get('token');
-        const type = params.get('type');
-        // Cria uma nova URL com os parâmetros de consulta
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.set('token', token);
-        newUrl.searchParams.set('type', type);
-        // Remove o fragmento da URL
-        newUrl.hash = '';
-        // Redireciona para a nova URL
-        window.location.replace(newUrl.href);
-      }
-    }
-  })();
-</script>
-"""
-
-components.html(js_code, height=0)
+import streamlit as st
+import pathlib
+from auth import get_user, supabase
+from layout import render_main_layout
+from dashboard import render_dashboard, render_professional_dashboard
+from professional import is_professional_enabled
+from profile import get_user_profile, render_onboarding_questionnaire
 
 # Função para carregar o CSS e melhorar o visual
 def load_css():
@@ -60,10 +38,10 @@ def initialize_session_state():
 
 # Página para redefinição de senha
 def reset_password_page():
-    query_params = st.query_params
-    # Verifica se o token de recuperação está presente na URL e se o tipo é "recovery"
-    if "token" in query_params and "type" in query_params and query_params["type"][0] == "recovery":
-        token = query_params["token"][0]
+    query_params = st.query_params  # Usando st.query_params no lugar de experimental_get_query_params
+    # Verifica se o token de recuperação está presente na URL
+    if "access_token" in query_params:
+        token = query_params["access_token"][0]
         st.write("Token de recuperação detectado. Por favor, defina sua nova senha.")
         new_password = st.text_input("Nova Senha", type="password")
         confirm_password = st.text_input("Confirmar Nova Senha", type="password")
@@ -71,7 +49,6 @@ def reset_password_page():
         if st.button("Atualizar Senha"):
             if new_password and new_password == confirm_password:
                 # Atualiza o usuário com a nova senha.
-                # Se o usuário estiver autenticado, supabase.auth.updateUser() usará a sessão atual.
                 response = supabase.auth.updateUser({
                     "password": new_password
                 })
@@ -89,9 +66,9 @@ def main():
     initialize_session_state()
     load_css()
 
+    # Se a URL contiver o token de recuperação, exibe a página de redefinição de senha
     query_params = st.query_params
-    # Se a URL contiver o token de recuperação e o tipo for "recovery", exibe a página de redefinição de senha
-    if "token" in query_params and "type" in query_params and query_params["type"][0] == "recovery":
+    if "access_token" in query_params:
         reset_password_page()
     else:
         # Se o usuário estiver logado, segue com o fluxo normal
