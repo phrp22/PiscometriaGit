@@ -17,13 +17,17 @@ from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 
-# 📌 Captura parâmetros da URL corretamente
+# 📌 Captura os parâmetros da URL corretamente
 query_params = st.query_params
 route = query_params.get("route")
 
 # 🔄 Se a URL for /reset-password, redireciona para a página correta
 if route == "reset-password":
-    st.switch_page("reset-password.py")
+    st.query_params.clear()  # Limpa os parâmetros para evitar loop infinito
+    from reset_password import reset_password_page  # Importa a página de redefinição de senha
+    reset_password_page()
+    st.stop()  # Para a execução do app para evitar carregar o dashboard também
+
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
