@@ -129,6 +129,6 @@ def render_professional_dashboard(user):
 
     # ✅ Verificação para evitar erro de `KeyError`
     if user and "id" in user:
-        st.write("render_pending_invitations(user["id"])")
+        st.subheader("render_pending_invitations(user["id"])")
     else:
         st.warning("⚠️ Usuário inválido. Não foi possível carregar os convites.")
