@@ -5,6 +5,45 @@ from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire
+import streamlit.components.v1 as components
+
+# Configuração da página para um visual legal.
+# Definimos título, ícone e layout central.
+st.set_page_config(
+    page_title="Abaeté",
+    page_icon="🧠",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# Injetando JavaScript para extrair o token do fragmento da URL e redirecionar com query params
+js_code = """
+<script>
+  (function() {
+    // Verifica se há fragmento na URL
+    const hash = window.location.hash;
+    if (hash) {
+      // Remove o '#' e cria um objeto URLSearchParams
+      const params = new URLSearchParams(hash.substring(1));
+      // Verifica se existe o token e se o tipo é 'recovery'
+      if (params.has('token') && params.get('type') === 'recovery') {
+        const token = params.get('token');
+        const type = params.get('type');
+        // Cria uma nova URL com os parâmetros de consulta
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('token', token);
+        newUrl.searchParams.set('type', type);
+        // Remove o fragmento da URL
+        newUrl.hash = '';
+        // Redireciona para a nova URL
+        window.location.replace(newUrl.href);
+      }
+    }
+  })();
+</script>
+"""
+
+components.html(js_code, height=0)
 
 # Função para carregar o CSS e melhorar o visual
 def load_css():
