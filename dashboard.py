@@ -4,7 +4,7 @@ from auth import get_user, sign_out
 from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
 from gender_utils import adjust_gender_ending
-from patient_link import render_pending_invitations, render_patient_invitations, create_patient_invitation
+from patient_link import render_patient_invitations, create_patient_invitation
 
 def render_sidebar(user):
     """Renderiza a sidebar para todos os usuários logados."""
@@ -129,6 +129,6 @@ def render_professional_dashboard(user):
 
     # ✅ Verificação para evitar erro de `KeyError`
     if user and "id" in user:
-        render_pending_invitations(user["id"])
+        st.write("render_pending_invitations(user["id"])")
     else:
         st.warning("⚠️ Usuário inválido. Não foi possível carregar os convites.")
