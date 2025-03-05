@@ -2,6 +2,8 @@ import streamlit as st
 from supabase import create_client
 import os
 
+st.set_page_config(page_title="Redefinir Senha", page_icon="🔑", layout="centered")
+
 # 🔑 Conexão com Supabase
 SUPABASE_URL = st.secrets["supabase_url"]
 SUPABASE_KEY = st.secrets["supabase_key"]
