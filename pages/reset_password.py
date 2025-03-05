@@ -13,17 +13,21 @@ def move_hash_to_query_params():
     Injeta um script JavaScript que move o que estiver no hash (#) para a query string (?).
     Isso é necessário porque o token de acesso do Supabase vem no fragmento (#access_token).
     """
+    # Script para mover o hash para a query string, se presente.
     components.html(
         """
         <script>
-        window.addEventListener("load", function() {
-          if (window.location.hash.includes("access_token") && !window.location.search.includes("access_token")) {
-            const hash = window.location.hash.substring(1); // remove o '#'
-            const newSearch = window.location.search ? window.location.search + "&" + hash : "?" + hash;
+        document.addEventListener("DOMContentLoaded", function() {
+            // Verifica se a URL possui hash com "access_token"
+            if (window.location.hash && window.location.hash.indexOf("access_token") > -1) {
+            // Remove o '#' do início e constrói a nova query string
+            const hash = window.location.hash.substring(1);
+            const search = window.location.search;
+            const newSearch = search ? search + "&" + hash : "?" + hash;
             const newUrl = window.location.origin + window.location.pathname + newSearch;
-            window.history.replaceState(null, "", newUrl);
-            window.location.reload();
-          }
+            // Atualiza a URL usando replace para não criar um novo histórico
+            window.location.replace(newUrl);
+            }
         });
         </script>
         """,
