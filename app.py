@@ -24,6 +24,8 @@ conn = st.connection("supabase", type=SupabaseConnection)
 query_params = st.query_params
 recovery_mode = query_params.get("type", [""])[0] == "recovery"
 
+# Para depuração: Exibir parâmetros da URL capturados
+st.write("Query Params Capturados:", query_params)
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
