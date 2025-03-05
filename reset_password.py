@@ -30,7 +30,3 @@ def render_reset_password():
                 st.rerun()
             else:
                 st.error(message)
-
-# Apenas se o arquivo for executado diretamente (não ao ser importado)
-if __name__ == "__main__":
-    render_reset_password()
