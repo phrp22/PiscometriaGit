@@ -1,12 +1,15 @@
-import streamlit as st
+import streamlit as st 
 import pathlib
-from auth import sign_in, sign_up, reset_password, update_user_password, sign_out, get_user
+from auth import get_user, update_password
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
+from st_supabase_connection import connector
+
 
 # Configuração da página para um visual legal.
+# Definimos título, ícone e layout central.
 st.set_page_config(
     page_title="Abaeté",
     page_icon="🧠",
@@ -14,102 +17,68 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+supabase = connector()
 
-st.markdown(
-    """
-    <script>
-    (function() {
-        // Verifica se a query string já contém "token=" ou "access_token="
-        if (window.location.search.indexOf('token=') === -1 && window.location.search.indexOf('access_token=') === -1) {
-            var hash = window.location.hash;
-            if (hash && hash.length > 1) {
-                // Remove o "#" do início do hash
-                hash = hash.substring(1);
-                var currentQuery = window.location.search;
-                if (currentQuery) {
-                    // Adiciona os parâmetros do hash à query string existente
-                    currentQuery = currentQuery + '&' + hash;
-                } else {
-                    currentQuery = '?' + hash;
-                }
-                var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + currentQuery;
-                // Redireciona para a nova URL (com os parâmetros já na query string)
-                window.location.href = newUrl;
-            }
-        }
-    })();
-    </script>
-    """,
-    unsafe_allow_html=True
-)
-
-
-
-# Função para carregar o CSS customizado (NÃO ALTERAR)
+# Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
-    css_path = pathlib.Path("assets/styles.css")
+    css_path = pathlib.Path("assets/styles.css") # Caminho do código de estilo.
+    # Se o CSS realmente existir neste arquivo...
     if css_path.exists():
-        with open(css_path, "r") as f:
-            css_content = f.read()
-            st.html(f"<style>{css_content}</style>")  # NÃO ALTERAR esta linha!
+        with open(css_path, "r") as f: # Abrimos o código para leitura.
+            css_content = f.read() # Pegamos o conteúdo e guardamos para consulta.
+            st.html(f"<style>{css_content}</style>")  # Com st.html, aplicamos o estilo na tela!
 
-# Função para inicializar a sessão
+
+# Função para inicializar a sessão e evitar erro na navegação.
 def initialize_session_state():
+    # Se a sessão ainda não estiver definida...
     if "user" not in st.session_state:
-        st.session_state["user"] = None
-
-# Função para tratar o fluxo de redefinição de senha
-def handle_password_reset():
-    """Verifica a URL por parâmetros de redefinição de senha e exibe um formulário."""
-    query_params = st.query_params
-    # Tenta obter 'token' ou 'access_token'
-    token = query_params.get("token") or query_params.get("access_token")
-    recovery_type = query_params.get("type")
-    
-    if token and recovery_type == "recovery":
-        st.header("Redefinição de Senha")
-        st.write("Por favor, insira sua nova senha abaixo.")
-        
-        new_password = st.text_input("Nova senha", type="password")
-        confirm_password = st.text_input("Confirme a nova senha", type="password")
-        
-        if st.button("Atualizar Senha"):
-            if not new_password or not confirm_password:
-                st.error("Preencha ambos os campos de senha.")
-            elif new_password != confirm_password:
-                st.error("As senhas não conferem. Tente novamente.")
-            else:
-                response = update_user_password(new_password)
-                if response.get("error"):
-                    st.error(f"Erro ao atualizar a senha: {response['error']}")
-                else:
-                    st.success("Senha atualizada com sucesso! Você já pode fazer login com a nova senha.")
-        st.stop()
+        st.session_state["user"] = None  # Define o usuário como não autenticado.
 
 
-# Fluxo principal do app
+
+# Função principal que tudo controla.
+# Definindo qual parte do app se desenrola.
 def main():
     initialize_session_state()
     load_css()
-    
-    # Antes de continuar, verifica se há parâmetros de redefinição de senha na URL.
-    handle_password_reset()
-    
-    user = get_user()
-    if user and isinstance(user, dict) and "id" in user:
-        user_id = user["id"]
-        user_profile = get_user_profile(user_id)
-        is_professional = is_professional_enabled(user_id)
-        
-        if not user_profile:
-            render_onboarding_questionnaire(user_id, user["email"])
-        else:
-            if is_professional:
-                render_professional_dashboard(user)
-            else:
-                render_dashboard()
-    else:
-        render_main_layout()
 
+    query_params = st.query_params
+    if "type" in query_params and query_params["type"][0] == "recovery":
+        new_password = st.text_input("Enter your new password", type="password")
+        confirm_password = st.text_input("Confirm your new password", type="password")
+        if st.button("Update Password"):
+            if new_password == confirm_password:
+                update_password(new_password)
+            else:
+                st.error("Passwords do not match.")
+    else:
+        user = get_user()  # Obtém os dados do usuário autenticado.
+
+        # Se temos um usuário logado na sessão...
+        if user and "id" in user:
+            user_id = user["id"]  # Guardamos o ID para evitar reuso desnecessário.
+
+            # Buscamos as informações do perfil **apenas uma vez**!
+            user_profile = get_user_profile(user_id)
+            is_professional = is_professional_enabled(user_id)
+
+            # Se o questionário inicial ainda não foi preenchido...
+            if not user_profile:
+                render_onboarding_questionnaire(user_id, user["email"])  # Coletamos dados para configurar o painel.
+            else:
+                # Se é profissional, exibir o dashboard especial.
+                if is_professional:
+                    render_professional_dashboard(user)
+                else:
+                    render_dashboard()  # Caso contrário, o dashboard normal!
+
+        # Mas se ninguém está logado...
+        else:
+            render_main_layout()  # A tela inicial será mostrada.
+
+
+# Executa o código, sem mais demora,
+# Chamando main() e começando a história!
 if __name__ == "__main__":
     main()

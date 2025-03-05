@@ -56,18 +56,19 @@ def reset_password(email):
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
 
 
-def update_user_password(new_password):
-    """
-    Atualiza a senha do usuário utilizando o método updateUser do Supabase.
-    Retorna um dicionário com 'data' ou 'error' conforme o resultado.
-    """
+def update_password(new_password):
     try:
-        response = supabase_client.auth.update_user({"password": new_password})
-        if response.get("error"):
-            return {"error": response["error"]}
-        return {"data": response.get("data")}
+        user = supabase.auth.get_user()
+        if user:
+            response = supabase.auth.update_user({"password": new_password})
+            if response.get('error'):
+                st.error(f"Error updating password: {response['error']['message']}")
+            else:
+                st.success("Password updated successfully.")
+        else:
+            st.error("User not authenticated.")
     except Exception as e:
-        return {"error": str(e)}
+        st.error(f"An error occurred: {e}")
 
 
 def sign_out():
