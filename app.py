@@ -23,7 +23,6 @@ conn = st.connection("supabase", type=SupabaseConnection)
 # Captura os parâmetros da URL
 query_params = st.query_params
 recovery_mode = query_params.get("type", [""])[0] == "recovery"
-access_token = query_params.get("access_token", [""])[0]
 
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
@@ -51,24 +50,20 @@ def main():
     load_css()
 
     if recovery_mode:
-        st.info("🔐 You are recovering your password.")
+        st.info("🔐 Você está no fluxo de recuperação de senha.")
 
-        if access_token:
-            st.success("✅ Authentication verified. You can reset your password.")
-            new_password = st.text_input("Enter your new password", type="password")
-            confirm_password = st.text_input("Confirm your new password", type="password")
+        new_password = st.text_input("Digite sua nova senha", type="password")
+        confirm_password = st.text_input("Confirme sua nova senha", type="password")
 
-            if st.button("Update Password"):
-                if new_password == confirm_password:
-                    update_password(new_password)
-                    st.success("✅ Your password has been updated. Please log in again.")
-                else:
-                    st.error("Passwords do not match.")
-        else:
-            st.error("⚠️ Authentication failed. Please request a new password reset link.")
-
+        if st.button("Atualizar Senha"):
+            if new_password == confirm_password:
+                update_password(new_password)
+                st.success("✅ Sua senha foi atualizada. Agora você pode fazer login novamente.")
+            else:
+                st.error("As senhas não coincidem.")
     else:
         user = get_user()  # Obtém os dados do usuário autenticado.
+
 
         # Se temos um usuário logado na sessão...
         if user and "id" in user:
