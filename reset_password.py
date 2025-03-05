@@ -8,7 +8,7 @@ def reset_password_page():
         layout="centered"
     )
 
-    # 🔑 Conectar ao Supabase
+    # 🔑 Conectar ao Supabase com verificação de credenciais
     try:
         SUPABASE_URL = st.secrets["SUPABASE_URL"]
         SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
@@ -17,7 +17,7 @@ def reset_password_page():
         st.error("🚨 Erro: Configurações do Supabase não foram encontradas.")
         st.stop()
 
-    # 🎯 Captura os parâmetros da URL corretamente
+    # 🎯 Captura o token da URL corretamente
     query_params = st.query_params
     access_token = query_params.get("access_token") or query_params.get("token")
 
