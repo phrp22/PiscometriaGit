@@ -1,10 +1,10 @@
 import streamlit as st
-from auth import update_password_with_token  # Função customizada a ser implementada conforme a API do Supabase
+from auth import update_password_with_token  # Função customizada conforme a API do Supabase
 
 def render_reset_password():
     st.markdown("# Redefinir Senha")
     
-    # Converte os query parameters para um dicionário e tenta extrair "access_token"
+    # Extrai o token de acesso utilizando apenas a notação de dicionário
     query_params = st.query_params.to_dict()
     access_token = query_params.get("access_token")
     if not access_token:
@@ -21,7 +21,6 @@ def render_reset_password():
         elif new_password != confirm_password:
             st.error("As senhas não coincidem.")
         else:
-            # Chama a função para atualizar a senha utilizando o token
             success, message = update_password_with_token(access_token, new_password)
             if success:
                 st.success("Senha redefinida com sucesso!")
@@ -30,3 +29,6 @@ def render_reset_password():
                 st.rerun()
             else:
                 st.error(message)
+
+# Não chame render_reset_password() aqui para evitar execução durante o import.
+# Deixe que o app.py decida quando chamar essa função.
