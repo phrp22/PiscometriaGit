@@ -15,23 +15,27 @@ st.set_page_config(
 )
 
 
-# Script para mover os parâmetros do fragmento (#) para a query string
 st.markdown(
     """
     <script>
     (function() {
-        var hash = window.location.hash;
-        if (hash && hash.length > 1) {
-            hash = hash.substring(1); // remove o "#"
-            var currentQuery = window.location.search;
-            if (currentQuery) {
-                // Combina os parâmetros existentes com os do fragmento
-                currentQuery = currentQuery + '&' + hash;
-            } else {
-                currentQuery = '?' + hash;
+        // Verifica se a URL já possui 'access_token' na query string
+        if (window.location.search.indexOf('access_token') === -1) {
+            var hash = window.location.hash;
+            if (hash && hash.length > 1) {
+                // Remove o "#" do início do hash
+                hash = hash.substring(1);
+                var currentQuery = window.location.search;
+                if (currentQuery) {
+                    // Adiciona os parâmetros do hash à query string existente
+                    currentQuery = currentQuery + '&' + hash;
+                } else {
+                    currentQuery = '?' + hash;
+                }
+                var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + currentQuery;
+                // Força a recarga com a nova URL
+                window.location.replace(newUrl);
             }
-            var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + currentQuery;
-            window.history.replaceState(null, null, newUrl);
         }
     })();
     </script>
