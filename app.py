@@ -1,6 +1,15 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+# Configuração da página para um visual legal.
+# Definimos título, ícone e layout central.
+st.set_page_config(
+    page_title="Abaeté",
+    page_icon="🧠",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
 # Script para mover o hash para a query string, se necessário.
 components.html(
     """
@@ -20,15 +29,6 @@ components.html(
     </script>
     """,
     height=0
-)
-
-# Configuração da página para um visual legal.
-# Definimos título, ícone e layout central.
-st.set_page_config(
-    page_title="Abaeté",
-    page_icon="🧠",
-    layout="centered",
-    initial_sidebar_state="collapsed"
 )
 
 import pathlib
