@@ -2,11 +2,7 @@ import streamlit as st
 import supabase
 
 def reset_password_page():
-    st.set_page_config(
-        page_title="Redefinir Senha",
-        page_icon="🔑",
-        layout="centered"
-    )
+    st.title("🔑 Redefinir Senha")
 
     # Conectar ao Supabase
     try:
@@ -24,8 +20,6 @@ def reset_password_page():
     if not access_token:
         st.error("⚠️ Nenhum token encontrado na URL. Verifique o email ou tente novamente.")
         st.stop()
-
-    st.title("🔑 Redefinir Senha")
 
     new_password = st.text_input("Digite sua nova senha", type="password")
     confirm_password = st.text_input("Confirme sua nova senha", type="password")
@@ -48,5 +42,4 @@ def reset_password_page():
         except Exception as e:
             st.error(f"⚠️ Erro ao redefinir senha: {str(e)}")
 
-# Chamando a função para exibir a página
 reset_password_page()

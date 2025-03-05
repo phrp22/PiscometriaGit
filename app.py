@@ -10,7 +10,6 @@ st.set_page_config(
 )
 
 import pathlib
-import os
 from auth import get_user
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
