@@ -20,6 +20,11 @@ st.set_page_config(
 # Initialize connection.
 conn = st.connection("supabase", type=SupabaseConnection)
 
+# Captura os parâmetros da URL
+query_params = st.query_params
+recovery_mode = query_params.get("type", [""])[0] == "recovery"
+access_token = query_params.get("access_token", [""])[0]
+
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
@@ -45,15 +50,22 @@ def main():
     initialize_session_state()
     load_css()
 
-    query_params = st.query_params
-    if query_params.get("type", [""])[0] == "recovery":
-        new_password = st.text_input("Enter your new password", type="password")
-        confirm_password = st.text_input("Confirm your new password", type="password")
-        if st.button("Update Password"):
-            if new_password == confirm_password:
-                update_password(new_password)
-            else:
-                st.error("Passwords do not match.")
+    if recovery_mode:
+        st.info("🔐 You are recovering your password.")
+
+        if access_token:
+            st.success("✅ Authentication verified. You can reset your password.")
+            new_password = st.text_input("Enter your new password", type="password")
+            confirm_password = st.text_input("Confirm your new password", type="password")
+
+            if st.button("Update Password"):
+                if new_password == confirm_password:
+                    update_password(new_password)
+                    st.success("✅ Your password has been updated. Please log in again.")
+                else:
+                    st.error("Passwords do not match.")
+        else:
+            st.error("⚠️ Authentication failed. Please request a new password reset link.")
 
     else:
         user = get_user()  # Obtém os dados do usuário autenticado.
