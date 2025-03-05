@@ -29,20 +29,20 @@ def initialize_session_state():
 
 # Função para tratar o fluxo de redefinição de senha
 def handle_password_reset():
-    # Utiliza a função estável para obter os parâmetros da URL (st.experimental_get_query_params foi substituído por st.get_query_params na versão mais recente)
-    query_params = st.get_query_params()
-    token = query_params.get("token", [None])[0]
-    recovery_type = query_params.get("type", [None])[0]
-    
-    # Verifica se o token está presente e se o tipo é 'recovery'
+    """Verifica a URL por parâmetros de redefinição de senha e exibe um formulário."""
+    query_params = st.query_params  # ✅ Correção aqui!
+    token = query_params.get("token", None)
+    recovery_type = query_params.get("type", None)
+
+    # Se há um token de recuperação na URL, mostra a interface de redefinição de senha
     if token and recovery_type == "recovery":
         st.header("Redefinição de Senha")
         st.write("Por favor, insira sua nova senha abaixo.")
-        
+
         # Campos para nova senha e confirmação, com inputs do tipo password para segurança
         new_password = st.text_input("Nova senha", type="password")
         confirm_password = st.text_input("Confirme a nova senha", type="password")
-        
+
         # Ao clicar no botão, valida os campos
         if st.button("Atualizar Senha"):
             if not new_password or not confirm_password:
@@ -50,16 +50,15 @@ def handle_password_reset():
             elif new_password != confirm_password:
                 st.error("As senhas não conferem. Tente novamente.")
             else:
-                # Chamada à API do Supabase para atualizar a senha do usuário.
-                # Observação: De acordo com a documentação, o token é utilizado no link de verificação,
-                # e após a autenticação o updateUser atualiza a senha.
-                response = supabase_client.update_user_password(new_password)
+                # Correção: chamando a função correta do `auth.py`
+                response = update_user_password(new_password)
                 if response.get("error"):
                     st.error(f"Erro ao atualizar a senha: {response['error']}")
                 else:
                     st.success("Senha atualizada com sucesso! Você já pode fazer login com a nova senha.")
-        # Interrompe a execução do fluxo principal enquanto o usuário está no processo de recuperação.
-        st.stop()
+
+        st.stop()  # Interrompe a execução do restante do código enquanto o usuário redefine a senha.
+
 
 # Fluxo principal do app
 def main():
