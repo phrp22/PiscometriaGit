@@ -1,46 +1,47 @@
 import streamlit as st
 from supabase import create_client
-import os
-
-st.set_page_config(page_title="Redefinir Senha", page_icon="🔑", layout="centered")
 
 # 🔑 Conexão com Supabase
 SUPABASE_URL = st.secrets["supabase_url"]
 SUPABASE_KEY = st.secrets["supabase_key"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 📩 Captura o token da URL corretamente
+# 🔍 Captura parâmetros da URL
 query_params = st.query_params
-token = query_params.get("token")
-token_type = query_params.get("type")
+token = query_params.get("token", None)
+token_type = query_params.get("type", None)
 
-# 🎯 Se há um token de recuperação, pede nova senha
+# 🎨 Interface principal
+st.title("🔑 Redefinir Senha")
+
+# 🎯 Se houver um token válido na URL, exibir o formulário de redefinição
 if token and token_type == "recovery":
-    st.title("🔒 Redefinição de Senha")
-    st.write("Digite sua nova senha abaixo.")
+    st.subheader("Digite uma nova senha")
 
     new_password = st.text_input("Nova Senha", type="password")
     confirm_password = st.text_input("Confirme a Nova Senha", type="password")
 
     if st.button("Alterar Senha"):
-        if new_password != confirm_password:
+        if not new_password or not confirm_password:
+            st.error("Preencha ambos os campos.")
+        elif new_password != confirm_password:
             st.error("As senhas não coincidem! 🚨")
         elif len(new_password) < 6:
             st.error("A senha deve ter pelo menos 6 caracteres.")
         else:
             # 🔥 Atualiza a senha no Supabase
             response = supabase.auth.api.update_user(token, {"password": new_password})
-            
-            if response.get("error"):
-                st.error("Erro ao redefinir a senha. O token pode estar expirado.")
+
+            if response and response.get("error"):
+                st.error("Erro ao redefinir a senha. O token pode estar expirado ou inválido.")
             else:
                 st.success("Senha redefinida com sucesso! ✅")
                 st.info("Agora você pode fazer login com sua nova senha.")
 
-# 📧 Se não houver token, mostra o formulário para enviar e-mail
+# 📧 Se não houver token, exibir o formulário para solicitar um novo link por e-mail
 else:
-    st.title("🔑 Esqueci minha senha")
-    st.write("Informe seu e-mail para receber um link de redefinição.")
+    st.subheader("Esqueci minha senha")
+    st.write("Digite seu e-mail para receber um link de redefinição.")
 
     email = st.text_input("E-mail", placeholder="Digite seu e-mail")
 
@@ -48,11 +49,10 @@ else:
         if not email:
             st.warning("Por favor, informe um e-mail válido.")
         else:
-            # 🔗 Envia e-mail via Supabase
             redirect_url = "https://abaete.streamlit.app/pages/reset_password"
             response = supabase.auth.api.reset_password_for_email(email, redirect_to=redirect_url)
 
-            if response.get("error"):
+            if response and response.get("error"):
                 st.error("Erro ao enviar e-mail. Verifique se o e-mail está correto.")
             else:
                 st.success("E-mail enviado com sucesso! 📩")
