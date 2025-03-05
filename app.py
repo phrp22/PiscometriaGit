@@ -2,12 +2,7 @@ import streamlit as st
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
-st.set_page_config(
-    page_title="Abaeté",
-    page_icon="🧠",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Abaeté", page_icon="🌱", layout="centered")
 
 import pathlib
 from auth import get_user
