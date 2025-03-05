@@ -47,16 +47,15 @@ def sign_up(email, password, confirm_password, display_name):
 
 def update_password_with_token(token: str, new_password: str):
     """
-    Atualiza a senha do usuário utilizando o token de acesso recebido por email.
+    Atualiza a senha do usuário utilizando o token de recuperação enviado por email.
     
     Parâmetros:
-        token (str): Token de acesso extraído da URL.
-        new_password (str): Nova senha a ser definida.
-        
+      token (str): Token de acesso extraído da URL.
+      new_password (str): Nova senha que será definida.
+    
     Retorna:
-        tuple: (True, mensagem) se sucesso, (False, mensagem de erro) caso contrário.
+      tuple: (True, mensagem de sucesso) se sucesso; (False, mensagem de erro) caso contrário.
     """
-    # Monta a URL do endpoint do Supabase para atualização do usuário
     supabase_url = st.secrets["SUPABASE_URL"]
     url = f"{supabase_url}/auth/v1/user"
 
