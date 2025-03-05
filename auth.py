@@ -1,5 +1,6 @@
 import streamlit as st
 import supabase
+import requests
 
 # 🔑 Credenciais do Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
@@ -44,38 +45,58 @@ def sign_up(email, password, confirm_password, display_name):
         return None, f"❌ Erro ao criar conta: {str(e)}"
 
 
+def update_password_with_token(token: str, new_password: str):
+    """
+    Atualiza a senha do usuário utilizando o token de acesso recebido por email.
+    
+    Parâmetros:
+        token (str): Token de acesso extraído da URL.
+        new_password (str): Nova senha a ser definida.
+        
+    Retorna:
+        tuple: (True, mensagem) se sucesso, (False, mensagem de erro) caso contrário.
+    """
+    # Monta a URL do endpoint do Supabase para atualização do usuário
+    supabase_url = st.secrets["SUPABASE_URL"]
+    url = f"{supabase_url}/auth/v1/user"
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "password": new_password
+    }
+    
+    response = requests.put(url, json=payload, headers=headers)
+    
+    if response.status_code == 200:
+        return True, "Senha atualizada com sucesso!"
+    else:
+        try:
+            error_message = response.json().get("error_description", "Erro ao atualizar senha.")
+        except Exception:
+            error_message = "Erro ao atualizar senha."
+        return False, error_message
+
+
 def reset_password(email):
-    """Envia um email para redefinição de senha com redirecionamento correto."""
+    """Envia um email para redefinição de senha."""
     try:
-        supabase_client.auth.reset_password_for_email(
-            email,
-            options={"redirect_to": "https://abaete.streamlit.app/?type=recovery"}
-        )
+        supabase_client.auth.reset_password_for_email(email)
         return f"📩 Um email de recuperação foi enviado para {email}."
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
 
 
-def update_password(new_password):
-    try:
-        user = supabase.auth.get_user()
-        if user:
-            response = supabase.auth.update_user({"password": new_password})
-            if response.get('error'):
-                st.error(f"Error updating password: {response['error']['message']}")
-            else:
-                st.success("Password updated successfully.")
-        else:
-            st.error("User not authenticated.")
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
-
-
 def sign_out():
     """Desconecta o usuário."""
+    def sign_out():
     supabase_client.auth.sign_out()
     st.session_state.pop("user", None)
-    st.session_state["refresh"] = True  # 🚀 Marca para atualizar
+    st.session_state["refresh"] = True  # Marca para atualizar
+    st.rerun()  # Força a reexecução do script para atualizar a interface
+
 
 
 def get_user():

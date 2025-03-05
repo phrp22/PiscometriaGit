@@ -2,4 +2,3 @@ streamlit>=1.42.2
 bcrypt
 supabase
 streamlit-extras
-st-supabase-connection==2.0.1

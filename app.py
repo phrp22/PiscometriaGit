@@ -1,11 +1,4 @@
 import streamlit as st 
-import pathlib
-from auth import get_user, update_password
-from layout import render_main_layout
-from dashboard import render_dashboard, render_professional_dashboard
-from professional import is_professional_enabled
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
-from st_supabase_connection import SupabaseConnection
 
 # Configuração da página para um visual legal.
 # Definimos título, ícone e layout central.
@@ -16,9 +9,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
-# Initialize connection.
-conn = st.connection("supabase", type=SupabaseConnection)
+import pathlib
+from auth import get_user, render_reset_password
+from layout import render_main_layout
+from dashboard import render_dashboard, render_professional_dashboard
+from professional import is_professional_enabled
+from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
@@ -41,34 +37,15 @@ def initialize_session_state():
 # Função principal que tudo controla.
 # Definindo qual parte do app se desenrola.
 def main():
+    initialize_session_state()  # Inicializamos a sessão antes de tudo.
+    load_css()  # Aplicamos o CSS para manter o visual bonito.
 
-    # Captura os parâmetros da URL
-    query_params = st.query_params
-    recovery_mode = query_params.get("type", [""])[0] == "recovery"
+    # Verifica se a URL contém parâmetros para reset de senha
+    if st.query_params.get("type") == "recovery":
+        from reset_password import render_reset_password  # Importe a função de reset
+        render_reset_password()
+        return  # Interrompe o fluxo normal do app
 
-    # Para depuração: Exibir parâmetros da URL capturados
-    st.write("Query Params Capturados:", query_params)
-    
-    if recovery_mode:
-        st.info("🔐 Você está no fluxo de recuperação de senha.")
-        
-        # Debug: Confirmação de que estamos no modo de recuperação
-        st.write("✅ Modo de recuperação ativado!")
-
-        new_password = st.text_input("Digite sua nova senha", type="password")
-        confirm_password = st.text_input("Confirme sua nova senha", type="password")
-
-        if st.button("Atualizar Senha"):
-            if new_password == confirm_password:
-                update_password(new_password)
-                st.success("✅ Sua senha foi atualizada. Agora você pode fazer login novamente.")
-            else:
-                st.error("As senhas não coincidem.")
-        return  # **Evita que o resto do código seja executado**
-    
-    # Caso não esteja no fluxo de recuperação, carrega o restante da página normalmente
-    initialize_session_state()
-    load_css()
     user = get_user()  # Obtém os dados do usuário autenticado.
 
     # Se temos um usuário logado na sessão...
@@ -94,6 +71,7 @@ def main():
         render_main_layout()  # A tela inicial será mostrada.
 
 
-# Executa a aplicação
+# Executa o código, sem mais demora,
+# Chamando main() e começando a história!
 if __name__ == "__main__":
     main()
