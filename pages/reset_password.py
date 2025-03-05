@@ -17,9 +17,9 @@ def reset_password_page():
         st.error("🚨 Erro: Configurações do Supabase não foram encontradas.")
         st.stop()
 
-    # Captura o token da URL corretamente
+    # Captura corretamente o token da URL
     query_params = st.query_params
-    access_token = query_params.get("access_token") or query_params.get("token")
+    access_token = query_params.get("token") or query_params.get("access_token")
 
     if not access_token:
         st.error("⚠️ Nenhum token encontrado na URL. Verifique o email ou tente novamente.")
