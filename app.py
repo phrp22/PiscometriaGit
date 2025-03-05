@@ -17,14 +17,13 @@ from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 
-# Captura a URL atual do navegador
-query_params = st.experimental_get_query_params()
-route = query_params.get("route", [""])[0]
+# 📌 Captura parâmetros da URL corretamente
+query_params = st.query_params
+route = query_params.get("route")
 
-# Se a URL for /reset-password, carregamos reset-password.py manualmente
+# 🔄 Se a URL for /reset-password, redireciona para a página correta
 if route == "reset-password":
-    os.system("streamlit run reset-password.py")
-    st.stop()
+    st.switch_page("reset-password.py")
 
 # Carrega o CCS para estilizar o visual, aplicando no Streamlit um design mais legal.
 def load_css():
