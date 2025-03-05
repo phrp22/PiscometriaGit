@@ -19,20 +19,21 @@ st.markdown(
     """
     <script>
     (function() {
-        // Se a query string não contiver 'access_token'
-        if (window.location.search.indexOf('access_token') === -1) {
+        // Verifica se a query string já contém "token=" ou "access_token="
+        if (window.location.search.indexOf('token=') === -1 && window.location.search.indexOf('access_token=') === -1) {
             var hash = window.location.hash;
             if (hash && hash.length > 1) {
-                // Remove o "#" e cria a nova query string
+                // Remove o "#" do início do hash
                 hash = hash.substring(1);
                 var currentQuery = window.location.search;
                 if (currentQuery) {
+                    // Adiciona os parâmetros do hash à query string existente
                     currentQuery = currentQuery + '&' + hash;
                 } else {
                     currentQuery = '?' + hash;
                 }
                 var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + currentQuery;
-                // Força a recarga com a nova URL
+                // Redireciona para a nova URL (com os parâmetros já na query string)
                 window.location.href = newUrl;
             }
         }
@@ -41,6 +42,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 # Função para carregar o CSS customizado (NÃO ALTERAR)
