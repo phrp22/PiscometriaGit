@@ -23,8 +23,6 @@ def render_sidebar(user):
         # Botão de logout
         if st.button("Logout 🚪", key="logout"):
             sign_out()
-            st.session_state["refresh"] = True
-            st.rerun()
 
         st.markdown("---")
 
