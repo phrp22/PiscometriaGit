@@ -51,7 +51,7 @@ def reset_password(email):
             email,
             options={"redirect_to": "https://abaete.streamlit.app/reset-password"}  # 🔹 Define o redirecionamento!
         )
-        return f"📩 Um email de recuperação foi enviado para {email}. Verifique sua caixa de entrada."
+        return f"📩 Um email de recuperação foi enviado para {email}."
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
 
