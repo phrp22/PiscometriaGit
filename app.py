@@ -10,7 +10,8 @@ st.set_page_config(
 )
 
 import pathlib
-from auth import get_user, render_reset_password
+from auth import get_user
+from reset_password import render_reset_password
 from layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from professional import is_professional_enabled
