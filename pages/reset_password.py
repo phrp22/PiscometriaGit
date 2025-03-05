@@ -30,7 +30,7 @@ if token and token_type == "recovery":
             st.error("A senha deve ter pelo menos 6 caracteres.")
         else:
             # 🔥 Atualiza a senha no Supabase
-            response = supabase.auth.reset_password_for_email(email, redirect_to=redirect_url)
+            response = supabase.auth.update_user({"password": new_password})
 
             if response and response.get("error"):
                 st.error("Erro ao redefinir a senha. O token pode estar expirado ou inválido.")
