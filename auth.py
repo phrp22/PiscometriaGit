@@ -49,7 +49,7 @@ def reset_password(email):
     try:
         supabase_client.auth.reset_password_for_email(
             email,
-            options={"redirect_to": "https://abaete.flutterflow.app/resetPasswordPage"} # 🔹 Define o redirecionamento!
+            options={"redirect_to": "https://forgot-password-tutorial-public-3fou6u.flutterflow.app"} # 🔹 Define o redirecionamento!
         )
         return f"📩 Um email de recuperação foi enviado para {email}."
     except Exception as e:
