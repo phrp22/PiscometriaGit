@@ -45,16 +45,15 @@ def sign_up(email, password, confirm_password, display_name):
 
 
 def reset_password(email):
-    """Envia um email para redefinição de senha com redirectTo customizado."""
+    """Envia um email para redefinição de senha com redirecionamento correto."""
     try:
         supabase_client.auth.reset_password_for_email(
-            email, 
-            redirectTo="https://forgot-password-tutorial-public-3fou6u.flutterflow.app/resetPasswordPage"
+            email,
+            options={"redirect_to": "https://forgot-password-tutorial-public-3fou6u.flutterflow.app/resetPasswordPage"} # 🔹 Define o redirecionamento!
         )
-        return f"📩 Um email de recuperação foi enviado para {email}. Verifique sua caixa de entrada."
+        return f"📩 Um email de recuperação foi enviado para {email}."
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
-
 
 
 def sign_out():
