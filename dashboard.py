@@ -1,10 +1,11 @@
 import streamlit as st
 import pathlib
 from auth import get_user, sign_out
-from professional import is_professional_enabled, enable_professional_area
 from profile import get_user_profile
-from gender_utils import adjust_gender_ending
 from patient_link import render_pending_invitations, render_patient_invitations, create_patient_invitation
+from utils.gender_utils import adjust_gender_ending
+from utils.professional import is_professional_enabled, enable_professional_area
+
 
 def render_sidebar(user):
     """Renderiza a sidebar para todos os usuários logados."""
