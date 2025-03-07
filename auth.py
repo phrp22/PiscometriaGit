@@ -18,7 +18,7 @@ def get_user():
 # 🔐 Função que verifica o login e deixa o usuário passar.  
 def sign_in(email, password):
     try:
-        # 📥 Tenta logar com email e senha, mesmo se não funcionar.
+        # Tenta logar com email e senha, mesmo se não funcionar.
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
        
         # Se deu certo e usuário há...
@@ -34,6 +34,7 @@ def sign_in(email, password):
 
             # 🔄 Guardamos os dados do usuário na sessão.
             st.session_state["user"] = user_data
+            st.cache_data.clear()
             st.session_state["refresh"] = True # E reiniciamos o fluxo sem frustração.
             return user_data, None
 
