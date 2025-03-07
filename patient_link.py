@@ -282,7 +282,7 @@ def render_patient_invitations(user):
             # Criamos colunas para organizar os botões
             col1, col2 = st.columns(2)
 
-            # ✅ Aplicamos a classe CSS nos botões através do `st.markdown()`
+            # Aplicamos a classe CSS nos botões através do `st.markdown()`
             with col1:
                 st.markdown(
                     '<div class="st-key-accept">'
@@ -299,13 +299,7 @@ def render_patient_invitations(user):
                         st.error(msg)
 
             with col2:
-                st.markdown(
-                    '<div class="st-key-reject">'
-                    '<button id="reject_button">Recusar</button>'
-                    '</div>',
-                    unsafe_allow_html=True
-                )
-                if st.button("Recusar", key=f"reject_{inv['id']}"):
+                if st.button("Recusar", key="reject"): 
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
