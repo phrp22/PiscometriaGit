@@ -236,17 +236,6 @@ def list_invitations_for_professional(professional_id: str):
     return []
 
 
-import streamlit as st
-import uuid
-from auth import supabase_client
-from utils.date_utils import format_date
-from utils.user_utils import get_user_info
-from utils.design_utils import load_css  # ✅ Importando a função que carrega o CSS
-
-# 🔄 Carrega o CSS no início para garantir que ele esteja aplicado
-load_css()
-
-
 # 🖥️ Renderiza os convites pendentes para o paciente aceitar ou recusar.
 def render_patient_invitations(user):
     """
