@@ -2,15 +2,18 @@ import streamlit as st
 import supabase
 
 
-# 🔑 Credenciais do Supabase
+# 🔑 Estabelece as credenciais do Supabase Auth.
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-
-# 📡 Criando o client para autenticar, é por aqui que o usuário vai logar!
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY) # E cria o client de auticação.
 
 
-# 🔐 Verifica o login e deixa o usuário passar.  
+# 🕵️‍♂️ Função que busca o usuário que fez a conexão.
+def get_user():
+    return st.session_state.get("user")
+
+
+# 🔐 Função que verifica o login e deixa o usuário passar.  
 def sign_in(email, password):
     try:
         # 📥 Tenta logar com email e senha, mesmo se não funcionar.
@@ -20,15 +23,14 @@ def sign_in(email, password):
         if response and hasattr(response, "user") and response.user: 
             user_obj = response.user # Pegamos seus dados para armazenar. 
 
-            # Criamos um dicionário para tudo guardar.
-            # ID, nome e email para autenticar.
+            # Criamos um dicionário para tudo guardar. Retorna ID, nome e email para autenticar.
             user_data = {
                 "email": user_obj.email,
                 "id": user_obj.id,
                 "display_name": user_obj.user_metadata.get("display_name", "Usuário") if hasattr(user_obj, "user_metadata") else "Usuário"
             }
 
-            # 🔄 Guardamos os dados na sessão.
+            # 🔄 Guardamos os dados do usuário na sessão.
             st.session_state["user"] = user_data
             st.session_state["refresh"] = True # E reiniciamos o fluxo sem frustração.
             return user_data, None
@@ -41,7 +43,7 @@ def sign_in(email, password):
 def sign_up(email, password, confirm_password, display_name):
     # Se as senhas não coincidem...
     if password != confirm_password:
-        return None, "❌ As senhas não coincidem!" # Hora de avisar!
+        return None, "❌ As senhas não coincidem!" # Vamos de avisar!
 
     try:
         # 📤 Criamos a conta no Supabase. 
@@ -61,7 +63,7 @@ def sign_up(email, password, confirm_password, display_name):
         return None, f"❌ Erro ao criar conta: {str(e)}"
 
 
-# 🔓 Esqueceu a senha? Vamos recuperar! 
+# 🔓 Função para a senha recuperar.
 def reset_password(email):
     try:
         supabase_client.auth.reset_password_for_email(
@@ -80,11 +82,6 @@ def sign_out():
     st.session_state["refresh"] = True
     st.session_state["processing"] = False
     st.rerun() # Desconecta o usuário sem gerar confusão.
-
-
-# 🕵️‍♂️ Essa função busca na sessão o usuário que fez a conexão.
-def get_user():
-    return st.session_state.get("user")
 
 
 

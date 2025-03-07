@@ -1,9 +1,8 @@
 import streamlit as st
 from auth import sign_in, sign_up, reset_password
 
-# 🏗️ Função principal do layout
+# 🏗️ Função para renderizar o layout principal.
 def render_main_layout():
-    """Renderiza a interface principal com opções de Login e Cadastro."""
 
     st.markdown("# Abaeté 🌱")  # O título do sistema aparece no cabeçalho
     # Criamos um subtítulo chamativo e destacado,
