@@ -4,7 +4,7 @@ from main_layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
 from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
 from utils.design_utils import load_css
-from utils.professional_dashboard import is_professional_enabled
+from utils.professional_utils import is_professional_enabled
 
 
 # Configuração inicial.
