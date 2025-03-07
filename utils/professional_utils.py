@@ -35,7 +35,7 @@ def is_professional_enabled(auth_user_id):
 def enable_professional_area(auth_user_id, email, display_name):
 
     # Verifica, sem gastar requisições ao banco de dados, se a área está ativa ou não.
-    professional_data = get_professional_data(auth_user_id)  # Consulta uma vez e reaproveita!
+    professional_data = get_professional_data(auth_user_id) 
 
     # Se houver algum registro...
     if professional_data:

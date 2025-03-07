@@ -4,11 +4,11 @@ from auth import get_user, sign_out
 from profile import get_user_profile
 from patient_link import render_pending_invitations, render_patient_invitations, create_patient_invitation
 from utils.gender_utils import adjust_gender_ending
-from utils.professional import is_professional_enabled, enable_professional_area
+from utils.professional_utils import is_professional_enabled, enable_professional_area
 
 
+# 🪜 Função para renderizar a sidebar.
 def render_sidebar(user):
-    """Renderiza a sidebar para todos os usuários logados."""
     with st.sidebar:
         if not user or "id" not in user:
             st.warning("⚠️ Erro: Usuário não autenticado.")
@@ -47,6 +47,8 @@ def render_sidebar(user):
         else:
             st.success("✅ Área do profissional habilitada!")
 
+
+# 📱 Função para renderizar a dashboard.
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
@@ -86,6 +88,8 @@ def render_dashboard():
     st.markdown("---")
     st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
 
+
+# 📲 Função para renderizar a dashboard do profissional.
 def render_professional_dashboard(user):
     """Renderiza o dashboard exclusivo para profissionais habilitados."""
     if not user or "id" not in user:
