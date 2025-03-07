@@ -2,18 +2,39 @@ import uuid
 import streamlit as st
 from auth import supabase_client
 from profile import get_user_profile
+from utils.date_utils import format_date
 
+
+# 💾 Função para cachear o ID do usuário.
+@st.cache_data
+def get_patient_by_email(email):
+    return _get_auth_user_id_by_email(email) # Obtém o auth_user_id do paciente via email e armazena em cache.
+
+# 💾 Função para cachear o nome do usuário encontrado via ID.
+@st.cache_data
+def get_patient_name_by_id(auth_user_id):
+    """Busca o nome do paciente pelo auth_user_id e armazena em cache."""
+    response = supabase_client.from_("user_profile") \
+        .select("display_name") \
+        .eq("auth_user_id", auth_user_id) \
+        .execute()
+
+    if response and hasattr(response, "data") and response.data:
+        return response.data[0]["display_name"]  # Retorna o nome do paciente
+
+    return "Paciente Desconhecido"  
+
+
+# 📩 Função para criar um convite de vinculação entre um profissional e um paciente.
 def create_patient_invitation(professional_id: str, patient_email: str):
-    """Cria um convite de vinculação entre um profissional e um paciente."""
     
-    st.write(f"🔍 Buscando paciente com email: {patient_email}")
+    st.write(f"🔍 Buscando {patient_email} no banco de dados do sistema.")
 
-    # Obter o auth_user_id do paciente via email
-    patient_auth_id = _get_auth_user_id_by_email(patient_email)
+    # Obter o auth_user_id do paciente via email.
+    patient_auth_id = get_patient_by_email(patient_email)
     if not patient_auth_id:
         st.error(f"🚨 Paciente {patient_email} não encontrado no banco.")
         return False, "Paciente não encontrado."
-
 
     # Verificar se o paciente já tem um perfil
     patient_profile = get_user_profile(patient_auth_id)
@@ -41,12 +62,13 @@ def create_patient_invitation(professional_id: str, patient_email: str):
         "status": "pending"
     }
 
-
     response = supabase_client.from_("professional_patient_link").insert(data).execute()
 
     if hasattr(response, "error") and response.error:
         st.error(f"❌ Erro ao criar convite: {response.error.message}")
         return False, f"Erro ao criar convite: {response.error.message}"
+
+    st.cache_data.clear()
 
     return True, None
 
@@ -193,9 +215,8 @@ def render_patient_invitations(user):
                         st.error(msg)
 
 
-
 def render_pending_invitations(professional_id):
-    """Renderiza os convites pendentes do profissional."""
+    """Renderiza os convites pendentes do profissional, mostrando nomes em vez de IDs."""
     st.subheader("📩 Convites Pendentes")
 
     pending_invitations = list_pending_invitations(professional_id)
@@ -205,7 +226,14 @@ def render_pending_invitations(professional_id):
         return
 
     for invitation in pending_invitations:
+        # Obter o nome do paciente a partir do ID
+        patient_name = get_patient_name_by_id(invitation['patient_id'])
+
+        # Formatar a data de envio
+        dia, mes, ano = format_date(invitation['created_at'])
+        formatted_date = f"{dia}/{mes}/{ano}" if dia else "Data inválida"
+
         st.write(f"📌 Convite ID: {invitation['id']}")
-        st.write(f"📅 Data de Envio: {invitation['created_at']}")
-        st.write(f"🔗 Paciente ID: {invitation['patient_id']}")
+        st.write(f"📅 Data de Envio: {formatted_date}")  # Agora formatado!
+        st.write(f"👤 Paciente: {patient_name}")
         st.markdown("---")

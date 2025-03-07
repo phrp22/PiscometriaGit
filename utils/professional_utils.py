@@ -3,7 +3,7 @@ from auth import supabase_client, sign_out
 from patient_link import create_patient_invitation 
 
 
-#  💾 Função para cachear o estado da área profissional.
+# 💾 Função para cachear o estado da área profissional.
 @st.cache_data
 def get_professional_data(auth_user_id):
     
