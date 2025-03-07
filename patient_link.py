@@ -219,8 +219,6 @@ def render_pending_invitations(professional_id):
     """Renderiza os convites pendentes do profissional, mostrando nomes em vez de IDs."""
     st.subheader("📩 Convites Pendentes")
 
-    st.cache_data.clear()
-
     pending_invitations = list_pending_invitations(professional_id)
 
     if not pending_invitations:
