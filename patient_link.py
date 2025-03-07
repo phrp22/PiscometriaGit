@@ -3,6 +3,7 @@ import streamlit as st
 from auth import supabase_client
 from utils.date_utils import format_date
 from utils.user_utils import get_user_info
+from utils.design_utils import load_css
 
 
 # 📩 Função para criar um convite de vinculação entre um profissional e um paciente.
