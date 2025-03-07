@@ -2,32 +2,12 @@ import streamlit as st
 import datetime
 from auth import supabase_client
 
-def user_has_profile(auth_user_id):
-    """Verifica se o usuário já tem um perfil no Supabase."""
-    response = supabase_client.from_("user_profile").select("auth_user_id").eq("auth_user_id", auth_user_id).execute()
-    return bool(response.data) if response and hasattr(response, "data") else False
-
-def get_display_name_from_auth():
-    """Busca o display_name do usuário autenticado no Supabase Auth."""
-    user_response = supabase_client.auth.get_user()
-
-    if not user_response or not user_response.user:
-        return "Usuário"
-
-    user_metadata = user_response.user.user_metadata if user_response.user.user_metadata else {}
-    return user_metadata.get("display_name", "Usuário")
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
-    """Cria um perfil do usuário no Supabase."""
+    """Cria um perfil do usuário no Supabase e limpa o cache após a inserção."""
     try:
-        # Verifica se o usuário está autenticado corretamente
-        user_response = supabase_client.auth.get_user()
-        if not user_response or not user_response.user:
-            return False, "Erro: Usuário não autenticado."
-
-        # Obtém metadata do usuário
-        user_metadata = user_response.user.user_metadata if user_response.user.user_metadata else {}
-        display_name = user_metadata.get("display_name", "Usuário")
+        # Obtém o display_name diretamente do perfil, se já existir no Supabase
+        display_name = get_user_info(auth_user_id).get("display_name", "Usuário")
 
         # Mapeamento de gênero
         genero_map = {"Masculino": "M", "Feminino": "F", "Não-binário": "N"}
@@ -48,7 +28,12 @@ def create_user_profile(auth_user_id, email, genero, data_nascimento):
         response = supabase_client.from_("user_profile").insert(data).execute()
         if hasattr(response, "error") and response.error:
             return False, response.error.message
+
+        # Limpa o cache para garantir que o sistema reconheça o novo perfil
+        st.cache_data.clear()
+
         return True, None
+
     except Exception as e:
         return False, str(e)
 

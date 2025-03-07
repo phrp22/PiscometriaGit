@@ -13,12 +13,12 @@ def get_user_info(identifier, by_email=False, full_profile=False):
         2. Se `by_email=False`, busca o usuário pelo ID.
         3. Se `full_profile=True`, retorna todos os dados do usuário.
         4. Se `full_profile=False`, retorna apenas `display_name` e `email`.
-        5. O cache é **separado por usuário**, garantindo que cada um veja apenas seus próprios dados.
+        5. Se o usuário não estiver cadastrado em `user_profile`, tenta obter `display_name` do Supabase Auth.
 
      Args:
         identifier (str): `auth_user_id` ou `email` do usuário.
         by_email (bool): Se `True`, faz a busca pelo e-mail. Se `False`, usa `auth_user_id`.
-        full_profile (bool): Se `True`, retorna todos os campos do perfil. Se `False`, retorna apenas `display_name` e `email`.
+        full_profile (bool): Se `True`, retorna todos os campos do usuário. Se `False`, retorna apenas `display_name` e `email`.
 
      Returns:
         dict: Dados do usuário.
@@ -53,8 +53,19 @@ def get_user_info(identifier, by_email=False, full_profile=False):
         if response and hasattr(response, "data") and response.data:
             return response.data[0]  # Retorna o primeiro resultado encontrado
 
-        # Se não encontrou, retorna valores padrões
+        # Se o usuário não estiver na tabela `user_profile`, buscamos nos metadados do Supabase Auth
+        user_response = supabase_client.auth.get_user()
+        if user_response and user_response.user:
+            user_metadata = user_response.user.user_metadata if user_response.user.user_metadata else {}
+            return {
+                "auth_user_id": identifier,
+                "display_name": user_metadata.get("display_name", "Usuário"),
+                "email": user_response.user.email
+            }
+
+        # Se ainda assim não encontrou, retorna valores padrões
         return {"auth_user_id": None, "display_name": "Usuário Desconhecido", "email": "Email não disponível"}
 
-    # Executa a função cacheada para garantir cache individual por usuário.
+    # Executa a função cacheada para garantir cache individual por usuário
     return fetch_user_info(identifier, by_email, full_profile)
+
