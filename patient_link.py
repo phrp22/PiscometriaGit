@@ -52,17 +52,6 @@ def create_patient_invitation(professional_id: str, patient_email: str):
     return True, None
 
 
-def list_pending_invitations(professional_id: str):
-    """Retorna todos os convites pendentes de um profissional."""
-    response = supabase_client.from_("professional_patient_link") \
-        .select("id, patient_id, status, created_at") \
-        .eq("professional_id", professional_id) \
-        .eq("status", "pending") \
-        .execute()
-
-    return response.data if response and hasattr(response, "data") else []
-
-
 def accept_invitation(professional_id: str, patient_id: str):
     """
     Atualiza o status do convite para 'accepted'.
@@ -95,6 +84,20 @@ def reject_invitation(professional_id: str, patient_id: str):
         return False, f"Erro ao recusar convite: {update_response.error.message}"
 
     return True, None
+
+
+def list_pending_invitations(professional_id: str):
+    """Retorna todos os convites pendentes de um profissional."""
+
+    st.cache_data.clear() 
+    
+    response = supabase_client.from_("professional_patient_link") \
+        .select("id, patient_id, status, created_at") \
+        .eq("professional_id", professional_id) \
+        .eq("status", "pending") \
+        .execute()
+
+    return response.data if response and hasattr(response, "data") else []
 
 
 def list_invitations_for_patient(patient_id: str):
@@ -173,8 +176,6 @@ def render_patient_invitations(user):
 
 def render_pending_invitations(professional_id):
     """Renderiza os convites pendentes do profissional, mostrando nome, e-mail e data formatada."""
-    
-    st.cache_data.clear()  # Garante atualização do cache se necessário
 
     st.subheader("📩 Convites Pendentes")
 
@@ -195,8 +196,7 @@ def render_pending_invitations(professional_id):
         formatted_date = f"{dia}/{mes}/{ano}" if dia else "Data inválida"
 
         # Exibir as informações formatadas
-        st.write(f"📌 **Convite ID:** {invitation['id']}")
-        st.write(f"📅 **Data de Envio:** {formatted_date}")
         st.write(f"👤 **Paciente:** {patient_name}")
+        st.write(f"📅 **Data de Envio:** {formatted_date}")
         st.write(f"✉️ **E-mail:** {patient_email}")  # Exibindo o e-mail
         st.markdown("---")
