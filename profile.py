@@ -1,7 +1,7 @@
 import streamlit as st
 import datetime
 from auth import supabase_client
-
+from utils.user_utils import get_user_profile
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
     """Cria um perfil do usuário no Supabase e limpa o cache após a inserção."""
