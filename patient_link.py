@@ -3,7 +3,7 @@ import streamlit as st
 from auth import supabase_client
 from profile import get_user_profile
 from utils.date_utils import format_date
-from utils.user_utils import get_patient_info  # 🚀 Importando a função correta
+from utils.user_utils import get_patient_info
 
 
 # 📩 Função para criar um convite de vinculação entre um profissional e um paciente.
@@ -61,6 +61,114 @@ def list_pending_invitations(professional_id: str):
         .execute()
 
     return response.data if response and hasattr(response, "data") else []
+
+
+def accept_invitation(professional_id: str, patient_id: str):
+    """
+    Atualiza o status do convite para 'accepted'.
+    Usado quando o paciente aceita o vínculo.
+    """
+    update_response = supabase_client.from_("professional_patient_link") \
+        .update({"status": "accepted"}) \
+        .eq("professional_id", professional_id) \
+        .eq("patient_id", patient_id) \
+        .execute()
+
+    if hasattr(update_response, "error") and update_response.error:
+        return False, f"Erro ao aceitar convite: {update_response.error.message}"
+
+    return True, None
+
+
+def reject_invitation(professional_id: str, patient_id: str):
+    """
+    Atualiza o status do convite para 'rejected'.
+    Usado quando o paciente recusa o vínculo.
+    """
+    update_response = supabase_client.from_("professional_patient_link") \
+        .update({"status": "rejected"}) \
+        .eq("professional_id", professional_id) \
+        .eq("patient_id", patient_id) \
+        .execute()
+
+    if hasattr(update_response, "error") and update_response.error:
+        return False, f"Erro ao recusar convite: {update_response.error.message}"
+
+    return True, None
+
+
+def list_invitations_for_patient(patient_id: str):
+    """
+    Lista todos os convites (pendentes ou não) para um paciente específico.
+    Retorna uma lista de dicionários contendo os dados.
+    """
+    response = supabase_client.from_("professional_patient_link") \
+        .select("*") \
+        .eq("patient_id", patient_id) \
+        .execute()
+
+    if response and hasattr(response, "data"):
+        return response.data
+    return []
+
+
+def list_invitations_for_professional(professional_id: str):
+    """
+    Lista todos os convites (pendentes ou não) para um profissional específico.
+    """
+    response = supabase_client.from_("professional_patient_link") \
+        .select("*") \
+        .eq("professional_id", professional_id) \
+        .execute()
+
+    if response and hasattr(response, "data"):
+        return response.data
+    return []
+
+
+def render_patient_invitations(user): 
+    """Renderiza os convites recebidos para o paciente aceitar ou recusar."""
+    invitations = list_invitations_for_patient(user["id"])
+    if not invitations:
+        return 
+
+    st.markdown("## 📩 Convites Pendentes")
+
+    for inv in invitations:
+        if inv["status"] == "pending":
+            professional_profile = get_user_profile(inv["professional_id"])
+            if professional_profile:
+                profissional_nome = professional_profile.get("display_name", "Profissional")
+                genero_profissional = professional_profile.get("genero", "M")
+
+                if genero_profissional == "F":
+                    titulo = "Dra."
+                elif genero_profissional == "N":
+                    titulo = "Drx."
+                else:
+                    titulo = "Dr."
+
+                st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if st.button("Aceitar", key="accept"):  # Chave para aplicar CSS
+                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite aceito com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+
+            with col2:
+                if st.button("Recusar", key="reject"):  # Chave para aplicar CSS
+                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
 
 def render_pending_invitations(professional_id):
