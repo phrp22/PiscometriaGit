@@ -236,6 +236,17 @@ def list_invitations_for_professional(professional_id: str):
     return []
 
 
+import streamlit as st
+import uuid
+from auth import supabase_client
+from utils.date_utils import format_date
+from utils.user_utils import get_user_info
+from utils.design_utils import load_css  # ✅ Importando a função que carrega o CSS
+
+# 🔄 Carrega o CSS no início para garantir que ele esteja aplicado
+load_css()
+
+
 # 🖥️ Renderiza os convites pendentes para o paciente aceitar ou recusar.
 def render_patient_invitations(user):
     """
@@ -256,9 +267,6 @@ def render_patient_invitations(user):
     Calls:
         dashboard.py → render_dashboard()
     """
-
-    # 🔄 Carregar CSS antes de exibir os botões
-    load_css()
 
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
@@ -282,46 +290,39 @@ def render_patient_invitations(user):
 
             st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
-            # Criando colunas para os botões estilizados
+            # Criamos colunas para organizar os botões
             col1, col2 = st.columns(2)
 
-            # Criamos um identificador único para cada botão
-            accept_key = f"accept_{inv['id']}"
-            reject_key = f"reject_{inv['id']}"
-
-            # Usa st.session_state para capturar cliques
-            if accept_key not in st.session_state:
-                st.session_state[accept_key] = False
-            if reject_key not in st.session_state:
-                st.session_state[reject_key] = False
-
-            # Criando botões estilizados
+            # ✅ Aplicamos a classe CSS nos botões através do `st.markdown()`
             with col1:
-                if st.markdown(f'<button class="st-key-accept" onclick="window.sessionStorage.setItem(\'{accept_key}\', \'true\'); window.location.reload();">Aceitar</button>', unsafe_allow_html=True):
-                    st.session_state[accept_key] = True
+                st.markdown(
+                    '<div class="st-key-accept">'
+                    '<button id="accept_button">Aceitar</button>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+                if st.button("Aceitar", key=f"accept_{inv['id']}"):
+                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite aceito com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
             with col2:
-                if st.markdown(f'<button class="st-key-reject" onclick="window.sessionStorage.setItem(\'{reject_key}\', \'true\'); window.location.reload();">Recusar</button>', unsafe_allow_html=True):
-                    st.session_state[reject_key] = True
-
-            # Processa a ação caso o botão tenha sido clicado
-            if st.session_state[accept_key]:
-                success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                if success:
-                    st.success("Convite aceito com sucesso!")
-                    st.session_state[accept_key] = False
-                    st.rerun()
-                else:
-                    st.error(msg)
-
-            if st.session_state[reject_key]:
-                success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                if success:
-                    st.success("Convite recusado.")
-                    st.session_state[reject_key] = False
-                    st.rerun()
-                else:
-                    st.error(msg)
+                st.markdown(
+                    '<div class="st-key-reject">'
+                    '<button id="reject_button">Recusar</button>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+                if st.button("Recusar", key=f"reject_{inv['id']}"):
+                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                    if success:
+                        st.success("Convite recusado.")
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
 
 # 🖥️ Renderiza os convites pendentes para o profissional
