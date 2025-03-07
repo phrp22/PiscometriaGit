@@ -58,7 +58,7 @@ def render_dashboard():
 
     profile = get_user_info(user["id"], full_profile=True)
     saudacao_base = "Bem-vindo"
-    saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
+    saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
 
     render_sidebar(user)
 
@@ -98,7 +98,7 @@ def render_professional_dashboard(user):
 
     profile = get_user_info(user["id"], full_profile=True)
     saudacao_base = "Bem-vindo"
-    saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
+    saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
 
     render_sidebar(user)
 
