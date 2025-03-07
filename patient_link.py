@@ -284,7 +284,7 @@ def render_patient_invitations(user):
 
             with col1:
                 # ✅ Aqui garantimos que a chave do botão está associada ao CSS correto!
-                if st.button("Aceitar", key=f"st-key-accept-{inv['id']}"):
+                if st.button("Aceitar", key="accept"):
                     success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite aceito com sucesso!")
@@ -294,7 +294,7 @@ def render_patient_invitations(user):
 
             with col2:
                 # ✅ Aqui garantimos que a chave do botão está associada ao CSS correto!
-                if st.button("Recusar", key=f"st-key-reject-{inv['id']}"):
+                if st.button("Recusar", key="reject"):
                     success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
                     if success:
                         st.success("Convite recusado.")
