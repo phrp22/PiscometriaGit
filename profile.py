@@ -52,12 +52,6 @@ def create_user_profile(auth_user_id, email, genero, data_nascimento):
     except Exception as e:
         return False, str(e)
 
-def get_user_profile(auth_user_id):
-    """Retorna o perfil do usuário (ou None se não existir)."""
-    response = supabase_client.from_("user_profile").select("*").eq("auth_user_id", auth_user_id).execute()
-    if response and hasattr(response, "data") and len(response.data) > 0:
-        return response.data[0]
-    return None
 
 def render_onboarding_questionnaire(user_id, user_email):
     """Renderiza o questionário inicial do usuário."""

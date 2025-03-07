@@ -2,10 +2,10 @@ import streamlit as st
 from auth import get_user
 from main_layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
-from profile import get_user_profile, render_onboarding_questionnaire, user_has_profile
+from profile import render_onboarding_questionnaire, user_has_profile
 from utils.design_utils import load_css
 from utils.professional_utils import is_professional_enabled
-
+from utils.user_utils import get_user_info
 
 # Configuração inicial.
 # Definimos título, ícone e o layout central.
@@ -37,8 +37,8 @@ def main():
     if user and "id" in user:
         user_id = user["id"]  # Guardamos o ID para ser utilizado nas funções.
 
-        # Busca as informações do perfil do usuário. Retorna um dicionário com auth_user_id, email, genero, data_nascimento e display_name do usuário.
-        user_profile = get_user_profile(user_id)
+        # Busca as informações do perfil do usuário com todos os campos. Retorna um dicionário contendo os dados completos do usuário.
+        user_profile = get_user_info(user_id, full_profile=True)
         # Busca quais usuários são profissionais. Retorna um dicionário com auth_user_id, email e area_habilitada do usuário.
         is_professional = is_professional_enabled(user_id)
 

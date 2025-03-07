@@ -2,10 +2,12 @@ import streamlit as st
 import supabase
 
 
-# 🔑 Estabelece as credenciais do Supabase Auth.
+# 🔑 Estabelece as credenciais do Supabase Auth no sectes do Streamlit.
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY) # E cria o client de auticação.
+
+# Cria o client de auticação. É por aqui que o usuário vai logar.
+supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 # 🕵️‍♂️ Função que busca o usuário que fez a conexão.

@@ -1,20 +1,20 @@
 import streamlit as st
 import pathlib
 from auth import get_user, sign_out
-from profile import get_user_profile
 from patient_link import render_pending_invitations, render_patient_invitations, create_patient_invitation
 from utils.gender_utils import adjust_gender_ending
 from utils.professional_utils import is_professional_enabled, enable_professional_area
+from utils.user_utils import get_user_info
 
 
-# 🪜 Função para renderizar a sidebar.
+# 🖥️ Função para renderizar a sidebar.
 def render_sidebar(user):
     with st.sidebar:
         if not user or "id" not in user:
             st.warning("⚠️ Erro: Usuário não autenticado.")
             return
 
-        profile = get_user_profile(user["id"])
+        profile = get_user_info(user["id"], full_profile=True)
         saudacao_base = "Bem-vindo"
         saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
@@ -48,7 +48,7 @@ def render_sidebar(user):
             st.success("✅ Área do profissional habilitada!")
 
 
-# 📱 Função para renderizar a dashboard.
+# 🖥️ Função para renderizar a dashboard.
 def render_dashboard():
     """Renderiza o dashboard para usuários autenticados."""
     user = get_user()
@@ -56,7 +56,7 @@ def render_dashboard():
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    profile = get_user_profile(user["id"])
+    profile = get_user_info(user["id"], full_profile=True)
     saudacao_base = "Bem-vindo"
     saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
@@ -89,14 +89,14 @@ def render_dashboard():
     st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
 
 
-# 📲 Função para renderizar a dashboard do profissional.
+# 🖥️ Função para renderizar a dashboard exclusiva para profissionais habilitados.
 def render_professional_dashboard(user):
-    """Renderiza o dashboard exclusivo para profissionais habilitados."""
+
     if not user or "id" not in user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    profile = get_user_profile(user["id"])
+    profile = get_user_info(user["id"], full_profile=True)
     saudacao_base = "Bem-vindo"
     saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
 
@@ -130,7 +130,7 @@ def render_professional_dashboard(user):
         else:
             st.warning("Por favor, insira o email do paciente.")
 
-    # ✅ Verificação para evitar erro de `KeyError`
+    # Verificação para evitar erro de `KeyError`
     if user and "id" in user:
         render_pending_invitations(user["id"])
     else:
