@@ -5,7 +5,6 @@ from utils.date_utils import format_date
 from utils.user_utils import get_user_info
 
 
-
 # 📩 Função para criar um convite de vinculação entre um profissional e um paciente.
 def create_patient_invitation(professional_id: str, patient_email: str):
     """
