@@ -235,15 +235,15 @@ def list_invitations_for_professional(professional_id: str):
     return []
 
 
-# 🖥️ Renderiza os convites pendentes do paciente
-def render_patient_invitations(user): 
+# 🖥️ Renderiza os convites pendentes para o paciente aceitar ou recusar.
+def render_patient_invitations(user):
     """
     Renderiza os convites recebidos para o paciente aceitar ou recusar.
 
     Fluxo:
         1. Obtém os convites pendentes do paciente.
         2. Exibe informações sobre o profissional que enviou o convite.
-        3. Cria botões para aceitar ou recusar.
+        3. Cria botões estilizados para aceitar ou recusar.
         4. Atualiza a interface ao interagir com os botões.
 
     Args:
@@ -256,9 +256,12 @@ def render_patient_invitations(user):
         dashboard.py → render_dashboard()
     """
 
+    # 🔄 Carregar CSS antes de exibir os botões
+    load_css()
+
     invitations = list_invitations_for_patient(user["id"])
     if not invitations:
-        return 
+        return
 
     st.markdown("##### 📩 Convites Pendentes")
 
@@ -278,25 +281,46 @@ def render_patient_invitations(user):
 
             st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
 
+            # Criando colunas para os botões estilizados
             col1, col2 = st.columns(2)
 
+            # Criamos um identificador único para cada botão
+            accept_key = f"accept_{inv['id']}"
+            reject_key = f"reject_{inv['id']}"
+
+            # Usa st.session_state para capturar cliques
+            if accept_key not in st.session_state:
+                st.session_state[accept_key] = False
+            if reject_key not in st.session_state:
+                st.session_state[reject_key] = False
+
+            # Criando botões estilizados
             with col1:
-                if st.button("Aceitar", key=f"accept_{inv['id']}"):
-                    success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite aceito com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error(msg)
+                if st.markdown(f'<button class="st-key-accept" onclick="window.sessionStorage.setItem(\'{accept_key}\', \'true\'); window.location.reload();">Aceitar</button>', unsafe_allow_html=True):
+                    st.session_state[accept_key] = True
 
             with col2:
-                if st.button("Recusar", key=f"reject_{inv['id']}"):
-                    success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
-                    if success:
-                        st.success("Convite recusado.")
-                        st.rerun()
-                    else:
-                        st.error(msg)
+                if st.markdown(f'<button class="st-key-reject" onclick="window.sessionStorage.setItem(\'{reject_key}\', \'true\'); window.location.reload();">Recusar</button>', unsafe_allow_html=True):
+                    st.session_state[reject_key] = True
+
+            # Processa a ação caso o botão tenha sido clicado
+            if st.session_state[accept_key]:
+                success, msg = accept_invitation(inv["professional_id"], inv["patient_id"])
+                if success:
+                    st.success("Convite aceito com sucesso!")
+                    st.session_state[accept_key] = False
+                    st.rerun()
+                else:
+                    st.error(msg)
+
+            if st.session_state[reject_key]:
+                success, msg = reject_invitation(inv["professional_id"], inv["patient_id"])
+                if success:
+                    st.success("Convite recusado.")
+                    st.session_state[reject_key] = False
+                    st.rerun()
+                else:
+                    st.error(msg)
 
 
 # 🖥️ Renderiza os convites pendentes para o profissional
