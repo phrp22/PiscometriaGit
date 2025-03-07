@@ -14,9 +14,9 @@ def render_sidebar(user):
             st.warning("⚠️ Erro: Usuário não autenticado.")
             return
 
-        profile = get_user_info(user["id"], full_profile=True)
+        profile = get_user_info(user["id"], full_profile=True) or {}
         saudacao_base = "Bem-vindo"
-        saudacao = adjust_gender_ending(saudacao_base, profile["genero"]) if profile else saudacao_base
+        saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
 
         st.markdown(f"**👤 {saudacao}, {user['display_name']}**")
         st.markdown(f"✉️ {user['email']}")

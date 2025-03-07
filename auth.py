@@ -83,6 +83,7 @@ def sign_out():
     st.session_state.pop("user", None)
     st.session_state["refresh"] = True
     st.session_state["processing"] = False
+    st.cache_data.clear() 
     st.rerun() # Desconecta o usuário sem gerar confusão.
 
 
