@@ -43,8 +43,9 @@ def main():
         is_professional = is_professional_enabled(user_id)
 
         # Se o questionário de cadastro ainda não foi respondido...
-        if not user_profile:
-            render_onboarding_questionnaire(user_id, user["email"])  # Renderizamos o questionário de cadastro.
+        if not user_profile or not user_profile.get("genero"):
+            render_onboarding_questionnaire(user_id, user["email"]) # Renderizamos o questionário de cadastro.
+
         # Mas...
         else:
             # Se o usuário é profissional...
