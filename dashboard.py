@@ -120,7 +120,7 @@ def render_professional_dashboard(user):
     st.write("Digite o email do paciente para enviar um convite de vinculação:")
     patient_email = st.text_input("Email do Paciente", key="patient_email_input")
     
-    if st.button("Enviar Convite", key="patientlink"):
+    if st.button("Enviar Convite", key="patientlink", use_container_width=True):
         if patient_email:
             success, msg = create_patient_invitation(user["id"], patient_email)
             if success:
