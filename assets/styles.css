@@ -78,7 +78,7 @@
 .st-key-authaction button,
 .st-key-resetpassword button,
 .st-key-profile-save button,
-.st-key-patientlink {
+.st-key-patientlink button {
     background-color: #7159c1 !important;
     color: white !important;
     font-size: 16px !important;
@@ -100,7 +100,7 @@
 .st-key-authaction button:hover,
 .st-key-resetpassword button:hover,
 .st-key-profile-save button:hover,
-.st-key-patientlink {
+.st-key-patientlink button:hover {
     background-color: #5e47b0 !important;
     transform: scale(1.1) !important;
 }
@@ -111,7 +111,7 @@
 .st-key-authaction button:active,
 .st-key-resetpassword button:active,
 .st-key-profile-save button:active,
-.st-key-patientlink {
+.st-key-patientlink button:active{
     background-color: #5e47b0 !important;
     border-color: #7159c1 !important;
     box-shadow: 0px 0px 15px rgba(130, 94, 255, 0.7) !important;
@@ -120,11 +120,11 @@
 }
 
 /* Efeito pós-clique */
-.st-key-logout button:active,
-.st-key-professional button:active,
-.st-key-authaction button:active,
-.st-key-resetpassword button:active,
-.st-key-profile-save button:active,
-.st-key-patientlink {
+.st-key-logout button:focus,
+.st-key-professional button:focus,
+.st-key-authaction button:focus,
+.st-key-resetpassword button:focus,
+.st-key-profile-save button:focus,
+.st-key-patientlink button:focus{
     animation: postClickGlow 1s ease-in-out;
 }
