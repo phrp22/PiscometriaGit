@@ -57,4 +57,4 @@ def get_professional_title(professional_profile):
     else:
         titulo = "Dr."
 
-    return f"{titulo} {profissional_nome}"
+    return f"{titulo} {professional_name}"
