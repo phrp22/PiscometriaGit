@@ -62,31 +62,13 @@ def render_dashboard():
 
     render_sidebar(user)
 
-    st.header(f"{saudacao}, {user['display_name']}! 🎉")
-    st.markdown("### 📈 Estatísticas Recentes")
+    st.subheader(f"{saudacao}, {user['display_name']}! 🎉")
+    st.markdown("---")
 
     render_patient_invitations(user)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="Pacientes cadastrados", value="42")
-    with col2:
-        st.metric(label="Avaliações concluídas", value="120")
-    with col3:
-        st.metric(label="Consultas agendadas", value="15")
-
     st.markdown("---")
-    st.subheader("📌 Últimas Atividades")
-    st.write("Aqui você pode exibir logs, gráficos ou outras informações relevantes.")
-
-    data = {
-        "Pacientes": [10, 20, 30, 40, 50],
-        "Avaliações": [5, 15, 25, 35, 45]
-    }
-    st.line_chart(data)
-
-    st.markdown("---")
-    st.write("Outros componentes e informações podem ser adicionados conforme a evolução do sistema.")
+    st.info("🔍 Novos recursos serão adicionados em breve!")
 
 
 # 🖥️ Função para renderizar a dashboard exclusiva para profissionais habilitados.
@@ -102,23 +84,13 @@ def render_professional_dashboard(user):
 
     render_sidebar(user)
 
-    st.header(f"{saudacao}, {user['display_name']}! 🎉")
+    st.subheader(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("### 📊 Área do Profissional")
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="Pacientes cadastrados", value="42")
-    with col2:
-        st.metric(label="Avaliações realizadas", value="128")
-    with col3:
-        st.metric(label="Última atualização", value="Hoje")
-
     st.markdown("---")
-    st.info("🔍 Novos recursos serão adicionados em breve!")
 
-    st.markdown("## Convidar Paciente")
-    st.write("Digite o email do paciente para enviar um convite de vinculação:")
-    patient_email = st.text_input("Email do Paciente", key="patient_email_input")
+    st.markdown("##### Convidar Paciente")
+    patient_email = st.text_input("Digite o email do paciente para enviar um convite de vinculação:", key="patient_email_input")
     
     if st.button("Enviar Convite", key="patientlink", use_container_width=True):
         if patient_email:
@@ -135,3 +107,6 @@ def render_professional_dashboard(user):
         render_pending_invitations(user["id"])
     else:
         st.warning("⚠️ Usuário inválido. Não foi possível carregar os convites.")
+
+    st.markdown("---")
+    st.info("🔍 Novos recursos serão adicionados em breve!")

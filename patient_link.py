@@ -4,6 +4,7 @@ from auth import supabase_client
 from utils.date_utils import format_date
 from utils.user_utils import get_user_info
 from utils.design_utils import load_css
+from utils.gender_utils import get_professional_title
 
 
 # 📩 Função para criar um convite de vinculação entre um profissional e um paciente.
@@ -266,18 +267,9 @@ def render_patient_invitations(user):
     for inv in invitations:
         if inv["status"] == "pending":
             professional_profile = get_user_info(inv["professional_id"], full_profile=True)
-
-            profissional_nome = professional_profile.get("display_name", "Profissional")
-            genero_profissional = professional_profile.get("genero", "M")
-
-            if genero_profissional == "F":
-                titulo = "Dra."
-            elif genero_profissional == "N":
-                titulo = "Drx."
-            else:
-                titulo = "Dr."
-
-            st.markdown(f"### {titulo} {profissional_nome} deseja se vincular a você.")
+            if professional_profile:
+                professional_name = get_professional_title(professional_profile)
+                st.markdown(f"##### {professional_name} deseja se vincular a você.")
 
             # Criamos colunas para organizar os botões
             col1, col2 = st.columns(2)
