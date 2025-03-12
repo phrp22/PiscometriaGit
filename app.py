@@ -2,10 +2,11 @@ import streamlit as st
 from auth import get_user
 from main_layout import render_main_layout
 from dashboard import render_dashboard, render_professional_dashboard
-from profile import render_onboarding_questionnaire
+from user_profile import render_onboarding_questionnaire
 from utils.design_utils import load_css
 from utils.professional_utils import is_professional_enabled
 from utils.user_utils import get_user_info
+
 
 # Configuração inicial.
 # Definimos título, ícone e o layout central.
@@ -19,27 +20,35 @@ st.set_page_config(
 
 # 🌐 Função para inicializar a sessão e evitar erros de navegação.
 def initialize_session_state():
+    
     # Se a sessão ainda não estiver definida...
     if "user" not in st.session_state:
-        st.session_state["user"] = None  # Definimos o usuário como não autenticado.
-    # E se o processamento das páginas ainda não foi iniciado...
+        st.session_state["user"] = None  # O usuário é inicializado como não autenticado.
+   
+    # Se o processamento das páginas ainda não foi executado...
     if "processing" not in st.session_state:
-        st.session_state["processing"] = False # É porque ainda não há nada para ser processado.
+        st.session_state["processing"] = False # É porque não há nada para ser processado.
+   
+    # Se a interface do aplicativo ainda não foi atualizada...
+    if "refresh" not in st.session_state:
+        st.session_state["refresh"] = False # Devemos aguardar alguma interação do usuário.
 
 
 # 🧭 Função principal que tudo controla.
 def main():
-    initialize_session_state() # Estabelece os ponteiros onde tudo se desenrola.
-    load_css() # E também cria o visual que é fundamental.
-    user = get_user()  # Além de verificar quem está navegando. Retorna um dicionário com o ID do Supabse Auth, email e display_name do usuário.
+    
+    initialize_session_state() # Inicializa a sessão.
+    load_css() # Cria o visual.
+    user = get_user()  # E verifica quem está navegando.
 
-    # Se temos um usuário com ID logado na sessão...
+    # Se temos um ID logado na sessão...
     if user and "id" in user:
-        user_id = user["id"]  # Guardamos o ID para ser utilizado nas funções.
+        user_id = user["id"]  # Guardamos o ID para ser utilizado no fluxo.
 
-        # Busca as informações do perfil do usuário com todos os campos. Retorna um dicionário contendo os dados completos do usuário.
+        # Busca as informações do perfil do usuário.
         user_profile = get_user_info(user_id, full_profile=True)
-        # Busca quais usuários são profissionais. Retorna um dicionário com auth_user_id, email e area_habilitada do usuário.
+        
+        # Busca quais usuários são profissionais.
         is_professional = is_professional_enabled(user_id)
 
         # Se o questionário de cadastro ainda não foi respondido...
@@ -53,7 +62,7 @@ def main():
                 render_professional_dashboard(user) # Exibe um dashboard especial.
             # Caso contrário...
             else:
-                render_dashboard() # Fica o dashboard normal.
+                render_dashboard() # Renderiza o dashboard normal.
 
     # Entretanto, se ninguém está logado...
     else:

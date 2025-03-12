@@ -68,4 +68,3 @@ def get_user_info(identifier, by_email=False, full_profile=False):
 
     # Executa a função cacheada para garantir cache individual por usuário
     return fetch_user_info(identifier, by_email, full_profile)
-

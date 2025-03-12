@@ -1,7 +1,8 @@
 import streamlit as st
-import datetime
+from datetime import date
 from auth import supabase_client
 from utils.user_utils import get_user_info
+
 
 def create_user_profile(auth_user_id, email, genero, data_nascimento):
     """Cria um perfil do usuário no Supabase e limpa o cache após a inserção."""
@@ -45,8 +46,9 @@ def render_onboarding_questionnaire(user_id, user_email):
 
     genero = st.selectbox("Qual seu gênero?", ["Masculino", "Feminino", "Não-binário"])
 
-    max_date = datetime.date.today()
-    min_date = datetime.date(1900, 1, 1)
+    max_date = date.today()
+    min_date = date(1900, 1, 1)
+
 
     data_nascimento = st.date_input(
         "Quando você nasceu?",

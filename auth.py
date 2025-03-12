@@ -2,7 +2,7 @@ import streamlit as st
 import supabase
 
 
-# 🔑 Estabelece as credenciais do Supabase Auth no sectes do Streamlit.
+# Recupera as credenciais do Supabase Auth no sectes do Streamlit.
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
@@ -17,6 +17,7 @@ def get_user():
 
 # 🔐 Função que verifica o login e deixa o usuário passar.  
 def sign_in(email, password):
+    
     try:
         # Tenta logar com email e senha, mesmo se não funcionar.
         response = supabase_client.auth.sign_in_with_password({"email": email, "password": password})
@@ -32,7 +33,7 @@ def sign_in(email, password):
                 "display_name": user_obj.user_metadata.get("display_name", "Usuário") if hasattr(user_obj, "user_metadata") else "Usuário"
             }
 
-            # 🔄 Guardamos os dados do usuário na sessão.
+            # Guardamos os dados do usuário na sessão.
             st.session_state["user"] = user_data
             st.cache_data.clear()
             st.session_state["refresh"] = True # E reiniciamos o fluxo sem frustração.
@@ -44,9 +45,10 @@ def sign_in(email, password):
 
 # 📝 Função para o usuário se registrar.
 def sign_up(email, password, confirm_password, display_name):
+    
     # Se as senhas não coincidem...
     if password != confirm_password:
-        return None, "❌ As senhas não coincidem!" # Vamos de avisar!
+        return None, "❌ As senhas não coincidem!" # Vamos te avisar!
 
     try:
         # 📤 Criamos a conta no Supabase. 
@@ -56,12 +58,13 @@ def sign_up(email, password, confirm_password, display_name):
             "options": {"data": {"display_name": display_name}} 
         })
 
-         # 🎉 Se tudo deu certo...
+        # 🎉 Se tudo deu certo...
         if response and hasattr(response, "user") and response.user:
-            # Resposta ele dá, e um email para confirmar.
-            return response.user, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada."
-        return None, "⚠️ Não foi possível criar a conta. Tente novamente."
-
+            return response.user, "📩 Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada." # Uma mensagem para confirmar.
+        
+        # Caso contrário...
+        return None, "⚠️ Não foi possível criar a conta. Tente novamente." # Vamos tentar de novo.
+    
     except Exception as e:
         return None, f"❌ Erro ao criar conta: {str(e)}"
 
@@ -73,7 +76,9 @@ def reset_password(email):
             email,
             options={"redirect_to": "https://resetpassword-3fou6u.flutterflow.app/resetPasswordPage"} # 🔹 Define o redirecionamento!
         )
+        
         return f"📩 Um email de recuperação foi enviado para {email}."
+    
     except Exception as e:
         return f"⚠️ Erro ao solicitar recuperação de senha: {str(e)}"
 
@@ -84,8 +89,6 @@ def sign_out():
     st.session_state.pop("user", None)
     st.session_state["refresh"] = True
     st.session_state["processing"] = False
+    st.session_state["show_prof_input"] = False
     st.cache_data.clear() 
     st.rerun() # Desconecta o usuário sem gerar confusão.
-
-
-

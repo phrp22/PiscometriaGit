@@ -5,7 +5,7 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
 
     # O título do sistema que aparece no cabeçalho.
-    st.markdown("# Academia Diagnóstica 🧠")
+    st.markdown("# Abaeté 🌱")
     
     # Criamos um subtítulo chamativo e destacado.
     st.markdown(
@@ -27,7 +27,6 @@ def render_main_layout():
     - **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
     
     🎯 **Tenha em mãos um sistema inteligente e baseado em evidências.**  
-    
     🔍 **Eleve sua prática profissional e ofereça um acompanhamento mais eficaz e personalizado.**  
     """)
 
@@ -47,7 +46,7 @@ def render_main_layout():
     # Se o usuário escolher "Cadastro"...
     if option == "Cadastro": # Mostramos mais campos de preenchimento.
         confirm_password = st.text_input("Confirme a Senha", type="password", key="confirm_password_input")
-        display_name = st.text_input("Primeiro Nome", key="display_name_input")
+        display_name = st.text_input("Nome Completo", key="display_name_input")
 
     # Se o usuário escolher "Login"...
     if option == "Login" and "account_created" in st.session_state:
@@ -61,38 +60,37 @@ def render_main_layout():
 
     # Botão principal para "Login" ou "Cadastro".
     if st.button(action_text, key="authaction", use_container_width=True, disabled=st.session_state.get("processing", False)):
-        st.session_state["processing"] = True  # Impede múltiplos cliques
+        st.session_state["processing"] = True  
 
-        if not email or not password:
-            message_placeholder.warning("⚠️ Por favor, complete o formulário antes de continuar e não utilize o preenchimento automático.")
-            st.session_state["processing"] = False  # Reseta o estado para permitir novo clique
-        else:
-            if option == "Login":  # Se for Login, chamamos a função sign_in()
-                user, message = sign_in(email, password)
-                if user:
-                    st.session_state["user"] = user  # Salvamos o usuário na sessão
-                    st.session_state["refresh"] = True  # Indicamos que a página precisa ser recarregada
-                    st.rerun()  # Recarrega a página para atualizar os estados da sessão
-                else:
-                    message_placeholder.error(f"{message}")
-                    st.session_state["processing"] = False  # Reseta para permitir novo clique
-            else:  # Se for Cadastro, chamamos a função sign_up()
-                if not display_name or not confirm_password:
-                    message_placeholder.warning("⚠️ Por favor, complete o formulário antes de continuar e não utilize o preenchimento automático.")
-                    st.session_state["processing"] = False  # Reseta para permitir novo clique
-                elif password != confirm_password:
-                    message_placeholder.error("❌ As senhas não coincidem. Tente novamente.")
-                    st.session_state["processing"] = False  # Reseta para permitir novo clique
-                else:
-                    user, message = sign_up(email, password, confirm_password, display_name)
+        try:
+            if not email or not password:
+                message_placeholder.warning("⚠️ Por favor, complete o formulário antes de continuar e não utilize o preenchimento automático.")
+            else:
+                message_placeholder.info("🔄 Processando...")  
+                
+                if option == "Login":
+                    user, message = sign_in(email, password)
                     if user:
-                        st.session_state["account_created"] = True  # Define que a conta foi criada
-                        st.session_state["confirmation_message"] = "📩 Um e-mail de verificação foi enviado para a sua caixa de entrada."
-                        st.rerun()  # Atualiza a interface
+                        st.session_state["user"] = user  
+                        st.session_state["refresh"] = True  
+                        st.rerun()  
                     else:
-                        message_placeholder.error(message)
-                        st.session_state["processing"] = False  # Reseta para permitir novo clique
-
+                        message_placeholder.error(f"{message}")
+                else:
+                    if not display_name or not confirm_password:
+                        message_placeholder.warning("⚠️ Por favor, complete o formulário antes de continuar e não utilize o preenchimento automático.")
+                    elif password != confirm_password:
+                        message_placeholder.error("❌ As senhas não coincidem. Tente novamente.")
+                    else:
+                        user, message = sign_up(email, password, confirm_password, display_name)
+                        if user:
+                            st.session_state["account_created"] = True  
+                            st.session_state["confirmation_message"] = "📩 Um e-mail de verificação foi enviado para a sua caixa de entrada."
+                            st.rerun()
+                        else:
+                            message_placeholder.error(message)
+        finally:
+            st.session_state["processing"] = False  
 
     # 🔓 Botão para recuperação de senha (somente na opção Login)
     if option == "Login":

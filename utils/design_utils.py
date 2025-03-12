@@ -19,3 +19,6 @@ def load_css():
     # Se houver conteúdo...
     if css_content:
         st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True) # Aplica o CSS na página.
+
+
+
