@@ -36,19 +36,16 @@ def assign_scale_to_patient(professional_id, patient_id, scale_id):
 
     Fluxo:
         1. Verifica o vínculo entre o profissional e o paciente na tabela 'professional_patient_link'.
-        2. Insere um registro na tabela 'scales' associando o scale_id ao link_id do vínculo.
-    
+        2. Busca a escala disponível na tabela 'available_scales' para obter o scale_name.
+        3. Insere um registro na tabela 'scales' associando o scale_id, scale_name e o link_id do vínculo.
+
     Args:
         professional_id (str): ID do profissional.
         patient_id (str): ID do paciente.
-        scale_id (str): ID da escala escolhida (da tabela available_scales).
+        scale_id (str): ID da escala (disponível na tabela available_scales).
 
     Returns:
-        tuple: (bool, mensagem) - True se a operação for bem-sucedida; caso contrário, False e mensagem de erro.
-
-    Calls:
-        Supabase → Tabela 'professional_patient_link'
-        Supabase → Tabela 'scales'
+        tuple: (bool, mensagem) – True se bem-sucedido, caso contrário, False e mensagem de erro.
     """
     try:
         # Verifica o vínculo entre profissional e paciente
@@ -62,10 +59,20 @@ def assign_scale_to_patient(professional_id, patient_id, scale_id):
             return False, "Nenhum vínculo ativo encontrado com este paciente."
         link_id = link_response.data[0]["id"]
 
+        # Busca o scale_name da tabela available_scales
+        scale_response = supabase_client.from_("available_scales") \
+            .select("scale_name") \
+            .eq("id", scale_id) \
+            .execute()
+        if not scale_response.data:
+            return False, "Escala não encontrada no catálogo."
+        scale_name = scale_response.data[0]["scale_name"]
+
         # Insere o registro na tabela 'scales'
         data = {
             "link_id": link_id,
-            "scale_id": scale_id  # Aqui 'scale_id' refere-se à escala escolhida
+            "scale_id": scale_id,
+            "scale_name": scale_name
         }
         response = supabase_client.from_("scales").insert(data).execute()
         if hasattr(response, "error") and response.error:
