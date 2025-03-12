@@ -10,8 +10,8 @@ from utils.user_utils import get_user_info
 # Configuração inicial.
 # Definimos título, ícone e o layout central.
 st.set_page_config(
-    page_title="Abaeté",
-    page_icon="🪴",
+    page_title="Academia Diagnóstica",
+    page_icon="🧠",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
