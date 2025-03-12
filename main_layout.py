@@ -5,7 +5,7 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
 
     # O título do sistema que aparece no cabeçalho.
-    st.markdown("# Abaeté 🌱")
+    st.markdown("# Academia Diagnóstica 🧠")
     
     # Criamos um subtítulo chamativo e destacado.
     st.markdown(
@@ -27,6 +27,7 @@ def render_main_layout():
     - **Monitore a evolução longitudinalmente** observando padrões ao longo do tempo.
     
     🎯 **Tenha em mãos um sistema inteligente e baseado em evidências.**  
+    
     🔍 **Eleve sua prática profissional e ofereça um acompanhamento mais eficaz e personalizado.**  
     """)
 
