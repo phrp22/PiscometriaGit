@@ -5,6 +5,7 @@ from utils.gender_utils import adjust_gender_ending, get_professional_title
 from utils.professional_utils import  render_professional_enable_section, is_professional_enabled, enable_professional_area, get_professional_data
 from utils.user_utils import get_user_info
 from utils.goals_utils import render_patient_goals, render_add_goal_section 
+from utils.scales_utils import render_add_scale_section, render_patient_scales
 
 
 # 🖥️ Função para renderizar a sidebar.
@@ -121,9 +122,17 @@ def render_professional_dashboard(user):
     Fluxo:
         1. Obtém os dados do usuário autenticado.
         2. Renderiza a sidebar com informações do usuário.
-        3. Exibe um seletor de ações para o profissional (Convidar Paciente, Ver Convites, Adicionar Meta).
-        4. Executa a ação escolhida pelo profissional.
-
+        3. Exibe um seletor de ações para o profissional, agora utilizando um selectbox, com as opções:
+           - "📩 Convidar Paciente"
+           - "📜 Visualizar Convites Pendentes"
+           - "🎯 Adicionar Meta para Paciente"
+           - "📝 Enviar Escala Psicometica"
+        4. Executa a ação escolhida:
+           - Se for "Convidar Paciente", permite inserir o e-mail e enviar o convite.
+           - Se for "Visualizar Convites Pendentes", exibe os convites pendentes.
+           - Se for "Adicionar Meta para Paciente", chama render_add_goal_section().
+           - Se for "Enviar Escala Psicometica", chama render_add_scale_section() para atribuir uma escala.
+    
     Args:
         user (dict): Dicionário contendo os dados do usuário autenticado.
 
@@ -134,10 +143,9 @@ def render_professional_dashboard(user):
         render_sidebar()
         patient_link.py → create_patient_invitation()
         patient_link.py → render_pending_invitations()
-        goals_utils.py → get_linked_patients()
-        dashboard.py → render_add_goal_section()
+        goals_utils.py → render_add_goal_section()
+        scales_utils.py → render_add_scale_section()  (função a ser implementada para escalas)
     """
-    
     if not user or "id" not in user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
@@ -145,31 +153,34 @@ def render_professional_dashboard(user):
     # Renderiza a sidebar.
     render_sidebar(user)
 
-    #  Obtém as informações completas do profissional.
+    # Obtém as informações completas do profissional.
     profile = get_user_info(user["id"], full_profile=True)
 
     # Obtém o título do profissional.
     professional_title = get_professional_title(profile)
 
     # Ajusta a saudação conforme o gênero do profissional.
-    saudacao_base = "Bem-vindo" 
+    saudacao_base = "Bem-vindo"
     saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
 
     st.subheader(f"{saudacao}, {professional_title}! 🎉")
 
-    # --- Seletor de funcionalidades ---
+    # --- Seletor de funcionalidades usando selectbox ---
     st.markdown("##### 🔽 Selecione uma ação:")
-    opcao_selecionada = st.radio(
-        "",  
-        ["📩 Convidar Paciente", "📜 Visualizar Convites Pendentes", "🎯 Adicionar Meta para Paciente"],
-        horizontal=True
+    opcao_selecionada = st.selectbox(
+        "",
+        [
+            "📩 Convidar Paciente",
+            "📜 Visualizar Convites Pendentes",
+            "🎯 Adicionar Meta para Paciente",
+            "📝 Enviar Escala Psicometica"
+        ],
+        key="action_select"
     )
 
-    # --- Opção 1: Convidar Paciente ---
     if opcao_selecionada == "📩 Convidar Paciente":
         st.markdown("##### 📩 Convidar Paciente")
         patient_email = st.text_input("Digite o email do paciente:", key="patient_email_input")
-        
         if st.button("Enviar Convite", key="patientlink", use_container_width=True):
             if patient_email:
                 success, msg = create_patient_invitation(user["id"], patient_email)
@@ -179,13 +190,12 @@ def render_professional_dashboard(user):
                     st.error(f"Erro: {msg}")
             else:
                 st.warning("⚠️ Por favor, insira o email do paciente.")
-
-    # --- Opção 2: Visualizar Convites Pendentes ---
     elif opcao_selecionada == "📜 Visualizar Convites Pendentes":
         st.markdown("##### 📜 Convites Pendentes")
-        render_pending_invitations(user["id"]) 
-
-    # --- Opção 3: Adicionar Meta para Paciente ---
+        render_pending_invitations(user["id"])
     elif opcao_selecionada == "🎯 Adicionar Meta para Paciente":
-        render_add_goal_section(user)  # ✅ Chamada para a nova função encapsulada
-
+        render_add_goal_section(user)
+    elif opcao_selecionada == "📝 Enviar Escala Psicometica":
+        # Chama a função para atribuir uma escala ao paciente.
+        # Essa função deve ser implementada no módulo scales_utils.py.
+        render_add_scale_section(user)
