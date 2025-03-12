@@ -5,7 +5,7 @@ from auth import sign_in, sign_up, reset_password
 def render_main_layout():
 
     # O título do sistema que aparece no cabeçalho.
-    st.markdown("# Abaeté 🌱")
+    st.markdown("# Academia Diagnóstica 🧠")
     
     # Criamos um subtítulo chamativo e destacado.
     st.markdown(
