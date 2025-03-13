@@ -66,16 +66,17 @@ def render_sidebar(user):
 # 🖥️ Função para renderizar a dashboard do paciente.
 def render_dashboard():
     """
-    Renderiza a dashboard do paciente, mostrando convites pendentes e metas atribuídas.
+    Renderiza a dashboard do paciente, mostrando convites pendentes, metas atribuídas e escalas psicométricas.
 
     Fluxo:
         1. Obtém os dados do usuário autenticado.
         2. Renderiza a sidebar com informações do usuário.
         3. Exibe convites pendentes para vinculação com profissionais.
-        4. Exibe as metas do paciente chamando `render_patient_goals()`.
+        4. Exibe as metas do paciente (utilizando render_patient_goals()).
+        5. Exibe as escalas psicométricas atribuídas ao paciente, permitindo que ele responda o questionário (utilizando render_patient_scales()).
 
     Args:
-        None (Obtém o usuário autenticado internamente).
+        None (obtém o usuário autenticado internamente).
 
     Returns:
         None (apenas renderiza a interface).
@@ -83,35 +84,38 @@ def render_dashboard():
     Calls:
         render_sidebar()
         patient_link.py → render_patient_invitations()
-        dashboard.py → render_patient_goals()
+        goals_utils.py → render_patient_goals()
+        scales_utils.py → render_patient_scales()
     """
-
-    user = get_user()  # 🔐 Obtém os dados do usuário autenticado.
-
+    user = get_user()  # Obtém os dados do usuário autenticado.
     if not user or "id" not in user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    # 🔍 Obtém as informações completas do usuário.
+    # Obtém informações completas do usuário e ajusta a saudação conforme o gênero.
     profile = get_user_info(user["id"], full_profile=True)
-    
-    # 🔄 Ajusta a saudação conforme o gênero do usuário.
-    saudacao_base = "Bem-vindo"
-    saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
+    saudacao = adjust_gender_ending("Bem-vindo", profile.get("genero", "M"))
 
-    # 📌 Renderiza a sidebar.
+    # Renderiza a sidebar com informações básicas e botão de logout.
     render_sidebar(user)
 
-    # 📢 Exibe uma saudação personalizada na tela inicial.
+    # Exibe a saudação personalizada na tela inicial.
     st.header(f"{saudacao}, {user['display_name']}! 🎉")
-    
     st.markdown("---")
 
-    # 📩 Renderiza os convites pendentes do paciente.
+    # Exibe os convites pendentes do paciente.
     render_patient_invitations(user)
 
-    # 📋 Renderiza as metas do paciente (chama a nova função)
+    st.markdown("---")
+
+    # Exibe as metas atribuídas ao paciente.
     render_patient_goals(user["id"])
+
+    st.markdown("---")
+
+    # Exibe as escalas psicométricas atribuídas ao paciente,
+    # permitindo que ele responda o questionário e salve as respostas.
+    render_patient_scales(user["id"])
 
 
 # 🖥️ Função para renderizar a dashboard exclusiva para profissionais habilitados.
@@ -166,9 +170,9 @@ def render_professional_dashboard(user):
     st.subheader(f"{saudacao}, {professional_title}! 🎉")
 
     # --- Seletor de funcionalidades usando selectbox ---
-    st.markdown("##### 🔽 Selecione uma ação:")
+    st.markdown("##### Painel Profissional")
     opcao_selecionada = st.selectbox(
-        "",
+        "🔽 Selecione uma ação:",
         [
             "📩 Convidar Paciente",
             "📜 Visualizar Convites Pendentes",
