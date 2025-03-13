@@ -232,21 +232,29 @@ def update_scale_answers(scale_progress_id, answers):
 
 
 
+import streamlit as st
+from datetime import date
+import json
+from auth import supabase_client
+from utils.date_utils import format_date
+from utils.scales_utils import get_assigned_scales, initialize_scale_progress, update_scale_answers
+
 def render_patient_scales(user_id):
     """
     Renderiza as escalas psicométricas atribuídas ao paciente e permite que ele responda aos itens da escala.
-    Se a escala já foi respondida, exibe as respostas salvas e uma mensagem de conclusão, evitando que o formulário seja exibido novamente.
+    Apenas escalas ainda não respondidas (não concluídas) serão exibidas. Se houver mais de uma escala pendente,
+    exibe somente a primeira, de modo que, após o envio, a próxima apareça.
 
     Fluxo:
         1. Obtém as escalas atribuídas ao paciente via get_assigned_scales().
-        2. Para cada escala, busca a definição da escala no catálogo 'available_scales' para obter os itens (perguntas e opções).
-        3. Inicializa (ou recupera) o registro de progresso para a data atual usando initialize_scale_progress().
-        4. Verifica se a escala já foi concluída (campo 'completed'):
-            - Se sim, exibe uma mensagem e as respostas salvas.
-            - Se não, exibe um formulário dinâmico para responder à escala.
-        5. No formulário, para cada item, utiliza um widget (st.radio) com um placeholder "Selecione..." seguido das opções reais.
-        6. Ao submeter, valida se todas as perguntas foram respondidas (nenhum valor permanece "Selecione...").
-        7. Se validado, salva as respostas via update_scale_answers(), atualizando também o campo 'completed' para True.
+        2. Filtra os registros para manter somente as escalas cujo registro de progresso para a data atual não esteja concluído.
+        3. Se não houver escalas pendentes, exibe uma mensagem informando que todas foram respondidas.
+        4. Caso haja uma escala pendente, busca sua definição no catálogo (available_scales) para obter os itens (perguntas e opções).
+        5. Inicializa (ou recupera) o registro de progresso para a data atual usando initialize_scale_progress().
+        6. Exibe um formulário dinâmico para responder à escala:
+           - Para cada item, utiliza um widget (st.radio) com um placeholder "Selecione..." seguido das opções (como as strings definidas).
+        7. Ao submeter, valida se todas as perguntas foram respondidas (nenhum valor permanece "Selecione...").
+        8. Se validado, salva as respostas via update_scale_answers() e a escala passa a ser considerada concluída, não sendo mais exibida.
 
     Args:
         user_id (str): ID do paciente autenticado.
@@ -272,72 +280,80 @@ def render_patient_scales(user_id):
         st.info("Nenhuma escala atribuída no momento.")
         return
 
-    # Para cada escala atribuída, renderiza o questionário dinâmico
+    # 2. Filtra escalas que ainda não foram respondidas hoje
+    pending_scales = []
     for scale in assigned_scales:
-        st.markdown(f"## {scale['scale_name']}")
-        
-        # 2. Buscar a definição da escala no catálogo available_scales para obter os itens
-        scale_id_catalogo = scale["scale_id"]  # ID que referencia available_scales
-        scale_info = supabase_client.from_("available_scales") \
-            .select("items") \
-            .eq("id", scale_id_catalogo) \
-            .execute()
-        if not scale_info.data:
-            st.warning("Não foi possível encontrar os itens para essa escala.")
-            continue
-
-        # Converte o campo 'items' para dict, se necessário
-        escala_json = scale_info.data[0]["items"]
-        if isinstance(escala_json, str):
-            escala_json = json.loads(escala_json)
-        lista_perguntas = escala_json.get("items", [])
-        
-        # 3. Inicializa o registro de progresso para hoje (se não existir)
-        init_success, scale_progress_id_or_msg = initialize_scale_progress(scale["id"], scale.get("link_id"))
-        if not init_success:
-            st.error(scale_progress_id_or_msg)
-            continue
-        scale_progress_id = scale_progress_id_or_msg
-
-        # 4. Verifica se a escala já foi respondida hoje
+        # Verifica o registro de progresso para a escala
         progress_resp = supabase_client.from_("scale_progress") \
-            .select("completed, answers") \
-            .eq("id", scale_progress_id) \
+            .select("completed") \
+            .eq("id", scale["id"]) \
             .execute()
-        if progress_resp.data and progress_resp.data[0]["completed"]:
-            st.success("Você já respondeu esta escala.")
-            st.markdown("**Respostas:**")
-            st.json(progress_resp.data[0]["answers"])
+        if progress_resp.data and progress_resp.data[0].get("completed") is True:
+            continue  # Escala já respondida, não adiciona à lista
         else:
-            # 5. Exibe o formulário para responder a escala
-            with st.form(key=f"form_scale_{scale['id']}"):
-                st.write("Responda a escala abaixo:")
-                answers_dict = {}
-                # Para cada pergunta, cria um widget st.radio com um placeholder "Selecione..."
-                for item_obj in lista_perguntas:
-                    question_id = item_obj["id"]
-                    question_text = item_obj["question"]
-                    options = ["Selecione..."] + item_obj.get("options", [])
-                    user_response = st.radio(
-                        label=f"{question_id}. {question_text}",
-                        options=options,
-                        key=f"{scale['id']}_{question_id}",
-                        index=0
-                    )
-                    answers_dict[f"question_{question_id}"] = user_response
+            pending_scales.append(scale)
+    
+    if not pending_scales:
+        st.info("Você já respondeu todas as escalas.")
+        return
 
-                submitted = st.form_submit_button("Salvar Respostas")
-                # 6. Validação: verifica se alguma resposta está com o placeholder "Selecione..."
-                incomplete = any(answer == "Selecione..." for answer in answers_dict.values())
-                if submitted:
-                    if incomplete:
-                        st.error("Por favor, responda a todas as perguntas antes de enviar.")
-                    else:
-                        success, msg = update_scale_answers(scale_progress_id, answers_dict)
-                        if success:
-                            st.success(msg)
-                        else:
-                            st.error(msg)
+    # 3. Seleciona a primeira escala pendente para exibição
+    scale = pending_scales[0]
+    st.markdown(f"## {scale['scale_name']}")
+
+    # 4. Buscar a definição da escala no catálogo available_scales (para obter os itens)
+    scale_id_catalogo = scale["scale_id"]  # Esse é o ID da escala no catálogo
+    scale_info = supabase_client.from_("available_scales") \
+        .select("items") \
+        .eq("id", scale_id_catalogo) \
+        .execute()
+    if not scale_info.data:
+        st.warning("Não foi possível encontrar os itens para essa escala.")
+        return
+
+    # Converte o campo 'items' para dicionário, se necessário
+    escala_json = scale_info.data[0]["items"]
+    if isinstance(escala_json, str):
+        escala_json = json.loads(escala_json)
+    lista_perguntas = escala_json.get("items", [])
+
+    # 5. Inicializa o registro de progresso para hoje (se não existir)
+    init_success, scale_progress_id_or_msg = initialize_scale_progress(scale["id"], scale.get("link_id"))
+    if not init_success:
+        st.error(scale_progress_id_or_msg)
+        return
+    scale_progress_id = scale_progress_id_or_msg
+
+    # 6. Exibe o formulário para responder a escala
+    with st.form(key=f"form_scale_{scale['id']}"):
+        st.write("Responda a escala abaixo:")
+        answers_dict = {}
+        # Para cada pergunta, cria um widget radio com placeholder "Selecione..."
+        for item_obj in lista_perguntas:
+            question_id = item_obj["id"]
+            question_text = item_obj["question"]
+            options = ["Selecione..."] + item_obj.get("options", [])
+            user_response = st.radio(
+                label=f"{question_id}. {question_text}",
+                options=options,
+                key=f"{scale['id']}_{question_id}",
+                index=0  # Garante que o placeholder seja o valor padrão
+            )
+            answers_dict[f"question_{question_id}"] = user_response
+
+        submitted = st.form_submit_button("Salvar Respostas")
+        # 7. Validação: Verifica se alguma resposta continua com o valor "Selecione..."
+        incomplete = any(answer == "Selecione..." for answer in answers_dict.values())
+        if submitted:
+            if incomplete:
+                st.error("Por favor, responda a todas as perguntas antes de enviar.")
+            else:
+                success, msg = update_scale_answers(scale_progress_id, answers_dict)
+                if success:
+                    st.success(msg)
+                else:
+                    st.error(msg)
+
 
 
 
