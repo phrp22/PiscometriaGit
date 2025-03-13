@@ -1,107 +1,201 @@
-import streamlit as st
+import sys
+import os
 import json
+import streamlit as st
+from datetime import date
 from auth import supabase_client
-from .correction_config import correction_config
 from utils.user_utils import get_user_info
 
+# ===============================
+# Dados Normativos para BIS‑11
+# ===============================
+# Esses dados são fixos e representam os escores normativos para cada subescala e o total.
+percentile_table_bis11 = {
+    "Attention": [5, 6, 7, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 13, 13, 14, 16, 18],
+    "Cognitive Instability": [3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 10, 12],
+    "Motor": [7, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 13, 13, 14, 14, 15, 15, 16, 18, 20, 23],
+    "Perseverance": [4, 4, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 10, 12],
+    "Cognitive Complexity": [6, 8, 9, 9, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 18],
+    "Self-Control": [6, 8, 9, 10, 10, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16, 17, 18, 19, 22],
+    "Total": [40, 47, 50, 52, 53, 55, 56, 58, 59, 60, 62, 63, 64, 65, 67, 68, 70, 72, 76, 80, 90]
+}
 
-def get_completed_scales(patient_id):
+percentile_indices_bis11 = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99, 100]
+
+# ===============================
+# Configuração de Inversão de Itens e Mapeamento
+# ===============================
+# Itens que devem ser invertidos (números das questões BIS‑11)
+itens_para_inverter = [1, 7, 8, 9, 10, 12, 13, 15, 20, 29, 30]
+
+# Mapeamento para converter respostas em valores numéricos
+answer_map = {
+    "Raramente ou nunca": 1,
+    "Às vezes": 2,
+    "Frequentemente": 3,
+    "Sempre ou quase sempre": 4
+}
+
+# Mapeamento das subescalas (1ª ordem) conforme Patton et al. (1995)
+subscale_mapping = {
+    "Attention": [5, 9, 11, 20, 28],
+    "Cognitive Instability": [6, 24, 26],
+    "Motor": [2, 3, 4, 17, 19, 22],
+    "Perseverance": [16, 21, 23],
+    "Cognitive Complexity": [10, 15, 18, 27, 29],
+    "Self-Control": [1, 7, 8, 12, 13, 14, 30]
+}
+
+# ===============================
+# Função para Encontrar Intervalos de Percentis
+# ===============================
+def find_percentile_interval(score, factor, percentile_table, percentile_indices):
     """
-    Retorna as escalas que foram concluídas (completed=True) pelo paciente especificado.
-
-    Fluxo:
-        1. Busca o 'link_id' do paciente na tabela 'professional_patient_link' (onde status='accepted').
-        2. Faz um join com a tabela 'scales' ao consultar 'scale_progress', para trazer 'scale_name'.
-           - Para isso, é preciso ter a FK (scale_id) em 'scale_progress' referenciando 'scales(id)'.
-        3. Retorna os registros em que 'link_id' corresponde ao do paciente e 'completed' é True.
-        4. Cada registro retorna, além dos campos de 'scale_progress', o campo 'scale_name' (via join).
+    Encontra o intervalo de percentis com base no escore e no fator.
 
     Args:
-        patient_id (str): ID do paciente (usuário autenticado).
+        score (int): Escore do paciente.
+        factor (str): Nome do fator/subescala.
+        percentile_table (dict): Tabela normativa de percentis para a escala.
+        percentile_indices (list): Lista de percentis disponíveis.
 
     Returns:
-        tuple: (list, str or None)
-            - (completed_scales, None) se a consulta foi bem-sucedida.
-            - ([], 'mensagem_de_erro') se houver algum erro ou se não encontrar o vínculo.
+        str: Intervalo ou percentil correspondente ao escore.
+    """
+    normative_scores = percentile_table[factor]
+    matching_percentiles = []
+    for i, value in enumerate(normative_scores):
+        if score == value:
+            matching_percentiles.append(percentile_indices[i + 1])
+    if not matching_percentiles:
+        for i, value in enumerate(normative_scores):
+            if score <= value:
+                if i + 1 < len(percentile_indices):
+                    return f"{percentile_indices[i]}-{percentile_indices[i+1]}"
+                else:
+                    return f"{percentile_indices[-1]}"
+        return f"{percentile_indices[-1]}"
+    if len(matching_percentiles) == 1:
+        return f"{matching_percentiles[0]}"
+    else:
+        return f"{min(matching_percentiles)}-{max(matching_percentiles)}"
 
-    Observações:
-        - Garanta que exista uma FOREIGN KEY em 'scale_progress(scale_id)' que referencie 'scales(id)'.
-        - Garanta que o nome da tabela de escalas seja 'scales' e a coluna seja 'scale_name'.
-        - Se a coluna tiver outro nome, ou a tabela tiver outro nome, adapte 'scales!inner(scale_name)'.
-        - 'scales!inner' indica que estamos fazendo um join interno (inner join) via PostgREST.
+# ===============================
+# Função de Correção Automatizada para BIS‑11
+# ===============================
+def automated_correction_bis11(answers, normative_table, percentile_indices):
+    """
+    Realiza a correção automatizada do BIS‑11 com base nas respostas.
+    Inclui a inversão de itens, cálculo de subescalas, total e determinação dos intervalos percentílicos.
 
-    Exemplo de uso:
-        completed_scales, err = get_completed_scales(user_id)
-        if err:
-            st.error(err)
-        else:
-            # processar completed_scales
+    Args:
+        answers (dict): Respostas do paciente (ex.: {"question_1": "Às vezes", ...}).
+        normative_table (dict): Tabela normativa para o BIS‑11.
+        percentile_indices (list): Lista de percentis.
+
+    Returns:
+        dict: Relatório com escores e intervalos percentílicos para cada subescala e para o total.
+    """
+    # Converter respostas e aplicar inversão se necessário
+    numeric_answers = {}
+    for key, value in answers.items():
+        question_num = int(key.split("_")[1])
+        base_value = answer_map.get(value, 0)
+        if question_num in itens_para_inverter:
+            base_value = 5 - base_value
+        numeric_answers[question_num] = base_value
+
+    # Calcular escores das subescalas
+    scores = {}
+    for factor, items in subscale_mapping.items():
+        scores[factor] = sum(numeric_answers.get(i, 0) for i in items)
+    
+    # Calcular o total (soma de todas as 30 questões)
+    total_score = sum(numeric_answers.get(i, 0) for i in range(1, 31))
+    scores["Total"] = total_score
+
+    # Calcular intervalos percentílicos
+    report = {}
+    for factor in normative_table.keys():
+        if factor in scores:
+            score = scores[factor]
+            p_interval = find_percentile_interval(score, factor, normative_table, percentile_indices)
+            report[factor] = {"score": score, "percentile": p_interval}
+    
+    return report
+
+# ===============================
+# Dicionário de Configuração para Correção
+# ===============================
+# Esse dicionário associa o nome da escala à sua função de correção e aos dados normativos.
+correction_config = {
+    "Escala de Impulsividade de Barrat": {
+        "normative_table": percentile_table_bis11,
+        "percentile_indices": percentile_indices_bis11,
+        "correction_function": automated_correction_bis11
+    },
+    # Outras escalas podem ser adicionadas aqui
+}
+
+# ===============================
+# Funções de Correção (Integradas ao Módulo)
+# ===============================
+def get_completed_scales(patient_id):
+    """
+    Retorna as escalas concluídas (completed=True) para o paciente.
+    
+    Fluxo:
+      1. Busca o link_id do paciente na tabela professional_patient_link (status='accepted').
+      2. Consulta a tabela scale_progress com join na tabela scales para trazer scale_name.
+      3. Filtra registros com completed=True.
+    
+    Args:
+      patient_id (str): ID do paciente.
+    
+    Returns:
+      tuple: (lista de registros, mensagem de erro ou None)
     """
     try:
-        # 1. Obtém o link_id do paciente
         link_resp = supabase_client.from_("professional_patient_link") \
             .select("id") \
             .eq("patient_id", patient_id) \
             .eq("status", "accepted") \
             .execute()
         if not link_resp.data:
-            return [], "Nenhum vínculo ativo encontrado para este paciente."
-        
-        link_id_do_paciente = link_resp.data[0]["id"]
+            return [], "Nenhum vínculo ativo encontrado."
+        link_id = link_resp.data[0]["id"]
 
-        # 2. Consulta 'scale_progress' com join na tabela 'scales'
-        #    * Atenção: 'scales!inner(scale_name)' supõe que a tabela se chama 'scales'
-        #      e a FK é 'scale_id' em 'scale_progress'.
-        #    * Se o campo em 'scales' tiver outro nome, mude 'scale_name' para esse nome.
         response = supabase_client.from_("scale_progress") \
             .select("id, link_id, completed, answers, date, scales!inner(scale_name)") \
-            .eq("link_id", link_id_do_paciente) \
+            .eq("link_id", link_id) \
             .eq("completed", True) \
             .order("date", desc=True) \
             .execute()
-
         if hasattr(response, "error") and response.error:
             return [], f"Erro ao buscar escalas completadas: {response.error.message}"
-        
         if not response.data:
             return [], "Nenhuma escala concluída encontrada."
-        
-        # 3. Retorna os registros encontrados
         return response.data, None
-
     except Exception as e:
         return [], f"Erro inesperado: {str(e)}"
 
-
-
-
 def render_scale_correction_section(user_id):
     """
-    Renderiza a seção de correção de escalas para o paciente, permitindo que ele selecione de uma lista
-    qual escala (já respondida) deseja ver a correção automatizada.
+    Renderiza a seção de correção de escalas para o paciente, permitindo selecionar qual escala corrigir.
 
     Fluxo:
-        1. Obtém os registros de progresso (escala respondida e concluída) para o paciente usando get_completed_scales().
-        2. Se não houver registros, exibe uma mensagem informando que não há escalas para corrigir.
-        3. Caso haja registros, cria um selectbox para que o paciente escolha a escala a corrigir.
-           - O rótulo de cada opção é composto pelo scale_name (obtido via join) e pela data, se disponível.
-        4. Após a seleção, identifica a escala a ser corrigida e, com base no tipo (por exemplo, BIS‑11),
-           busca na configuração (correction_config) a função de correção e os dados normativos apropriados.
-        5. Chama a função de correção, passando as respostas armazenadas e os dados normativos, e exibe o relatório.
-
+      1. Busca os registros de escalas concluídas usando get_completed_scales().
+      2. Se houver registros, exibe um selectbox com rótulos formados por scale_name e data.
+      3. Identifica a escala selecionada e verifica se há configuração em correction_config.
+      4. Chama a função de correção apropriada e exibe o relatório.
+    
     Args:
-        user_id (str): ID do paciente autenticado.
-
+      user_id (str): ID do paciente.
+    
     Returns:
-        None (apenas renderiza a interface).
-
-    Calls:
-        Supabase (join entre 'scale_progress' e 'scales')
-        correction_config (módulo de configuração com dados e funções de correção)
+      None
     """
     st.header("📊 Correção de Escalas")
-    
-    # 1. Obter os registros de escalas concluídas para o paciente (join entre scale_progress e scales)
     completed_scales, err = get_completed_scales(user_id)
     if err:
         st.error(err)
@@ -110,30 +204,23 @@ def render_scale_correction_section(user_id):
         st.info("Nenhuma escala respondida encontrada para correção.")
         return
 
-    # 2. Cria uma lista de opções para o selectbox com rótulos adequados
     options = {}
     for record in completed_scales:
-        # Como 'scale_name' vem dentro do objeto 'scales', usamos:
         if record.get("scales") and record["scales"].get("scale_name"):
             scale_label = record["scales"]["scale_name"] + f" - {record.get('date', '')}"
         else:
             scale_label = f"Escala (ID: {record['id']})"
         options[scale_label] = record
 
-    # Exibe um selectbox para o paciente escolher a escala a corrigir
     selected_option = st.selectbox("Selecione a escala para correção:", list(options.keys()))
     selected_record = options[selected_option]
 
-    # 3. Identifica a escala (tipo) para correção
-    # Aqui, assumimos que o 'scale_name' identifica o tipo de escala
     if selected_record.get("scales") and selected_record["scales"].get("scale_name"):
         scale_type = selected_record["scales"]["scale_name"]
     else:
         st.error("Não foi possível identificar o tipo da escala para correção.")
         return
 
-    # Se você tem a configuração de correção para essa escala no correction_config:
-    from utils.correction_config import correction_config  # Importa o dicionário de configuração
     if scale_type not in correction_config:
         st.info("Correção automatizada não disponível para essa escala.")
         return
@@ -147,10 +234,7 @@ def render_scale_correction_section(user_id):
         st.error("Função de correção não definida para essa escala.")
         return
 
-    # 4. Obtém as respostas armazenadas do registro (campo 'answers')
     answers = selected_record.get("answers", {})
-    
-    # 5. Chama a função de correção e exibe o relatório
     report = correction_function(answers, normative_table, percentile_indices)
     st.subheader("Relatório de Correção")
     st.json(report)
