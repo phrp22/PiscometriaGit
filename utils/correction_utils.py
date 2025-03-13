@@ -230,8 +230,8 @@ def render_scale_correction_section(user_id):
     for factor, data in report.items():
         row = {
             "Fator": factor,
-            "Pontuação": data["score"],
-            "Percentil": data["percentile"]
+            "Pontuação": str["score"],
+            "Percentil": str["percentile"]
         }
         table_data.append(row)
 
