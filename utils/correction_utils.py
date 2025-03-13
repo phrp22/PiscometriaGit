@@ -7,46 +7,73 @@ from correction_config import correction_config  # Nosso módulo de configuraç�
 
 def get_completed_scales(patient_id):
     """
-    Consulta a tabela scale_progress para obter os registros de escalas concluídas (completed = True)
-    para o paciente, utilizando o link_id do vínculo.
+    Retorna as escalas que foram concluídas (completed=True) pelo paciente especificado.
 
     Fluxo:
-        1. Consulta a tabela professional_patient_link para obter o link_id do paciente (status='accepted').
-        2. Consulta a tabela scale_progress para buscar registros com esse link_id e completed=True.
-    
+        1. Busca o 'link_id' do paciente na tabela 'professional_patient_link' (onde status='accepted').
+        2. Faz um join com a tabela 'scales' ao consultar 'scale_progress', para trazer 'scale_name'.
+           - Para isso, é preciso ter a FK (scale_id) em 'scale_progress' referenciando 'scales(id)'.
+        3. Retorna os registros em que 'link_id' corresponde ao do paciente e 'completed' é True.
+        4. Cada registro retorna, além dos campos de 'scale_progress', o campo 'scale_name' (via join).
+
     Args:
-        patient_id (str): ID do paciente.
+        patient_id (str): ID do paciente (usuário autenticado).
 
     Returns:
-        tuple: (lista de registros de escala completados, mensagem de erro ou None)
-    
-    Calls:
-        Supabase → Tabela 'professional_patient_link'
-        Supabase → Tabela 'scale_progress'
+        tuple: (list, str or None)
+            - (completed_scales, None) se a consulta foi bem-sucedida.
+            - ([], 'mensagem_de_erro') se houver algum erro ou se não encontrar o vínculo.
+
+    Observações:
+        - Garanta que exista uma FOREIGN KEY em 'scale_progress(scale_id)' que referencie 'scales(id)'.
+        - Garanta que o nome da tabela de escalas seja 'scales' e a coluna seja 'scale_name'.
+        - Se a coluna tiver outro nome, ou a tabela tiver outro nome, adapte 'scales!inner(scale_name)'.
+        - 'scales!inner' indica que estamos fazendo um join interno (inner join) via PostgREST.
+
+    Exemplo de uso:
+        completed_scales, err = get_completed_scales(user_id)
+        if err:
+            st.error(err)
+        else:
+            # processar completed_scales
     """
     try:
-        # Obtém o vínculo ativo
+        # 1. Obtém o link_id do paciente
         link_resp = supabase_client.from_("professional_patient_link") \
             .select("id") \
             .eq("patient_id", patient_id) \
             .eq("status", "accepted") \
             .execute()
         if not link_resp.data:
-            return [], "Nenhum vínculo ativo encontrado."
-        link_id = link_resp.data[0]["id"]
+            return [], "Nenhum vínculo ativo encontrado para este paciente."
         
-        # Busca registros em scale_progress com completed = True para esse link_id
-        progress_resp = supabase_client.from_("scale_progress") \
-            .select("id, scale_id, link_id, answers, completed, date") \
-            .eq("link_id", link_id) \
+        link_id_do_paciente = link_resp.data[0]["id"]
+
+        # 2. Consulta 'scale_progress' com join na tabela 'scales'
+        #    * Atenção: 'scales!inner(scale_name)' supõe que a tabela se chama 'scales'
+        #      e a FK é 'scale_id' em 'scale_progress'.
+        #    * Se o campo em 'scales' tiver outro nome, mude 'scale_name' para esse nome.
+        response = supabase_client.from_("scale_progress") \
+            .select("id, link_id, completed, answers, date, scales!inner(scale_name)") \
+            .eq("link_id", link_id_do_paciente) \
             .eq("completed", True) \
             .order("date", desc=True) \
             .execute()
-        if hasattr(progress_resp, "error") and progress_resp.error:
-            return [], f"Erro ao buscar escalas completadas: {progress_resp.error.message}"
-        return progress_resp.data, None
+
+        if hasattr(response, "error") and response.error:
+            return [], f"Erro ao buscar escalas completadas: {response.error.message}"
+        
+        if not response.data:
+            return [], "Nenhuma escala concluída encontrada."
+        
+        # 3. Retorna os registros encontrados
+        return response.data, None
+
     except Exception as e:
         return [], f"Erro inesperado: {str(e)}"
+
+
+
 
 def render_scale_correction_section(user_id):
     """
