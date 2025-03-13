@@ -1,4 +1,5 @@
 import streamlit as st
+import json
 from datetime import date
 from auth import supabase_client
 from utils.user_utils import get_user_info
@@ -232,13 +233,6 @@ def update_scale_answers(scale_progress_id, answers):
 
 
 
-import streamlit as st
-from datetime import date
-import json
-from auth import supabase_client
-from utils.date_utils import format_date
-from utils.scales_utils import get_assigned_scales, initialize_scale_progress, update_scale_answers
-
 def render_patient_scales(user_id):
     """
     Renderiza as escalas psicométricas atribuídas ao paciente e permite que ele responda aos itens da escala.
@@ -353,6 +347,7 @@ def render_patient_scales(user_id):
                     st.success(msg)
                 else:
                     st.error(msg)
+
 
 
 
