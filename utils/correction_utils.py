@@ -1,13 +1,12 @@
-import streamlit as st
-import json
-from auth import supabase_client
-from utils.user_utils import get_user_info
-
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from correction_config import correction_config
 
+import streamlit as st
+import json
+from auth import supabase_client
+from utils.user_utils import get_user_info
 
 
 def get_completed_scales(patient_id):
