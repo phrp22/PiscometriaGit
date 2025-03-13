@@ -131,7 +131,7 @@ def get_assigned_scales(patient_id):
         link_id = link_response.data[0]["id"]
 
         scales_response = supabase_client.from_("scales") \
-            .select("id, scale_id, created_at") \
+            .select("id, scale_id, link_id, created_at") \  # Incluímos link_id aqui
             .eq("link_id", link_id) \
             .order("created_at", desc=True) \
             .execute()
