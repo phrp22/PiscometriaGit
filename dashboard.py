@@ -6,6 +6,7 @@ from utils.professional_utils import  render_professional_enable_section, is_pro
 from utils.user_utils import get_user_info
 from utils.goals_utils import render_patient_goals, render_add_goal_section 
 from utils.scales_utils import render_add_scale_section, render_patient_scales
+from utils.correction_utils import render_scale_correction_section 
 
 
 # 🖥️ Função para renderizar a sidebar.
@@ -66,56 +67,58 @@ def render_sidebar(user):
 # 🖥️ Função para renderizar a dashboard do paciente.
 def render_dashboard():
     """
-    Renderiza a dashboard do paciente, mostrando convites pendentes, metas atribuídas e escalas psicométricas.
-
+    Renderiza a dashboard do paciente, mostrando convites, metas, escalas e a seção de correção.
+    
     Fluxo:
-        1. Obtém os dados do usuário autenticado.
-        2. Renderiza a sidebar com informações do usuário.
-        3. Exibe convites pendentes para vinculação com profissionais.
-        4. Exibe as metas do paciente (utilizando render_patient_goals()).
-        5. Exibe as escalas psicométricas atribuídas ao paciente, permitindo que ele responda o questionário (utilizando render_patient_scales()).
-
+      1. Obtém os dados do usuário autenticado.
+      2. Renderiza a sidebar.
+      3. Exibe convites pendentes.
+      4. Exibe as metas do paciente.
+      5. Exibe as escalas (questionários) para serem respondidas.
+      6. Exibe a seção de correção, onde o paciente pode selecionar qual escala deseja ver corrigida.
+    
     Args:
-        None (obtém o usuário autenticado internamente).
-
+      None (obtém o usuário autenticado internamente).
+    
     Returns:
-        None (apenas renderiza a interface).
-
+      None (apenas renderiza a interface).
+    
     Calls:
-        render_sidebar()
-        patient_link.py → render_patient_invitations()
-        goals_utils.py → render_patient_goals()
-        scales_utils.py → render_patient_scales()
+      render_sidebar()
+      patient_link.py → render_patient_invitations()
+      goals_utils.py → render_patient_goals()
+      scales_utils.py → render_patient_scales()
+      correction_utils.py → render_scale_correction_section()
     """
-    user = get_user()  # Obtém os dados do usuário autenticado.
+    user = get_user()  # Obtém os dados do usuário autenticado
     if not user or "id" not in user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
-    # Obtém informações completas do usuário e ajusta a saudação conforme o gênero.
     profile = get_user_info(user["id"], full_profile=True)
     saudacao = adjust_gender_ending("Bem-vindo", profile.get("genero", "M"))
-
-    # Renderiza a sidebar com informações básicas e botão de logout.
+    
     render_sidebar(user)
-
-    # Exibe a saudação personalizada na tela inicial.
     st.header(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("---")
 
-    # Exibe os convites pendentes do paciente.
+    # Exibe os convites pendentes
     render_patient_invitations(user)
-
     st.markdown("---")
 
-    # Exibe as metas atribuídas ao paciente.
+    # Exibe as metas atribuídas
     render_patient_goals(user["id"])
-
     st.markdown("---")
 
-    # Exibe as escalas psicométricas atribuídas ao paciente,
-    # permitindo que ele responda o questionário e salve as respostas.
+    # Exibe as escalas para serem respondidas
     render_patient_scales(user["id"])
+    st.markdown("---")
+
+    # Exibe a seção de correção, onde o paciente pode selecionar qual escala deseja ver a correção automatizada
+    render_scale_correction_section(user["id"])
+
+if __name__ == "__main__":
+    render_dashboard()
 
 
 # 🖥️ Função para renderizar a dashboard exclusiva para profissionais habilitados.
