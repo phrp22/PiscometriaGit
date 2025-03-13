@@ -83,24 +83,25 @@ def render_scale_correction_section(user_id):
     Fluxo:
         1. Obtém os registros de progresso (escala respondida e concluída) para o paciente usando get_completed_scales().
         2. Se não houver registros, exibe uma mensagem informando que não há escalas para corrigir.
-        3. Caso haja, exibe um selectbox para que o paciente escolha a escala que deseja corrigir.
-        4. Com base na escolha, identifica o tipo de escala (por exemplo, "BIS-11") e, se houver uma configuração
-           em correction_config, chama a função de correção associada passando as respostas armazenadas e os dados normativos.\n
-        5. Exibe o relatório de correção.
-    
+        3. Caso haja registros, cria um selectbox para que o paciente escolha a escala a corrigir.
+           - O rótulo de cada opção é composto pelo scale_name (obtido via join) e pela data, se disponível.
+        4. Após a seleção, identifica a escala a ser corrigida e, com base no tipo (por exemplo, BIS‑11),
+           busca na configuração (correction_config) a função de correção e os dados normativos apropriados.
+        5. Chama a função de correção, passando as respostas armazenadas e os dados normativos, e exibe o relatório.
+
     Args:
         user_id (str): ID do paciente autenticado.
-    
+
     Returns:
         None (apenas renderiza a interface).
-    
+
     Calls:
-        get_completed_scales()
+        Supabase (join entre 'scale_progress' e 'scales')
         correction_config (módulo de configuração com dados e funções de correção)
     """
     st.header("📊 Correção de Escalas")
     
-    # 1. Obter escalas completadas para o paciente
+    # 1. Obter os registros de escalas concluídas para o paciente (join entre scale_progress e scales)
     completed_scales, err = get_completed_scales(user_id)
     if err:
         st.error(err)
@@ -109,33 +110,34 @@ def render_scale_correction_section(user_id):
         st.info("Nenhuma escala respondida encontrada para correção.")
         return
 
-    # 2. Cria uma lista de opções para o selectbox.
-    # Aqui vamos exibir o scale_id e a data de resposta (ou se preferir, exiba scale_name se ele estiver disponível em scale_progress).
+    # 2. Cria uma lista de opções para o selectbox com rótulos adequados
     options = {}
     for record in completed_scales:
-        # Tentamos obter scale_name; se não houver, usamos o scale_id
-        scale_label = record.get("scale_name", record["scale_id"]) if record.get("scale_name") else record["scale_id"]
-        # Acrescenta a data para ajudar o paciente a identificar
-        scale_label += f" - {record.get('date', '')}"
+        # Como 'scale_name' vem dentro do objeto 'scales', usamos:
+        if record.get("scales") and record["scales"].get("scale_name"):
+            scale_label = record["scales"]["scale_name"] + f" - {record.get('date', '')}"
+        else:
+            scale_label = f"Escala (ID: {record['id']})"
         options[scale_label] = record
 
+    # Exibe um selectbox para o paciente escolher a escala a corrigir
     selected_option = st.selectbox("Selecione a escala para correção:", list(options.keys()))
     selected_record = options[selected_option]
 
-    # 3. Identifica qual escala foi respondida e qual função de correção usar.
-    # Aqui, assumimos que o campo scale_name (ou outro identificador) pode ser usado para mapear em correction_config.
-    # Por exemplo, se scale_name for "Escala de Impulsividade de Barrat" e esse for o nome chave em correction_config:
-    scale_type = selected_record.get("scale_name", None)
-    if not scale_type:
+    # 3. Identifica a escala (tipo) para correção
+    # Aqui, assumimos que o 'scale_name' identifica o tipo de escala
+    if selected_record.get("scales") and selected_record["scales"].get("scale_name"):
+        scale_type = selected_record["scales"]["scale_name"]
+    else:
         st.error("Não foi possível identificar o tipo da escala para correção.")
         return
 
+    # Se você tem a configuração de correção para essa escala no correction_config:
+    from correction_config import correction_config  # Importa o dicionário de configuração
     if scale_type not in correction_config:
         st.info("Correção automatizada não disponível para essa escala.")
         return
 
-    # 4. Obtém as respostas armazenadas e chama a função de correção
-    answers = selected_record.get("answers", {})
     config = correction_config[scale_type]
     correction_function = config.get("correction_function")
     normative_table = config.get("normative_table")
@@ -145,7 +147,10 @@ def render_scale_correction_section(user_id):
         st.error("Função de correção não definida para essa escala.")
         return
 
-    # Chama a função de correção e exibe o relatório
+    # 4. Obtém as respostas armazenadas do registro (campo 'answers')
+    answers = selected_record.get("answers", {})
+    
+    # 5. Chama a função de correção e exibe o relatório
     report = correction_function(answers, normative_table, percentile_indices)
     st.subheader("Relatório de Correção")
     st.json(report)
