@@ -108,20 +108,20 @@ def render_dashboard():
 
     # Se quiser manter “Convites Pendentes” fora do selectbox, chame antes:
     render_patient_invitations(user)
-    st.markdown("---")
+
 
     # Selectbox para escolher qual seção exibir
     opcao = st.selectbox(
         "Selecione uma seção:",
-        ["Minhas Metas", "Minhas Escalas", "Correção de Escalas"]
+        ["Minhas Metas", "Testes Psicométricos", "Relatórios"]
     )
 
     # Renderiza a seção correspondente
     if opcao == "Minhas Metas":
         render_patient_goals(user["id"])
-    elif opcao == "Minhas Escalas":
+    elif opcao == "Testes Psicométricos":
         render_patient_scales(user["id"])
-    elif opcao == "Correção de Escalas":
+    elif opcao == "Relatórios":
         render_scale_correction_section(user["id"])
 
 
