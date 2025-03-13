@@ -176,19 +176,8 @@ def get_completed_scales(patient_id):
 
 def render_scale_correction_section(user_id):
     """
-    Renderiza a seção de correção de escalas para o paciente, permitindo selecionar qual escala corrigir.
-
-    Fluxo:
-      1. Busca os registros de escalas concluídas usando get_completed_scales().
-      2. Se houver registros, exibe um selectbox com rótulos formados por scale_name e data.
-      3. Identifica a escala selecionada e verifica se há configuração em correction_config.
-      4. Chama a função de correção apropriada e exibe o relatório.
-    
-    Args:
-      user_id (str): ID do paciente.
-    
-    Returns:
-      None
+    Renderiza a seção de correção de escalas para o paciente, permitindo que ele selecione qual escala corrigir.
+    Depois, exibe o relatório de correção de forma mais amigável (em formato tabular).
     """
     st.header("📊 Correção de Escalas")
     completed_scales, err = get_completed_scales(user_id)
@@ -231,5 +220,22 @@ def render_scale_correction_section(user_id):
 
     answers = selected_record.get("answers", {})
     report = correction_function(answers, normative_table, percentile_indices)
+    
     st.subheader("Relatório de Correção")
-    st.json(report)
+
+    # Exemplo de conversão do dicionário para uma lista de linhas e exibição em formato tabular
+    # Cada chave do dicionário (ex.: "Attention", "Motor", etc.) vira uma linha
+    # com as colunas: Fator, Score, Percentil
+    table_data = []
+    for factor, data in report.items():
+        row = {
+            "Fator": factor,
+            "Pontuação": data["score"],
+            "Percentil": data["percentile"]
+        }
+        table_data.append(row)
+
+    # Exibindo como tabela (st.table ou st.dataframe)
+    import pandas as pd
+    df = pd.DataFrame(table_data)
+    st.table(df)  # ou st.dataframe(df)
