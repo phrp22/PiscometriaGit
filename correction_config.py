@@ -1,4 +1,5 @@
 # correction_config.py
+import json
 
 def automated_correction_bis11(answers, normative_table, percentile_indices):
     """
@@ -13,9 +14,9 @@ def automated_correction_bis11(answers, normative_table, percentile_indices):
         dict: Relatório de correção com escores e intervalos percentílicos.
     """
     # (Insira aqui a lógica de correção do BIS-11, semelhante ao que já vimos.)
-    # Por exemplo, use a função calculate_bis11_scores e depois determine os intervalos.
+    # Por exemplo, use a função automated_correction_bis11 e depois determine os intervalos.
     # Este exemplo é simplificado.
-    scores = calculate_bis11_scores(answers)
+    scores = automated_correction_bis11(answers)
     report = {}
     for factor, norms in normative_table.items():
         score = scores.get(factor, 0)
