@@ -2,8 +2,6 @@ import streamlit as st
 import json
 from auth import supabase_client
 from utils.user_utils import get_user_info
-from correction_config import correction_config  # Nosso módulo de configuração com funções e dados normativos
-
 
 def get_completed_scales(patient_id):
     """
