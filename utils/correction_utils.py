@@ -1,11 +1,7 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from correction_config import correction_config
-
 import streamlit as st
 import json
 from auth import supabase_client
+from correction_config import correction_config
 from utils.user_utils import get_user_info
 
 
@@ -137,7 +133,7 @@ def render_scale_correction_section(user_id):
         return
 
     # Se você tem a configuração de correção para essa escala no correction_config:
-    from correction_config import correction_config  # Importa o dicionário de configuração
+    from utils.correction_config import correction_config  # Importa o dicionário de configuração
     if scale_type not in correction_config:
         st.info("Correção automatizada não disponível para essa escala.")
         return
