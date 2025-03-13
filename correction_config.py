@@ -63,7 +63,7 @@ percentile_indices_bis11 = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65
 
 # Configuração de correção para cada escala
 correction_config = {
-    'BIS-11': {
+    'Escala de Impulsividade de Barrat': {
         'normative_table': normative_table_bis11,
         'percentile_indices': percentile_indices_bis11,
         'correction_function': automated_correction_bis11
