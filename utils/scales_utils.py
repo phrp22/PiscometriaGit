@@ -107,18 +107,24 @@ def get_assigned_scales(patient_id):
     Obtém as escalas psicométricas atribuídas a um paciente.
 
     Fluxo:
-        1. Busca o vínculo ativo do paciente na tabela 'professional_patient_link'.
-        2. Consulta a tabela 'scales' para recuperar as escalas associadas ao link_id.
-    
+        1. Busca o vínculo ativo do paciente na tabela 'professional_patient_link' (status='accepted').
+        2. Extrai o 'link_id' desse vínculo.
+        3. Consulta a tabela 'scales' para recuperar os registros associados ao 'link_id' do paciente,
+           incluindo 'id, scale_id, link_id, scale_name, created_at'.
+        4. Ordena os resultados por 'created_at' em ordem decrescente.
+
     Args:
-        patient_id (str): ID do paciente.
+        patient_id (str): ID do paciente (usado para encontrar o vínculo ativo).
 
     Returns:
-        tuple: (lista de escalas atribuídas, mensagem de erro ou None).
+        tuple: (list, str or None)
+            - (scales_data, None) se a consulta for bem-sucedida e existirem escalas atribuídas.
+            - ([], "Nenhuma escala atribuída encontrada.") se não houver registros.
+            - ([], <mensagem_de_erro>) se ocorrer algum erro ou o vínculo não for encontrado.
 
     Calls:
-        Supabase → Tabela 'professional_patient_link'
-        Supabase → Tabela 'scales'
+        Supabase → Tabela 'professional_patient_link' (para obter o 'link_id')
+        Supabase → Tabela 'scales' (para buscar escalas atribuídas ao paciente)
     """
     try:
         link_response = supabase_client.from_("professional_patient_link") \
@@ -126,22 +132,29 @@ def get_assigned_scales(patient_id):
             .eq("patient_id", patient_id) \
             .eq("status", "accepted") \
             .execute()
+
         if not link_response.data:
             return [], "Nenhum vínculo ativo encontrado."
         link_id = link_response.data[0]["id"]
 
+        # Incluímos 'scale_name' para evitar erro de chave inexistente ao acessar scale["scale_name"]
         scales_response = supabase_client.from_("scales") \
-            .select("id, scale_id, link_id, created_at") \
+            .select("id, scale_id, link_id, scale_name, created_at") \
             .eq("link_id", link_id) \
             .order("created_at", desc=True) \
             .execute()
+
         if hasattr(scales_response, "error") and scales_response.error:
             return [], f"Erro ao buscar escalas atribuídas: {scales_response.error.message}"
+
         if not scales_response.data:
             return [], "Nenhuma escala atribuída encontrada."
+
         return scales_response.data, None
+
     except Exception as e:
         return [], f"Erro inesperado: {str(e)}"
+
 
 
 def initialize_scale_progress(scale_id, link_id):
