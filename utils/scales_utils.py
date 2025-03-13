@@ -45,39 +45,59 @@ def assign_scale_to_patient(professional_id, patient_id, scale_id):
         scale_id (str): ID da escala (disponível na tabela available_scales).
 
     Returns:
-        tuple: (bool, mensagem) – True se bem-sucedido, caso contrário, False e mensagem de erro.
+        tuple: (bool, mensagem) – True se bem-sucedido; caso contrário, False e mensagem de erro.
     """
     try:
-        # Verifica o vínculo entre profissional e paciente
+        st.write("DEBUG: assign_scale_to_patient chamado com:")
+        st.write(" - professional_id:", professional_id)
+        st.write(" - patient_id:", patient_id)
+        st.write(" - scale_id:", scale_id)
+
+        # 1. Verifica o vínculo entre profissional e paciente
         link_response = supabase_client.from_("professional_patient_link") \
             .select("id") \
             .eq("professional_id", professional_id) \
             .eq("patient_id", patient_id) \
             .eq("status", "accepted") \
             .execute()
+
+        st.write("DEBUG: link_response data:", link_response.data)
+        
         if not link_response.data:
             return False, "Nenhum vínculo ativo encontrado com este paciente."
         link_id = link_response.data[0]["id"]
 
-        # Busca o scale_name da tabela available_scales
+        # 2. Busca o scale_name da tabela available_scales
         scale_response = supabase_client.from_("available_scales") \
             .select("scale_name") \
             .eq("id", scale_id) \
             .execute()
+
+        st.write("DEBUG: scale_response data:", scale_response.data)
+
         if not scale_response.data:
             return False, "Escala não encontrada no catálogo."
         scale_name = scale_response.data[0]["scale_name"]
 
-        # Insere o registro na tabela 'scales'
+        st.write("DEBUG: scale_name obtido:", scale_name)
+
+        # 3. Insere o registro na tabela 'scales'
         data = {
             "link_id": link_id,
             "scale_id": scale_id,
             "scale_name": scale_name
         }
-        response = supabase_client.from_("scales").insert(data).execute()
-        if hasattr(response, "error") and response.error:
-            return False, f"Erro ao atribuir a escala: {response.error.message}"
+
+        st.write("DEBUG: Dados que serão inseridos em 'scales':", data)
+
+        insert_response = supabase_client.from_("scales").insert(data).execute()
+
+        st.write("DEBUG: insert_response data:", insert_response.data)
+        if hasattr(insert_response, "error") and insert_response.error:
+            return False, f"Erro ao atribuir a escala: {insert_response.error.message}"
+        
         return True, "Escala atribuída com sucesso!"
+
     except Exception as e:
         return False, f"Erro inesperado: {str(e)}"
 
