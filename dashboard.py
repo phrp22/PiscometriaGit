@@ -90,35 +90,39 @@ def render_dashboard():
       scales_utils.py → render_patient_scales()
       correction_utils.py → render_scale_correction_section()
     """
-    user = get_user()  # Obtém os dados do usuário autenticado
+    user = get_user()  # Obtém o usuário autenticado
     if not user or "id" not in user:
         st.warning("⚠️ Você precisa estar logado para acessar esta página.")
         return
 
     profile = get_user_info(user["id"], full_profile=True)
-    saudacao = adjust_gender_ending("Bem-vindo", profile.get("genero", "M"))
-    
+    saudacao_base = "Bem-vindo"
+    saudacao = adjust_gender_ending(saudacao_base, profile.get("genero", "M"))
+
+    # Renderiza a sidebar
     render_sidebar(user)
+
+    # Exibe saudação
     st.header(f"{saudacao}, {user['display_name']}! 🎉")
     st.markdown("---")
 
-    # Exibe os convites pendentes
+    # Se quiser manter “Convites Pendentes” fora do selectbox, chame antes:
     render_patient_invitations(user)
     st.markdown("---")
 
-    # Exibe as metas atribuídas
-    render_patient_goals(user["id"])
-    st.markdown("---")
+    # Selectbox para escolher qual seção exibir
+    opcao = st.selectbox(
+        "Selecione uma seção:",
+        ["Minhas Metas", "Minhas Escalas", "Correção de Escalas"]
+    )
 
-    # Exibe as escalas para serem respondidas
-    render_patient_scales(user["id"])
-    st.markdown("---")
-
-    # Exibe a seção de correção, onde o paciente pode selecionar qual escala deseja ver a correção automatizada
-    render_scale_correction_section(user["id"])
-
-if __name__ == "__main__":
-    render_dashboard()
+    # Renderiza a seção correspondente
+    if opcao == "Minhas Metas":
+        render_patient_goals(user["id"])
+    elif opcao == "Minhas Escalas":
+        render_patient_scales(user["id"])
+    elif opcao == "Correção de Escalas":
+        render_scale_correction_section(user["id"])
 
 
 # 🖥️ Função para renderizar a dashboard exclusiva para profissionais habilitados.
