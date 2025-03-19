@@ -15,7 +15,7 @@ percentile_table_bis11 = {
     "Total": [40, 47, 50, 52, 53, 55, 56, 58, 59, 60, 62, 63, 64, 65, 67, 68, 70, 72, 76, 80, 90]
 }
 
-percentile_indices_bis11 = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99, 100]
+percentile_indices_bis11 = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99]
 
 # ===============================
 # Configuração de Inversão de Itens e Mapeamento
@@ -46,34 +46,37 @@ subscale_mapping = {
 # ===============================
 def find_percentile_interval(score, factor, percentile_table, percentile_indices):
     """
-    Encontra o intervalo de percentis com base no escore e no fator.
-
-    Args:
-        score (int): Escore do paciente.
-        factor (str): Nome do fator/subescala.
-        percentile_table (dict): Tabela normativa de percentis para a escala.
-        percentile_indices (list): Lista de percentis disponíveis.
-
-    Returns:
-        str: Intervalo ou percentil correspondente ao escore.
+    Retorna um percentil ou um intervalo de percentis para 'score' (BIS-11).
+    Ajustado para lidar com repetições de valores e manter consistência nos intervalos.
     """
     normative_scores = percentile_table[factor]
-    matching_percentiles = []
-    for i, value in enumerate(normative_scores):
-        if score == value:
-            matching_percentiles.append(percentile_indices[i + 1])
-    if not matching_percentiles:
-        for i, value in enumerate(normative_scores):
-            if score <= value:
-                if i + 1 < len(percentile_indices):
-                    return f"{percentile_indices[i]}-{percentile_indices[i+1]}"
-                else:
-                    return f"{percentile_indices[-1]}"
-        return f"{percentile_indices[-1]}"
-    if len(matching_percentiles) == 1:
-        return f"{matching_percentiles[0]}"
+
+    # Localizar todos os índices em que o score "empata" com a tabela
+    matching_indexes = [i for i, val in enumerate(normative_scores) if val == score]
+
+    if matching_indexes:
+        # Se houver empates exatos, pegue os valores de percentil para cada índice
+        matched_percentiles = [percentile_indices[i] for i in matching_indexes]
+        # Se só existe um índice, retorna aquele. Se tem vários, retorna min-max
+        if len(matched_percentiles) == 1:
+            return f"{matched_percentiles[0]}"
+        else:
+            return f"{min(matched_percentiles)}-{max(matched_percentiles)}"
     else:
-        return f"{min(matching_percentiles)}-{max(matching_percentiles)}"
+        # Se não há match exato, vamos achar o primeiro valor maior (ou igual) a 'score'
+        for i, val in enumerate(normative_scores):
+            if score < val:
+                # i = índice do primeiro valor maior que 'score'
+                if i == 0:
+                    # Score abaixo de todos os valores normativos
+                    return f"<{percentile_indices[0]}"
+                else:
+                    # Intervalo entre o percentil do índice anterior e o atual
+                    return f"{percentile_indices[i-1]}-{percentile_indices[i]}"
+
+        # Se sai do laço, é porque 'score' é >= que todos os valores normativos
+        # Fica acima do maior valor na tabela
+        return f">{percentile_indices[-2]}"
 
 # ===============================
 # Função de Correção Automatizada para BIS‑11
